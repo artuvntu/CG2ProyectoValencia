@@ -103,7 +103,6 @@ void teclasEspecciales(int tecla,int x,int y){
     
 }
 void raton(int x,int y){
-    printf("%d %d %d\n",x,y,++i);
     
     
 }
