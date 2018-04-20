@@ -4,6 +4,7 @@
 //
 //  Created by Arturo Ventura on 4/12/18.
 //  Copyright © 2018 vApps. All rights reserved.
+//  Esto es una prueba desde Linux
 //
 
 #include <iostream>
