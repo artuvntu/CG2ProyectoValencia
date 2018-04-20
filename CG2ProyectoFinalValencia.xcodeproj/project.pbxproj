@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BB22A4242084F45E0039685A /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB22A4222084F45E0039685A /* Camera.cpp */; };
 		BBF23DB0207FD75E0089515D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBF23DAF207FD75E0089515D /* main.cpp */; };
+		BBF23DB8207FD76B0089515D /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBF23DB7207FD76B0089515D /* GLUT.framework */; };
+		BBF23DBA207FD7720089515D /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBF23DB9207FD7720089515D /* OpenGL.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,8 +26,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		BB22A4222084F45E0039685A /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
+		BB22A4232084F45E0039685A /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
 		BBF23DAC207FD75E0089515D /* CG2ProyectoFinalValencia */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CG2ProyectoFinalValencia; sourceTree = BUILT_PRODUCTS_DIR; };
 		BBF23DAF207FD75E0089515D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		BBF23DB7207FD76B0089515D /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		BBF23DB9207FD7720089515D /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +39,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BBF23DBA207FD7720089515D /* OpenGL.framework in Frameworks */,
+				BBF23DB8207FD76B0089515D /* GLUT.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +52,7 @@
 			children = (
 				BBF23DAE207FD75E0089515D /* CG2ProyectoFinalValencia */,
 				BBF23DAD207FD75E0089515D /* Products */,
+				BBF23DB6207FD76A0089515D /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,8 +68,19 @@
 			isa = PBXGroup;
 			children = (
 				BBF23DAF207FD75E0089515D /* main.cpp */,
+				BB22A4222084F45E0039685A /* Camera.cpp */,
+				BB22A4232084F45E0039685A /* Camera.hpp */,
 			);
 			path = CG2ProyectoFinalValencia;
+			sourceTree = "<group>";
+		};
+		BBF23DB6207FD76A0089515D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BBF23DB9207FD7720089515D /* OpenGL.framework */,
+				BBF23DB7207FD76B0089515D /* GLUT.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -118,6 +139,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB22A4242084F45E0039685A /* Camera.cpp in Sources */,
 				BBF23DB0207FD75E0089515D /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
