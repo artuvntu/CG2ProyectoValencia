@@ -7,10 +7,8 @@
 //  Esto es una prueba desde Linux
 //  Esto es una pruena desde Windows
 
+#include "main.hpp"
 
-#include <iostream>
-#include <GLUT/GLUT.h>
-#include <OpenGL/OpenGL.h>
 void iniciarOpenGL(void);
 void dibuja(void);
 void reajusta(int ancho,int largo);
@@ -19,6 +17,13 @@ void teclasEspecciales(int tecla,int x,int y);
 void raton(int x,int y);
 void animacion(void);
 int main(int argc,char * argv[]) {
+    std::vector<std::string> a;
+    a.push_back("Hola mundo");
+    a.push_back("Como estas?");
+    
+    for (auto aon : a) {
+        std::cout << aon.size() << std::endl;
+    }
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(500, 500);
@@ -32,7 +37,6 @@ int main(int argc,char * argv[]) {
     glutSpecialFunc(teclasEspecciales);
     glutIdleFunc(animacion);
     glutMainLoop();
-    
     return 0;
 }
 void iniciarOpenGL(void){
