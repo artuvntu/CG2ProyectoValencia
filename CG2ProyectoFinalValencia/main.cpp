@@ -55,7 +55,7 @@ void iniciarOpenGL(void){
     glEnable(GL_AUTO_NORMAL);
     glEnable(GL_NORMALIZE);
     
-//    glutSetCursor(GLUT_CURSOR_NONE);
+ //   glutSetCursor(GLUT_CURSOR_NONE);
     
 }
 
@@ -78,9 +78,9 @@ void reajusta(int ancho,int largo){
     glViewport(0, 0, ancho, largo);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-5,5,-5,5,0.2,20);
+//    glOrtho(-5,5,-5,5,0.2,20);
     
-//    glFrustum(-0.1, 0.1, -1.0, 0.1, 0.1, 170.0);
+    glFrustum(-0.1, 0.1, -1.0, 0.1, 0.1, 170.0);
     glMatrixMode(GL_MODELVIEW);
 }
 void teclado(unsigned char tecla,int x,int y){
