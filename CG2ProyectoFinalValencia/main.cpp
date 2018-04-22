@@ -109,8 +109,8 @@ void teclasEspecciales(int tecla,int x,int y){
     
 }
 void raton(int x,int y){
-    
-    
+	std::cout << x << " " << y << std::endl ;
+	glutWarpPointer(20, 20);
 }
 
 void animacion(void){
