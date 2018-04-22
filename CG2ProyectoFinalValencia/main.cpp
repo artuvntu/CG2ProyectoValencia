@@ -60,8 +60,7 @@ void iniciarOpenGL(void){
     glEnable(GL_AUTO_NORMAL);
     glEnable(GL_NORMALIZE);
     
- //   glutSetCursor(GLUT_CURSOR_NONE);
-    
+//    glutSetCursor(GLUT_CURSOR_NONE);
 }
 
 void dibuja(void){
@@ -115,7 +114,7 @@ void teclasEspecciales(int tecla,int x,int y){
 }
 void raton(int x,int y){
 	std::cout << x << " " << y << std::endl ;
-//    glutWarpPointer(20, 20);
+    glutWarpPointer(20, 20);
 }
 
 void animacion(void){
