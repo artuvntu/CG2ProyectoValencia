@@ -16,6 +16,9 @@ void teclado(unsigned char tecla,int x,int y);
 void teclasEspecciales(int tecla,int x,int y);
 void raton(int x,int y);
 void animacion(void);
+
+CargadorImage vCargadorImage;
+
 int main(int argc,char * argv[]) {
     std::vector<std::string> a;
     a.push_back("Hola mundo");
@@ -24,6 +27,8 @@ int main(int argc,char * argv[]) {
     for (auto aon : a) {
         std::cout << aon.size() << std::endl;
     }
+    std::cout << vCargadorImage.newTypeTexture(9) << std::endl;
+    std::cout << vCargadorImage.newTypeTexture() << std::endl;
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(500, 500);
@@ -110,7 +115,7 @@ void teclasEspecciales(int tecla,int x,int y){
 }
 void raton(int x,int y){
 	std::cout << x << " " << y << std::endl ;
-	glutWarpPointer(20, 20);
+//    glutWarpPointer(20, 20);
 }
 
 void animacion(void){

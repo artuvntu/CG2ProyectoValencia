@@ -17,7 +17,9 @@
 #elif _WIN32
 #include "LibW\glut.h"
 #elif __linux__
-
+#include <GL/glut.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 #else
 #error "Unknown compiler"
 #endif

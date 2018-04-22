@@ -9,5 +9,6 @@
 #include "CargadorImage.hpp"
 
 int CargadorImage::newTypeTexture(int where){
+    
     return where;
 }
