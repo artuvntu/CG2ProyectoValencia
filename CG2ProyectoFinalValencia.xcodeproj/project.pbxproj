@@ -27,6 +27,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		BB0F17B4208E88BF006EF747 /* pasto01.tga */ = {isa = PBXFileReference; lastKnownFileType = file; path = pasto01.tga; sourceTree = "<group>"; };
+		BB0F17B5208EC8B2006EF747 /* casa01.tga */ = {isa = PBXFileReference; lastKnownFileType = file; path = casa01.tga; sourceTree = "<group>"; };
+		BB0F17B6208ECA25006EF747 /* cielo01.tga */ = {isa = PBXFileReference; lastKnownFileType = file; path = cielo01.tga; sourceTree = "<group>"; };
 		BB22A4222084F45E0039685A /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		BB22A4232084F45E0039685A /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
 		BBE79431208A79DF00A1CE54 /* CargadorImage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CargadorImage.cpp; sourceTree = "<group>"; };
@@ -52,6 +55,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BB0F17B3208E8832006EF747 /* Textureimg */ = {
+			isa = PBXGroup;
+			children = (
+				BB0F17B4208E88BF006EF747 /* pasto01.tga */,
+				BB0F17B6208ECA25006EF747 /* cielo01.tga */,
+				BB0F17B5208EC8B2006EF747 /* casa01.tga */,
+			);
+			path = Textureimg;
+			sourceTree = "<group>";
+		};
 		BBE7942E208A797700A1CE54 /* Camara */ = {
 			isa = PBXGroup;
 			children = (
@@ -102,6 +115,7 @@
 				BBF23DAF207FD75E0089515D /* main.cpp */,
 				BBE79434208A7BA400A1CE54 /* main.hpp */,
 				BBE79435208A82A900A1CE54 /* Libraries.hpp */,
+				BB0F17B3208E8832006EF747 /* Textureimg */,
 				BBE79430208A79BA00A1CE54 /* Source */,
 			);
 			path = CG2ProyectoFinalValencia;

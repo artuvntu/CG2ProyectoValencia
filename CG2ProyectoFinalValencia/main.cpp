@@ -17,18 +17,15 @@ void teclasEspecciales(int tecla,int x,int y);
 void raton(int x,int y);
 void animacion(void);
 
+
 CargadorImage vCargadorImage;
+TypeTexture vTypeTexture;
+Camara vCamara;
 
 int main(int argc,char * argv[]) {
-    std::vector<std::string> a;
-    a.push_back("Hola mundo");
-    a.push_back("Como estas?");
-    
-    for (auto aon : a) {
-        std::cout << aon.size() << std::endl;
+    for (int i = 0; i<10; i++) {
+        std::cout<< i/4 <<" "<<i%2<< " "<<i/2%2<< std::endl;
     }
-    std::cout << vCargadorImage.newTypeTexture(9) << std::endl;
-    std::cout << vCargadorImage.newTypeTexture() << std::endl;
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(500, 500);
@@ -61,18 +58,32 @@ void iniciarOpenGL(void){
     glEnable(GL_NORMALIZE);
     
 //    glutSetCursor(GLUT_CURSOR_NONE);
+    
+//    Pruebas
+    vTypeTexture.skybox = vCargadorImage.newTypeTexture();
+    vCargadorImage.newTexture("Textureimg/cielo01.tga");
+    vCargadorImage.newTexture("Textureimg/pasto01.tga");
+    vTypeTexture.fachadaCasaExterna = vCargadorImage.newTypeTexture();
+    vCargadorImage.newTexture("Textureimg/casa01.tga");
+    
 }
 
 void dibuja(void){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    glColor3f(1, 1, 0);
-    glTranslated(0, 0, -1);
+    vCamara.easyPosition();
+    glTranslated(-0.5, -0.5, -1);
+    vCargadorImage.setDefaultTypeTexture(vTypeTexture.skybox);
+    vCargadorImage.easyGetText(0);
     glBegin(GL_POLYGON);{
+        glTexCoord2d(0, 0);
         glVertex3f(0, 0, 0);
+        glTexCoord2d(1, 0);
         glVertex3f(1, 0, 0);
-        glVertex3f(0, 1, 0);
+        glTexCoord2d(1, 1);
         glVertex3f(1, 1, 0);
+        glTexCoord2d(0, 1);
+        glVertex3f(0, 1, 0);
     }glEnd();
 
     glutSwapBuffers ( );
@@ -83,14 +94,14 @@ void reajusta(int ancho,int largo){
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 //    glOrtho(-5,5,-5,5,0.2,20);
-    
-    glFrustum(-0.1, 0.1, -1.0, 0.1, 0.1, 170.0);
+    glFrustum(-0.1, 0.1, -0.1, 0.1, 0.1, 170.0);
     glMatrixMode(GL_MODELVIEW);
 }
 void teclado(unsigned char tecla,int x,int y){
     switch (tecla) {
         case 'a':
         case 'A':
+            vCamara.move(2);
             break;
         case 's':
         case 'S':
@@ -100,6 +111,7 @@ void teclado(unsigned char tecla,int x,int y){
             break;
         case 'w':
         case 'W':
+            vCamara.move(0);
             break;
         case 'q':
         case 'Q':
@@ -108,13 +120,14 @@ void teclado(unsigned char tecla,int x,int y){
         default:
             break;
     }
+    glutPostRedisplay();
 }
 void teclasEspecciales(int tecla,int x,int y){
-    
+    glutPostRedisplay();
 }
 void raton(int x,int y){
-	std::cout << x << " " << y << std::endl ;
-    glutWarpPointer(20, 20);
+//    std::cout << x << " " << y << std::endl ;
+//    glutWarpPointer(20, 20);
 }
 
 void animacion(void){

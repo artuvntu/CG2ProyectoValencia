@@ -10,11 +10,18 @@
 class CargadorImage{
 public:
     unsigned int newTypeTexture();
-    bool newTexture(std::string path);
+    bool newTexture(char * path);
     bool setDefaultTypeTexture(unsigned int type);
-    unsigned int getGLIndexForElement(int element,int type = -1);
+    int getGLIndexForElement(int element,int type = -1);
+    bool easyGetText(int element,int type = -1);
+    int ancho = -1;
+    int alto = -1;
 private:
     std::vector<unsigned int> glindexs;
     std::vector<int> types;
     int defaultTypeTexture = -1;
 };
+struct _typeTexture {
+    unsigned int skybox;
+    unsigned int fachadaCasaExterna;
+}typedef TypeTexture;

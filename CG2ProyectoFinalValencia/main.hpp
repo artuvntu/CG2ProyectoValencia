@@ -6,5 +6,6 @@
 //  Copyright © 2018 vApps. All rights reserved.
 //
 #include "Libraries.hpp"
+#include "Source/Camara/Camera.hpp"
 #include "Source/CargadorImage/CargadorImage.hpp"
 
