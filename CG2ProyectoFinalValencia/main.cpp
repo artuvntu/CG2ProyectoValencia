@@ -16,7 +16,8 @@ void teclado(unsigned char tecla,int x,int y);
 void teclasEspecciales(int tecla,int x,int y);
 void raton(int x,int y);
 void animacion(void);
-
+//    w,s,a,d,q,e,h,l,j,k,u,i MINMAY
+char teclasMovimiento[25] = "wWsSaAdDqQeEhHlLjJkKuUiI";
 
 CargadorImage vCargadorImage;
 TypeTexture vTypeTexture;
@@ -61,10 +62,10 @@ void iniciarOpenGL(void){
     
 //    Pruebas
     vTypeTexture.skybox = vCargadorImage.newTypeTexture();
-    vCargadorImage.newTexture("Textureimg/cielo01.tga");
-    vCargadorImage.newTexture("Textureimg/pasto01.tga");
+    vCargadorImage.newTexture("CG2ProyectoFinalValencia/Textureimg/cielo01.tga");
+    vCargadorImage.newTexture("CG2ProyectoFinalValencia/Textureimg/pasto01.tga");
     vTypeTexture.fachadaCasaExterna = vCargadorImage.newTypeTexture();
-    vCargadorImage.newTexture("Textureimg/casa01.tga");
+    vCargadorImage.newTexture("CG2ProyectoFinalValencia/Textureimg/casa01.tga");
     
 }
 

@@ -16,10 +16,10 @@ void Camara::move(int type,int intensidad){
     std::cout << "MOVE \n";
     int realType = 0;
     realType += type/4;
-    if (type/2%2) {
-        intensidad = -intensidad;
+    if (type%2) {
+         intensidad = -intensidad;
     }
-    this->movement[realType] += intensidad * this->multipler[realType*2+(type/2)];
+    this->movement[realType] += intensidad * this->multipler[realType*2+(type/2%2)];
     std::cout << realType  <<" "<<intensidad <<" "<<this->movement[realType]<<std::endl;
     switch (realType) {
         case 0:
