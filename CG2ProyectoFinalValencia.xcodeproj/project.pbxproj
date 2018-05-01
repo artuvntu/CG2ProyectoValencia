@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BB22A4242084F45E0039685A /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB22A4222084F45E0039685A /* Camera.cpp */; };
+		BB5854952092B99000F4F6E3 /* Primitivas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB5854932092B99000F4F6E3 /* Primitivas.cpp */; };
 		BBE79433208A79DF00A1CE54 /* CargadorImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBE79431208A79DF00A1CE54 /* CargadorImage.cpp */; };
 		BBF23DB0207FD75E0089515D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBF23DAF207FD75E0089515D /* main.cpp */; };
 		BBF23DB8207FD76B0089515D /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBF23DB7207FD76B0089515D /* GLUT.framework */; };
@@ -32,6 +33,9 @@
 		BB0F17B6208ECA25006EF747 /* cielo01.tga */ = {isa = PBXFileReference; lastKnownFileType = file; path = cielo01.tga; sourceTree = "<group>"; };
 		BB22A4222084F45E0039685A /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		BB22A4232084F45E0039685A /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
+		BB5854932092B99000F4F6E3 /* Primitivas.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Primitivas.cpp; sourceTree = "<group>"; };
+		BB5854942092B99000F4F6E3 /* Primitivas.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Primitivas.hpp; sourceTree = "<group>"; };
+		BBADBAB92097B9C1009A7321 /* casa02.tga */ = {isa = PBXFileReference; lastKnownFileType = file; path = casa02.tga; sourceTree = "<group>"; };
 		BBE79431208A79DF00A1CE54 /* CargadorImage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CargadorImage.cpp; sourceTree = "<group>"; };
 		BBE79432208A79DF00A1CE54 /* CargadorImage.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CargadorImage.hpp; sourceTree = "<group>"; };
 		BBE79434208A7BA400A1CE54 /* main.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = main.hpp; sourceTree = "<group>"; };
@@ -61,8 +65,18 @@
 				BB0F17B4208E88BF006EF747 /* pasto01.tga */,
 				BB0F17B6208ECA25006EF747 /* cielo01.tga */,
 				BB0F17B5208EC8B2006EF747 /* casa01.tga */,
+				BBADBAB92097B9C1009A7321 /* casa02.tga */,
 			);
 			path = Textureimg;
+			sourceTree = "<group>";
+		};
+		BB5854922092B97C00F4F6E3 /* Primitivas */ = {
+			isa = PBXGroup;
+			children = (
+				BB5854932092B99000F4F6E3 /* Primitivas.cpp */,
+				BB5854942092B99000F4F6E3 /* Primitivas.hpp */,
+			);
+			path = Primitivas;
 			sourceTree = "<group>";
 		};
 		BBE7942E208A797700A1CE54 /* Camara */ = {
@@ -86,6 +100,7 @@
 		BBE79430208A79BA00A1CE54 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				BB5854922092B97C00F4F6E3 /* Primitivas */,
 				BBE7942E208A797700A1CE54 /* Camara */,
 				BBE7942F208A79A600A1CE54 /* CargadorImage */,
 			);
@@ -189,6 +204,7 @@
 				BB22A4242084F45E0039685A /* Camera.cpp in Sources */,
 				BBF23DB0207FD75E0089515D /* main.cpp in Sources */,
 				BBE79433208A79DF00A1CE54 /* CargadorImage.cpp in Sources */,
+				BB5854952092B99000F4F6E3 /* Primitivas.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,12 +10,14 @@
 class Camara{
 public:
     void easyPosition();
-    void move(int type,int intesidad = 1);
+    void keyboardMove(int type,double intesidad = 1);
+    void mouseMove(int x,int y);
 private:
 //    w,s,a,d,q,e,h,l,j,k,u,i MINMAY
-    double movement[6] = {0, 0, 0, 0, 0, 0};
-    int multipler[12] = {1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2};
-    double XYZ[9] = {0, 0, 0, 0, 0, -1, 0, 1, 0};
+    double multipler[12] = {1, 1, 1, 0.2, 0.2, 0.2, 1.5, 1.5, 1.5, 0.3, 0.3, 0.3};
+    double XYZ[9] = {0, 15, 0, 0, 15, -1, 0, 1, 0};
+    double Angles[3] = {3.14,0,1.57};
+    
 };
 struct _tipoMovimiento {
     

@@ -9,6 +9,9 @@
 //#include <stdlib.h>
 #include <iostream>
 #include <vector>
+#include <math.h>
+#include <stdarg.h>
+
 
 #ifdef __APPLE__
 #include <GLUT/GLUT.h>
