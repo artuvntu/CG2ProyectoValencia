@@ -77,10 +77,16 @@ void dibuja(void){
     glLoadIdentity();
     vCamara.easyPosition();
     vCargadorImage.setDefaultTypeTexture(vTypeTexture.skybox);
-    vPrimitivas.mundo(vCargadorImage.getGLIndexForElement(1), 0, 24, vCargadorImage.getGLIndexForElement(0), vCargadorImage.getGLIndexForElement(0));
+    vPrimitivas.mundo(vCargadorImage.get(1), 0, 24, vCargadorImage.get(0), vCargadorImage.get(1));
     vCargadorImage.setDefaultTypeTexture(vTypeTexture.fachadaCasaExterna);
-    vPrimitivas.setTextPared(2, vCargadorImage.getGLIndexForElement(0),vCargadorImage.getGLIndexForElement(1));
-    vPrimitivas.prismaEstandar(0x01<<16, 10, 10, 10);
+    vPrimitivas.setTextPared2(PRIMITIVASTEXTPARED, 2,vCargadorImage.get(0), vCargadorImage.get(1));
+//    vPrimitivas.setTextPared(2, vCargadorImage.get(0),vCargadorImage.get(1));
+    vPrimitivas.prismaEstandar(0, 10, 5, 2);
+    glPushMatrix();{
+        glTranslated(10, 10, 10);
+        vPrimitivas.setTextPared2(PRIMITIVASTEXTPAREDINICIOY, 2, 0.5, 0.5);
+        vPrimitivas.prismaEstandar(0, 10, 10, 10);
+    }glPopMatrix();
     glutSwapBuffers ( );
 }
 void reajusta(int ancho,int largo){
@@ -110,18 +116,17 @@ void teclado(unsigned char tecla,int x,int y){
 void teclasEspecciales(int tecla,int x,int y){
     glutPostRedisplay();
 }
-int c = 0;
+//int c = 0;
 void raton(int x,int y){
     if (wrapCursor){
         if (x == cursorAnterior[0]) {
-            std::cout<<c<<"HOLA\n";
-            c++;
+//            std::cout<<c<<"HOLA\n";
+//            c++;
             return;
         }
         wrapCursor = false;
-        c=0;
-        std::cout<<c<<"ADIOS\n";
-
+//        c=0;
+//        std::cout<<c<<"ADIOS\n";
     }
     if (blockCursor) {
         int w[2] = {x,y};

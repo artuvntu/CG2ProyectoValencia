@@ -84,7 +84,7 @@ bool CargadorImage::setDefaultTypeTexture(unsigned int type){
     }
     return false;
 }
-int CargadorImage::getGLIndexForElement(int element,int type){
+int CargadorImage::get(int element,int type){
     int tType;
     try {
         if (type == -1) {
@@ -97,7 +97,7 @@ int CargadorImage::getGLIndexForElement(int element,int type){
     }
 }
 bool CargadorImage::easyGetText(int element,int type){
-    int t = this->getGLIndexForElement(element,type);
+    int t = this->get(element,type);
     if (t == -1) {
         return false;
     }

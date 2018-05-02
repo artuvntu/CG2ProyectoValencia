@@ -12,7 +12,7 @@ public:
     unsigned int newTypeTexture();
     bool newTexture(char * path);
     bool setDefaultTypeTexture(unsigned int type);
-    int getGLIndexForElement(int element,int type = -1);
+    int get(int element,int type = -1);
     bool easyGetText(int element,int type = -1);
     int ancho = -1;
     int alto = -1;
