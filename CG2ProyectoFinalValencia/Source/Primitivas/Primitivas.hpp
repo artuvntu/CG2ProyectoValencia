@@ -7,7 +7,8 @@
 //
 
 #include "../../Libraries.hpp"
-
+#include "../KeyFrame/KeyFrame.hpp"
+#include "../CargadorImage/CargadorImage.hpp"
 #define GROSORPARED 1
 
 #define ALTOPARED 25
@@ -29,10 +30,13 @@ public:
     
     void pared(int repeticionText,unsigned int typeText,TypePared type,double distancia);
 //private:
-    void prismaEstandar(unsigned int typeText,double x,double y, double z,double inicioX=0,double inicioY=0);
+    void prismaEstandar(unsigned int typeText,double x,double y, double z,int fondo=1,int tapa=0);
     GLuint textPared[8] = {0, 0, 0, 0, 0, 0, 0, 0};
     double textParedTam[8] = {1, 1, 1, 1, 1, 1, 1, 1};
     double textParedInicioX[8] = {0, 0, 0, 0, 0, 0, 0, 0};
     double textParedInicioY[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+    KeyFrame *vKeyFrame;
+    CargadorImage *vCargadorImage;
+    void chacalea();
 };
 

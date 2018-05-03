@@ -7,6 +7,6 @@
 //
 #include "Libraries.hpp"
 #include "Source/Camara/Camera.hpp"
-#include "Source/CargadorImage/CargadorImage.hpp"
 #include "Source/Primitivas/Primitivas.hpp"
-
+//#include "Source/KeyFrame/KeyFrame.hpp"
+//#include "Source/CargadorImage/CargadorImage.hpp"

@@ -11,7 +11,7 @@
 #include <vector>
 #include <math.h>
 #include <stdarg.h>
-
+#include <stdio.h>
 
 #ifdef __APPLE__
 #include <GLUT/GLUT.h>

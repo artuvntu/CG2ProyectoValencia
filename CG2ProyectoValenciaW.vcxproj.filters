@@ -24,6 +24,12 @@
     <ClCompile Include="cg2proyectofinalvalencia\source\cargadorimage\CargadorImage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CG2ProyectoFinalValencia\Source\Primitivas\Primitivas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CG2ProyectoFinalValencia\Source\KeyFrame\KeyFrame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cg2proyectofinalvalencia\glut.h">
@@ -39,6 +45,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cg2proyectofinalvalencia\source\cargadorimage\CargadorImage.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2ProyectoFinalValencia\Source\Primitivas\Primitivas.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2ProyectoFinalValencia\Source\KeyFrame\KeyFrame.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

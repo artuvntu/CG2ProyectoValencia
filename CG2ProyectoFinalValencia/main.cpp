@@ -20,16 +20,18 @@ void animacion(void);
 //    w,s,a,d,q,e,h,l,j,k,u,i MINMAY
 char teclasMovimiento[25] = "wsadqehlkjuiWSADQEHLKJUI";
 bool blockCursor = false;
-bool wrapCursor = false;
-int cursorAnterior[2];
 int ventana [2];
-double movMouse;
 CargadorImage vCargadorImage;
 TypeTexture vTypeTexture;
 Camara vCamara;
 Primitivas vPrimitivas;
+KeyFrame vKeyFrame;
 
 int main(int argc,char * argv[]) {
+    //48 11 0000
+    vPrimitivas.vKeyFrame = &vKeyFrame;
+    vPrimitivas.vCargadorImage = &vCargadorImage;
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(500, 500);
@@ -90,20 +92,29 @@ void dibuja(void){
     glutSwapBuffers ( );
 }
 void reajusta(int ancho,int largo){
+	double aspecto = (((double)ancho) / ((double)largo))/2;
     if (largo == 0) largo = 1;
     glViewport(0, 0, ancho, largo);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 //    glOrtho(-5,5,-5,5,0.2,20);
-    glFrustum(-0.1, 0.1, -0.1, 0.1, 0.1, 250.0);
+    glFrustum(-0.1*aspecto, 0.1*aspecto, -0.1, 0.1, 0.1, 250.0);
     glMatrixMode(GL_MODELVIEW);
-    ventana[0] = ancho;
-    ventana[1] = largo;
+    ventana[0] = ancho/2;
+    ventana[1] = largo/2;
 }
 void teclado(unsigned char tecla,int x,int y){
     if (tecla == 27){
         blockCursor = false;
         glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
+        return;
+    }
+    if (vKeyFrame.menuActivado) {
+        vKeyFrame.teclaDeMenu(tecla);
+        return;
+    }
+    if (tecla == '!') {
+        vKeyFrame.teclaActivaMenu();
         return;
     }
     for (int i=0; teclasMovimiento[i] != '\0'; i++) {
@@ -116,56 +127,22 @@ void teclado(unsigned char tecla,int x,int y){
 void teclasEspecciales(int tecla,int x,int y){
     glutPostRedisplay();
 }
-//int c = 0;
 void raton(int x,int y){
-    if (wrapCursor){
-        if (x == cursorAnterior[0]) {
-//            std::cout<<c<<"HOLA\n";
-//            c++;
-            return;
-        }
-        wrapCursor = false;
-//        c=0;
-//        std::cout<<c<<"ADIOS\n";
-    }
-    if (blockCursor) {
-        int w[2] = {x,y};
-        bool wrap = false;
-        vCamara.keyboardMove(7,((double)(x-cursorAnterior[0]))/50);
-        vCamara.keyboardMove(9,((double)(y-cursorAnterior[1]))/50);
-        if (x>(ventana[0]-1)) {
-            w[0] = 1;
-            wrap = true;
-        }
-        if (x<(1)) {
-            w[0] = ventana[0]-1;
-            wrap = true;
-        }
-        if (y>(ventana[1]-1)) {
-            w[1] = 1;
-            wrap = true;
-        }
-        if (y<(1)) {
-            w[1] = ventana[1]-1;
-            wrap = true;
-        }
-        if (wrap) {
-            glutWarpPointer(w[0], w[1]);
-            wrapCursor = true;
-        }
-        cursorAnterior[0] = w[0];
-        cursorAnterior[1] = w[1];
-    }
-
+	if (blockCursor) {
+		if (x != ventana[0] || y != ventana[1]) {
+			glutWarpPointer(ventana[0], ventana[1]);
+			vCamara.keyboardMove(7,((double)(x-ventana[0]))/50);
+			vCamara.keyboardMove(9,((double)(y-ventana[1]))/50);
+		}
+	}
 }
 void clickRaton(int boton, int estado, int x, int y){
     if (boton == GLUT_LEFT_BUTTON && estado == GLUT_DOWN){
         if (blockCursor == false){
-            cursorAnterior[0] = x;
-            cursorAnterior[1] = y;
-            glutSetCursor(GLUT_CURSOR_NONE);
+			glutWarpPointer(ventana[0], ventana[1]);
+			glutSetCursor(GLUT_CURSOR_NONE);
+			blockCursor = true;
         }
-        blockCursor = true;
     }
 }
 

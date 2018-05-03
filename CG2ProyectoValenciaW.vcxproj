@@ -107,6 +107,8 @@
     <ClCompile Include="cg2proyectofinalvalencia\main.cpp" />
     <ClCompile Include="cg2proyectofinalvalencia\source\camara\Camera.cpp" />
     <ClCompile Include="cg2proyectofinalvalencia\source\cargadorimage\CargadorImage.cpp" />
+    <ClCompile Include="CG2ProyectoFinalValencia\Source\KeyFrame\KeyFrame.cpp" />
+    <ClCompile Include="CG2ProyectoFinalValencia\Source\Primitivas\Primitivas.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cg2proyectofinalvalencia\glut.h" />
@@ -114,6 +116,8 @@
     <ClInclude Include="cg2proyectofinalvalencia\main.hpp" />
     <ClInclude Include="cg2proyectofinalvalencia\source\camara\Camera.hpp" />
     <ClInclude Include="cg2proyectofinalvalencia\source\cargadorimage\CargadorImage.hpp" />
+    <ClInclude Include="CG2ProyectoFinalValencia\Source\KeyFrame\KeyFrame.hpp" />
+    <ClInclude Include="CG2ProyectoFinalValencia\Source\Primitivas\Primitivas.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
