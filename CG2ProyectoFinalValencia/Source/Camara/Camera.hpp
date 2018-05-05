@@ -19,6 +19,6 @@ private:
     double Angles[3] = {3.14,0,1.57};
     
 };
-struct _tipoMovimiento {
-    
-}typedef TipoMovimiento;
+//struct _tipoMovimiento {
+//    
+//}typedef TipoMovimiento;

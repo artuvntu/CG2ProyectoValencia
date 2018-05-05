@@ -51,7 +51,7 @@ void Primitivas::mundo(GLuint suelo, int inicio, int fin, GLuint cielo, GLuint b
     glVertex3f(-100, 200, -100);
     glEnd();
 }
-void Primitivas::setTextPared2(int typo, int cantidad, ...){
+void Primitivas::setTextPared(int typo, int cantidad, ...){
     va_list argumentos;
     va_start(argumentos, cantidad);
     if (cantidad > 8) cantidad = 8;
@@ -73,13 +73,6 @@ void Primitivas::setTextPared2(int typo, int cantidad, ...){
             break;
     }
     for (int i = 0; i<cantidad; i++) donde[i] = va_arg(argumentos, double);
-    va_end(argumentos);
-}
-void Primitivas::setTextPared(int cantidad, ...){
-    va_list argumentos;
-    va_start(argumentos, cantidad);
-    if (cantidad > 6) cantidad = 6;
-    for (int i = 0; i<cantidad; i++) this->textPared[i] = va_arg(argumentos, GLuint);
     va_end(argumentos);
 }
 void Primitivas::setTextParedTam(int cantidad, ...){

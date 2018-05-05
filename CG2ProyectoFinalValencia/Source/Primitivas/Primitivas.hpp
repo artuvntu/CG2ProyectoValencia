@@ -22,8 +22,7 @@ class Primitivas {
 public:
     enum TypePared{Normal, Ventana, Puerta};
     void mundo(GLuint suelo,int inicio,int fin, GLuint cielo, GLuint bobeda);
-    void setTextPared2(int typo,int cantidad, ... );
-    void setTextPared(int cantidad, ... );
+    void setTextPared(int typo,int cantidad, ... );
     void setTextParedTam(int cantidad, ...);
     void resetTextParedTam();
     void setTextParedInicioX(int cantidad, ...);
@@ -37,6 +36,5 @@ public:
     double textParedInicioY[8] = {0, 0, 0, 0, 0, 0, 0, 0};
     KeyFrame *vKeyFrame;
     CargadorImage *vCargadorImage;
-    void chacalea();
 };
 

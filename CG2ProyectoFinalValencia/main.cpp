@@ -16,7 +16,7 @@ void teclado(unsigned char tecla,int x,int y);
 void teclasEspecciales(int tecla,int x,int y);
 void raton(int x,int y);
 void clickRaton(int boton, int estado, int x, int y);
-void animacion(void);
+void funcionAnimacion(void);
 //    w,s,a,d,q,e,h,l,j,k,u,i MINMAY
 char teclasMovimiento[25] = "wsadqehlkjuiWSADQEHLKJUI";
 bool blockCursor = false;
@@ -27,10 +27,12 @@ Camara vCamara;
 Primitivas vPrimitivas;
 KeyFrame vKeyFrame;
 
+struct h  {
+    std::vector<int> a;
+};
+
 int main(int argc,char * argv[]) {
     //48 11 0000
-    vPrimitivas.vKeyFrame = &vKeyFrame;
-    vPrimitivas.vCargadorImage = &vCargadorImage;
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
@@ -44,7 +46,7 @@ int main(int argc,char * argv[]) {
     glutPassiveMotionFunc(raton);
     glutMouseFunc(clickRaton);
     glutSpecialFunc(teclasEspecciales);
-    glutIdleFunc(animacion);
+    glutIdleFunc(funcionAnimacion);
     glutMainLoop();
     return 0;
 }
@@ -72,6 +74,13 @@ void iniciarOpenGL(void){
     vTypeTexture.fachadaCasaExterna = vCargadorImage.newTypeTexture();
     vCargadorImage.newTexture("CG2ProyectoFinalValencia/Textureimg/casa01.tga");
     vCargadorImage.newTexture("CG2ProyectoFinalValencia/Textureimg/casa02.tga");
+    
+    vPrimitivas.vKeyFrame = &vKeyFrame;
+    vPrimitivas.vCargadorImage = &vCargadorImage;
+
+    vKeyFrame.inicializar(10);
+
+
 }
 
 void dibuja(void){
@@ -81,12 +90,14 @@ void dibuja(void){
     vCargadorImage.setDefaultTypeTexture(vTypeTexture.skybox);
     vPrimitivas.mundo(vCargadorImage.get(1), 0, 24, vCargadorImage.get(0), vCargadorImage.get(1));
     vCargadorImage.setDefaultTypeTexture(vTypeTexture.fachadaCasaExterna);
-    vPrimitivas.setTextPared2(PRIMITIVASTEXTPARED, 2,vCargadorImage.get(0), vCargadorImage.get(1));
-//    vPrimitivas.setTextPared(2, vCargadorImage.get(0),vCargadorImage.get(1));
-    vPrimitivas.prismaEstandar(0, 10, 5, 2);
+    vPrimitivas.setTextPared(PRIMITIVASTEXTPARED, 2,vCargadorImage.get(0), vCargadorImage.get(1));
+    glPushMatrix();{
+        glTranslated(vKeyFrame.varMovimientos[0].value, vKeyFrame.varMovimientos[1].value, vKeyFrame.varMovimientos[2].value);
+        vPrimitivas.prismaEstandar(0, 10, 5, 2);
+    }glPopMatrix();
     glPushMatrix();{
         glTranslated(10, 10, 10);
-        vPrimitivas.setTextPared2(PRIMITIVASTEXTPAREDINICIOY, 2, 0.5, 0.5);
+        vPrimitivas.setTextPared(PRIMITIVASTEXTPAREDINICIOY, 2, 0.5, 0.5);
         vPrimitivas.prismaEstandar(0, 10, 10, 10);
     }glPopMatrix();
     glutSwapBuffers ( );
@@ -146,5 +157,6 @@ void clickRaton(int boton, int estado, int x, int y){
     }
 }
 
-void animacion(void){
+void funcionAnimacion(void){
+    vKeyFrame.actualizaAnimacion();
 }

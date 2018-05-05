@@ -13,6 +13,7 @@
 		BBF23DB0207FD75E0089515D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBF23DAF207FD75E0089515D /* main.cpp */; };
 		BBF23DB8207FD76B0089515D /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBF23DB7207FD76B0089515D /* GLUT.framework */; };
 		BBF23DBA207FD7720089515D /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBF23DB9207FD7720089515D /* OpenGL.framework */; };
+		BBF72029209B6C020084703A /* KeyFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBF72028209B6C020084703A /* KeyFrame.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -44,6 +45,8 @@
 		BBF23DAF207FD75E0089515D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		BBF23DB7207FD76B0089515D /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		BBF23DB9207FD7720089515D /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		BBF72027209B6C020084703A /* KeyFrame.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyFrame.hpp; sourceTree = "<group>"; };
+		BBF72028209B6C020084703A /* KeyFrame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyFrame.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +103,7 @@
 		BBE79430208A79BA00A1CE54 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				BBF72026209B6BDF0084703A /* KeyFrame */,
 				BB5854922092B97C00F4F6E3 /* Primitivas */,
 				BBE7942E208A797700A1CE54 /* Camara */,
 				BBE7942F208A79A600A1CE54 /* CargadorImage */,
@@ -143,6 +147,15 @@
 				BBF23DB7207FD76B0089515D /* GLUT.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BBF72026209B6BDF0084703A /* KeyFrame */ = {
+			isa = PBXGroup;
+			children = (
+				BBF72028209B6C020084703A /* KeyFrame.cpp */,
+				BBF72027209B6C020084703A /* KeyFrame.hpp */,
+			);
+			path = KeyFrame;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -203,6 +216,7 @@
 			files = (
 				BB22A4242084F45E0039685A /* Camera.cpp in Sources */,
 				BBF23DB0207FD75E0089515D /* main.cpp in Sources */,
+				BBF72029209B6C020084703A /* KeyFrame.cpp in Sources */,
 				BBE79433208A79DF00A1CE54 /* CargadorImage.cpp in Sources */,
 				BB5854952092B99000F4F6E3 /* Primitivas.cpp in Sources */,
 			);
