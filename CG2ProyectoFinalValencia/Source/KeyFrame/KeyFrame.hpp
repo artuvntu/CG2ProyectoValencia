@@ -8,31 +8,38 @@
 #include "../../Libraries.hpp"
 
 #define KEYFRAMEPATHFILE "CG2ProyectoFinalValencia.vkf" //vKeyFrame
-enum KeyFrameEstados{inicial,pmovimiento,animacion,pmovimientoCambio,animacionCambio,animacionNueva};
-enum KeyFrameTipoRepeticion: unsigned char {
-    nulo=0,volverAlInicio=1,circular=2,regresivo=3,regresivoCircular=4
-};
-struct _keyframemovemovimiento{
-    unsigned int cual;
-    double cantidad = 0;
-}typedef KeyFrameMoveMovimiento;
-struct _keyframemovimiento{
-    double value;
-    std::string name;
-}typedef KeyFrameMovimiento;
-struct _keyframekeyframe{
-    std::vector<KeyFrameMoveMovimiento> movimientos ;
-    double duracion = 0;
-}typedef KeyFrameKeyFrame;
-struct _keyframeanimacion{
-    std::vector<KeyFrameKeyFrame> cuadrosClaves;
-    KeyFrameTipoRepeticion repeticion = nulo;
-    bool ascendente = true;
-    unsigned int cuadroActual=0;
-}typedef  keyFrameAnimacion;
+
 
 class KeyFrame{
 public:
+    enum KeyFrameTipoAccionDespuesBuscarUInt{nada,cambioPunteroMovimientoSetPosicionInicial,necesitoCrearUltimoKeyFrame,cambioPunteroMovimientoSetTemporal};
+    enum KeyFrameEstados{inicial,pmovimiento,animacion,animacionNueva,buscandoUIntKF};
+    enum KeyFrameTipoReproduccion: unsigned int {
+        nulo=0,brincarAlInicio=1,regresivo=2,regresarAlInicio=3
+    };
+    struct _keyframemovemovimiento{
+        unsigned int cual =0;
+        double posicionFinal = 0;
+        double incremento = 0;
+        double posicionInicial = 0;
+    }typedef KeyFrameMoveMovimiento;
+    struct _keyframemovimiento{
+        double value;
+        std::string name;
+    }typedef KeyFrameMovimiento;
+    struct _keyframekeyframe{
+        std::vector<KeyFrameMoveMovimiento> movimientos ;
+        unsigned int duracion = 0;
+    }typedef KeyFrameKeyFrame;
+    struct _keyframeanimacion{
+        std::vector<KeyFrameKeyFrame> cuadrosClaves;
+        KeyFrameTipoReproduccion tipoReproduccion = nulo;
+        bool repetitivo = false;
+        bool ascendente = true;
+        long cuadroActual = 0;
+        unsigned int pasoActual = 0;
+    }typedef  keyFrameAnimacion;
+    
 	void teclaActivaMenu();
     void teclaDeMenu(unsigned char tecla);
     void inicializar(unsigned int cantidad,std::string nombre = "Inicializado ");
@@ -40,36 +47,61 @@ public:
     void cargar();
     void actualizaAnimacion();
     bool menuActivado = false;
-    void resetAnimacionesEnCurso();
-//private:
+    bool animacionInfinitasActivas = true;
+    void pararTodasLasAnimacionesEnCurso();
+    bool reproduceAlgunaAnimacion(unsigned long cual);
+    std::vector<KeyFrameMovimiento> varMovimientos;
+    
+private:
+    
+    void teclaDeMenuInicialReset();
     void teclaDeMenuInicial(unsigned char tecla);
     void teclaDeMenuPruebaMovimiento(unsigned char tecla);
-    void teclaDeMenuPruebaMovimientoCambio(unsigned char tecla,KeyFrameEstados proximoestado = pmovimiento);
     void teclaDeMenuAnimacion(unsigned char tecla);
-    void teclaDeMenuAnimacionCambio(unsigned char tecla);
-    void teclaDeMenuanimacionNueva(unsigned char tecla);
-    
-    void escribeMenu(int tipo = 0);
-    void escribeCabecera(int tipo = 0);
+    void teclaDeMenuAnimacionNueva(unsigned char tecla);
+    void teclaDeMenuBuscandoUInt(unsigned char tecla);
+    const char * nameEstado(KeyFrameEstados estado);
+
+    void escribeMenu(KeyFrameEstados tipo = inicial);
+    void escribeCabecera(KeyFrameEstados tipo = pmovimiento);
     void drawCursor();
     void escribeMovimientos();
     void escribeTiposRepeticion();
-    void escribeTipoRepeticionSegun(KeyFrameTipoRepeticion rep);
+    void escribeTipoRepeticionSegun(KeyFrameTipoReproduccion rep);
+    void escribeAnimacionesDisponibles();
     void describeAnimacion(keyFrameAnimacion animacion);
-    void moverMovimiento(int mov);
-    void reproduceAnimacion(keyFrameAnimacion animacion);
+    
+    double moverMovimiento(int mov);
+    void empezarABuscarUInt(unsigned int *a,unsigned int max,KeyFrameEstados actual,KeyFrameTipoAccionDespuesBuscarUInt accion = nada);
+    
+    void pararAnimacionesFromVector(std::vector<unsigned long> vector);
+    void aCeroTodosMovimientosDisponibles();
+    
+    bool reproduceAnimacion(keyFrameAnimacion *animacion);
+    void pararAnimacion(keyFrameAnimacion *animacion);
+    void recargarAnimacionesForever();
+    void crearKeyFrameForCircular(keyFrameAnimacion * animacion,unsigned int duracion);
+    void interpolarMoveMovimiento(KeyFrameMoveMovimiento *moveMovimiento);
+    
     KeyFrameEstados estado = inicial;
-    std::vector<KeyFrameMovimiento> varMovimientos;
     std::vector<keyFrameAnimacion> vAnimaciones;
     std::vector<unsigned long> vAnimacionesForever;
+    std::vector<unsigned long> vAnimacionesActivas;
     
     int reproduccionExterna = -1;
+    KeyFrameTipoAccionDespuesBuscarUInt tipoAccionDespuesBuscarInt = nada;
     
-    keyFrameAnimacion temporalAnimacion;
-    KeyFrameKeyFrame temporalCuadroClave;
-    KeyFrameMoveMovimiento temporalMoveMovimiento;
+    keyFrameAnimacion temporalAnimacion = keyFrameAnimacion();
+    KeyFrameKeyFrame temporalCuadroClave = KeyFrameKeyFrame();
+    KeyFrameMoveMovimiento temporalMoveMovimiento = KeyFrameMoveMovimiento();
     
-    unsigned int pruebamovimientoActualPuntero = 0;
-    unsigned int animcacionActualPuntero = 0;
+    unsigned int movimientoActualPuntero = 0;
+    unsigned int animacionActualPuntero = 0;
+    
+    double temporalPosicionAnteriorPruebaMovimiento = 0;
+    
+    unsigned int *dondeGuardar = NULL;
+    unsigned int maxDondeGuardar = 0;
+    KeyFrameEstados estadoARegresar = inicial;
     unsigned int temporalIntFromKeyBoard = 0;
 };

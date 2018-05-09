@@ -88,6 +88,7 @@ void dibuja(void){
     glLoadIdentity();
     vCamara.easyPosition();
     vCargadorImage.setDefaultTypeTexture(vTypeTexture.skybox);
+    glTranslated(0, 0, -50);
     vPrimitivas.mundo(vCargadorImage.get(1), 0, 24, vCargadorImage.get(0), vCargadorImage.get(1));
     vCargadorImage.setDefaultTypeTexture(vTypeTexture.fachadaCasaExterna);
     vPrimitivas.setTextPared(PRIMITIVASTEXTPARED, 2,vCargadorImage.get(0), vCargadorImage.get(1));
@@ -120,6 +121,13 @@ void teclado(unsigned char tecla,int x,int y){
         glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
         return;
     }
+    if (tecla == ' ') {
+        vCamara.keyboardMove(4);
+        return;
+    }
+    if (tecla == '\t') {
+        vCamara.keyboardMove(5);
+    }
     if (vKeyFrame.menuActivado) {
         vKeyFrame.teclaDeMenu(tecla);
         return;
@@ -136,6 +144,34 @@ void teclado(unsigned char tecla,int x,int y){
     }
 }
 void teclasEspecciales(int tecla,int x,int y){
+    switch( tecla ) {
+        case GLUT_KEY_PAGE_UP:
+            vCamara.keyboardMove(0);
+            break;
+        case GLUT_KEY_PAGE_DOWN:
+            vCamara.keyboardMove(1);
+            break;
+        case GLUT_KEY_HOME:
+            vCamara.keyboardMove(2);
+            break;
+        case GLUT_KEY_END:
+            vCamara.keyboardMove(3);
+            break;
+        case GLUT_KEY_UP:
+            vCamara.keyboardMove(8);
+            break;
+        case GLUT_KEY_DOWN:
+            vCamara.keyboardMove(9);
+            break;
+        case GLUT_KEY_LEFT:
+            vCamara.keyboardMove(6);
+            break;
+        case GLUT_KEY_RIGHT:
+            vCamara.keyboardMove(7);
+            break;
+        default:
+            break;
+    }
     glutPostRedisplay();
 }
 void raton(int x,int y){
