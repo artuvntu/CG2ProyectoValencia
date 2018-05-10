@@ -11,39 +11,38 @@
 
 #define KEYFRAMEPATHFILE "CG2ProyectoFinalValencia.vkf" //vKeyFrame
 
+enum KeyFrameTipoReproduccion: unsigned int {
+    nulo=0,brincarAlInicio=1,regresivo=2,regresarAlInicio=3
+};
+struct _keyframemovemovimiento{
+    unsigned int cual =0;
+    double posicionFinal = 0;
+    double incremento = 0;
+    double posicionInicial = 0;
+}typedef KeyFrameMoveMovimiento;
+struct _keyframemovimiento{
+    double value;
+    char name[30] = "NULO";
+}typedef KeyFrameMovimiento;
+struct _keyframekeyframe{
+    std::vector<KeyFrameMoveMovimiento> movimientos ;
+    unsigned int duracion = 0;
+}typedef KeyFrameKeyFrame;
+struct _keyframeanimacion{
+    std::vector<KeyFrameKeyFrame> cuadrosClaves;
+    KeyFrameTipoReproduccion tipoReproduccion = nulo;
+    bool repetitivo = false;
+    bool ascendente = true;
+    long cuadroActual = 0;
+    unsigned int pasoActual = 0;
+}typedef  keyFrameAnimacion;
+
 class KeyFrame{
 public:
-    enum KeyFrameTipoAccionDespuesBuscarUInt{nada,cambioPunteroMovimientoSetPosicionInicial,necesitoCrearUltimoKeyFrame,cambioPunteroMovimientoSetTemporal};
-    enum KeyFrameEstados{inicial,pmovimiento,animacion,animacionNueva,buscandoUIntKF};
-    enum KeyFrameTipoReproduccion: unsigned int {
-        nulo=0,brincarAlInicio=1,regresivo=2,regresarAlInicio=3
-    };
-    struct _keyframemovemovimiento{
-        unsigned int cual =0;
-        double posicionFinal = 0;
-        double incremento = 0;
-        double posicionInicial = 0;
-    }typedef KeyFrameMoveMovimiento;
-    struct _keyframemovimiento{
-        double value;
-        std::string name;
-    }typedef KeyFrameMovimiento;
-    struct _keyframekeyframe{
-        std::vector<KeyFrameMoveMovimiento> movimientos ;
-        unsigned int duracion = 0;
-    }typedef KeyFrameKeyFrame;
-    struct _keyframeanimacion{
-        std::vector<KeyFrameKeyFrame> cuadrosClaves;
-        KeyFrameTipoReproduccion tipoReproduccion = nulo;
-        bool repetitivo = false;
-        bool ascendente = true;
-        long cuadroActual = 0;
-        unsigned int pasoActual = 0;
-    }typedef  keyFrameAnimacion;
-    
+
 	void teclaActivaMenu();
     void teclaDeMenu(unsigned char tecla);
-    void inicializar(unsigned int cantidad,std::string nombre = "Inicializado ");
+    void inicializar();
     void guardar();
     void cargar();
     void actualizaAnimacion();
@@ -54,6 +53,9 @@ public:
     std::vector<KeyFrameMovimiento> varMovimientos;
     
 private:
+    
+    enum KeyFrameTipoAccionDespuesBuscarUInt{nada,cambioPunteroMovimientoSetPosicionInicial,necesitoCrearUltimoKeyFrame,cambioPunteroMovimientoSetTemporal};
+    enum KeyFrameEstados{inicial,pmovimiento,animacion,animacionNueva,buscandoUIntKF};
     
     void teclaDeMenuInicialReset();
     void teclaDeMenuInicial(unsigned char tecla);

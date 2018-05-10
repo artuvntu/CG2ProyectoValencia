@@ -77,7 +77,7 @@ void iniciarOpenGL(void){
     vCargadorImage.inicializar();
     vPrimitivas.inicializar(&vCargadorImage);
     vConstruccion.inicializar(&vPrimitivas, &vCargadorImage, &vKeyFrame);
-    vKeyFrame.inicializar(10);
+    vKeyFrame.inicializar();
 //    Pruebas
     
     forMundo[0].cualTextura = 0;

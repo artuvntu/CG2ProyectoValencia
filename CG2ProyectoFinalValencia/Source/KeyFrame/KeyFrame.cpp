@@ -400,12 +400,6 @@ void KeyFrame::teclaDeMenuAnimacionNueva(unsigned char tecla){
             glutPostRedisplay();
             drawCursor();
             break;
-//        case 'i':
-//        case 'I':
-//            std::cout<<"inicializado\n";
-//            this->temporalMoveMovimiento.posicionInicial=this->varMovimientos[this->temporalMoveMovimiento.cual].value;
-//            drawCursor();
-//            break;
         default:
             if (tecla >= 48 && tecla <= 57) {
                 this->varMovimientos[this->temporalMoveMovimiento.cual].value += this->moverMovimiento(tecla-48);
@@ -427,15 +421,9 @@ void KeyFrame::escribeTipoRepeticionSegun(KeyFrameTipoReproduccion rep){
         case brincarAlInicio:
             std::cout<<"Volver al inicio ";
             break;
-//        case regresarAlInicioCircular:
-//            std::cout<<"Circular ";
-//            break;
         case regresivo:
             std::cout<<"Regresivo ";
             break;
-//        case regresivoCircular:
-//            std::cout<<"Regresivo Circular ";
-//            break;
         case regresarAlInicio:
             std::cout<<"Regresar al inicio ";
             break;
@@ -664,14 +652,14 @@ void KeyFrame::cargar() {
     this->escribeAnimacionesDisponibles();
     this->recargarAnimacionesForever();
 }
-void KeyFrame::inicializar(unsigned int cantidad,std::string nombre){
-    if (cantidad > 100) cantidad = 100;
-    for (int i = 0; i<cantidad; i++) {
+void KeyFrame::inicializar(){
+//    if (cantidad > 100) cantidad = 100;
+    for (int i = 0; i<10; i++) {
         this->varMovimientos.push_back(KeyFrameMovimiento());
         this->varMovimientos[i].value = 0;
-        this->varMovimientos[i].name = nombre + std::to_string(i);
+//        this->varMovimientos[i].name = nombre + std::to_string(i);
     }
-    std::cout<<"Inicializando KeyFrame\n";
+//    std::cout<<"Inicializando KeyFrame\n";
     this->cargar();
 }
 void KeyFrame::escribeMovimientos(){
@@ -750,7 +738,7 @@ const char * KeyFrame::nameEstado(KeyFrameEstados estado){
             return "NULO";
     }
 }
-void KeyFrame::pararAnimacion(KeyFrame::keyFrameAnimacion *animacion){
+void KeyFrame::pararAnimacion(keyFrameAnimacion *animacion){
     animacion->ascendente = true;
     for (long i=(long)animacion->cuadroActual; i>=0; i--) {
         for (auto j : animacion->cuadrosClaves[i].movimientos) {
@@ -773,7 +761,7 @@ void KeyFrame::recargarAnimacionesForever(){
         }
     }
 }
-void KeyFrame::crearKeyFrameForCircular(KeyFrame::keyFrameAnimacion *animacion,unsigned int duracion){
+void KeyFrame::crearKeyFrameForCircular(keyFrameAnimacion *animacion,unsigned int duracion){
     if (animacion->tipoReproduccion != regresarAlInicio) std::cout<<"Error crear keyframe no es Circular animacion dada\n";
     KeyFrameKeyFrame tKeyFrame;
     KeyFrameMoveMovimiento tMoveMovimiento;
@@ -803,7 +791,7 @@ void KeyFrame::crearKeyFrameForCircular(KeyFrame::keyFrameAnimacion *animacion,u
     }
     animacion->cuadrosClaves.push_back(tKeyFrame);
 }
-void KeyFrame::interpolarMoveMovimiento(KeyFrame::KeyFrameMoveMovimiento *moveMovimiento){
+void KeyFrame::interpolarMoveMovimiento(KeyFrameMoveMovimiento *moveMovimiento){
     moveMovimiento->incremento = (moveMovimiento->posicionFinal - moveMovimiento->posicionInicial)/moveMovimiento->incremento;
 }
 void KeyFrame::pararAnimacionesFromVector(std::vector<unsigned long> vector){
