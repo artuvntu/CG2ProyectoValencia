@@ -48,7 +48,7 @@ void KeyFrame::escribeCabecera(KeyFrameEstados tipo){
     }
 }
 void KeyFrame::drawCursor(){
-    std::cout<<"CG2ProyectoFinalValencia " << this->nameEstado(this->estado) << " $ ";
+    std::cout<<"CG2ProyectoFinalValenciaKF " << this->nameEstado(this->estado) << " $ ";
 }
 void KeyFrame::teclaActivaMenu() {
     std::cout << "Inicio de KeyFrame Menu\n";
@@ -761,10 +761,10 @@ void KeyFrame::pararAnimacion(KeyFrame::keyFrameAnimacion *animacion){
     animacion->pasoActual = 0;
 }
 void KeyFrame::recargarAnimacionesForever(){
-    KeyFrameTipoReproduccion tTypoRepeticion = nulo;
+//    KeyFrameTipoReproduccion tTypoRepeticion = nulo;
     this->vAnimacionesForever.clear();
     for (unsigned long i = 0; i<this->vAnimaciones.size(); i++) {
-        tTypoRepeticion = this->vAnimaciones[i].tipoReproduccion;
+//        tTypoRepeticion = this->vAnimaciones[i].tipoReproduccion;
 //        if (tTypoRepeticion == regresarAlInicioCircular || tTypoRepeticion == regresivoCircular) {
 //            this->vAnimacionesForever.push_back(i);
 //        }

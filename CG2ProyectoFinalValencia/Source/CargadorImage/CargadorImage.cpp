@@ -8,13 +8,7 @@
 
 #include "CargadorImage.hpp"
 
-unsigned int CargadorImage::newTypeTexture(){
-    int where = (int)this->glindexs.size();
-    this->types.push_back(where);
-    
-    return defaultTypeTexture = (unsigned int)this->types.size() - 1;
-}
-bool CargadorImage::newTexture(char* path){
+bool CargadorImage::newTexture(char* path,CargadorImageTexture *tTexture){
     unsigned char plantillaTGA[12] = {0,0,2,0,0,0,0,0,0,0,0,0};
     unsigned char lecturaTGA[12];
     unsigned char metaDatos[6];
@@ -24,7 +18,7 @@ bool CargadorImage::newTexture(char* path){
     unsigned int tamImage;
     unsigned int tipoContextoImagen;
     GLuint tempIndex = 0;
-
+    
     FILE *archivo = fopen(path, "rb");
     
     if (archivo == NULL) {
@@ -73,34 +67,48 @@ bool CargadorImage::newTexture(char* path){
     glTexImage2D(GL_TEXTURE_2D, 0, tipoContextoImagen, this->ancho,
                  this->alto, 0, tipoContextoImagen, GL_UNSIGNED_BYTE,
                  dataImage);
-    this->glindexs.push_back(tempIndex);
+    tTexture->glIndex = tempIndex;
     delete [] dataImage;
     return true;
 }
-bool CargadorImage::setDefaultTypeTexture(unsigned int type){
-    if (type < this->types.size()){
-        this->defaultTypeTexture = type;
-        return true;
-    }
-    return false;
-}
-int CargadorImage::get(int element,int type){
-    int tType;
-    try {
-        if (type == -1) {
-            type = this->defaultTypeTexture;
-        }
-        tType=this->types.at(type);
-        return this->glindexs.at(tType+element);
-    } catch (const std::out_of_range& error) {
-        return -1;
-    }
-}
-bool CargadorImage::easyGetText(int element,int type){
-    int t = this->get(element,type);
-    if (t == -1) {
+bool CargadorImage::inicializar(){
+    FILE * archivo = fopen(CARGADORIMAGEPATHFILE, "r");
+    if (archivo == NULL) {
+        std::cout<< "No encontre el arhivo\n";
         return false;
     }
-    glBindTexture(GL_TEXTURE_2D, (GLuint) t);
+    int puntero = -1;
+    char caracter = 'a';
+    const char tgaext[5] = ".tga";
+    CargadorImageTexture tTexture = CargadorImageTexture();
+    while ((caracter = fgetc(archivo))!= EOF){
+        if (caracter == ' '||caracter == '\n') {
+            if (puntero >= 0) {
+                tTexture.nombreTexture[puntero+1] = '\0';
+                for (int i = 0; i<5; i++) {
+                    this->path[puntero+37+i] = tgaext[i];
+                }
+                puntero = -1;
+                fscanf(archivo, "%lf",&(tTexture.cantidadRep[0]));
+                fscanf(archivo, "%lf",&(tTexture.cantidadRep[1]));
+                if (!this->newTexture(this->path, &(tTexture))) {
+                    std::cout << tTexture.nombreTexture << " archivo no encontrado\n";
+                }
+                this->texturas.push_back(tTexture);
+                tTexture = CargadorImageTexture();
+            }
+        }else{
+            if (puntero < 25) puntero++;
+            tTexture.nombreTexture[puntero] = caracter;
+            this->path[puntero+36] = caracter;
+        }
+
+        
+    }
     return true;
+}
+
+void CargadorImage::reCargarArchivo(){
+    this->texturas.clear();
+    this->inicializar();
 }

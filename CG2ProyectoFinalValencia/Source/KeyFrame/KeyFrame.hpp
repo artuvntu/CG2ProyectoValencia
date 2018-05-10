@@ -5,10 +5,11 @@
 //  Created by Arturo Ventura on 5/02/18.
 //  Copyright © 2018 vApps. All rights reserved.
 //
+#ifndef keyframe_hpp
+#define keyframe_hpp
 #include "../../Libraries.hpp"
 
 #define KEYFRAMEPATHFILE "CG2ProyectoFinalValencia.vkf" //vKeyFrame
-
 
 class KeyFrame{
 public:
@@ -105,3 +106,4 @@ private:
     KeyFrameEstados estadoARegresar = inicial;
     unsigned int temporalIntFromKeyBoard = 0;
 };
+#endif

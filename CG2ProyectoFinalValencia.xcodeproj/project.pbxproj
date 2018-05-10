@@ -14,7 +14,7 @@
 		BBF23DB8207FD76B0089515D /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBF23DB7207FD76B0089515D /* GLUT.framework */; };
 		BBF23DBA207FD7720089515D /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBF23DB9207FD7720089515D /* OpenGL.framework */; };
 		BBF72029209B6C020084703A /* KeyFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBF72028209B6C020084703A /* KeyFrame.cpp */; };
-		BBFE635D20A28B09009EC27B /* ConstruccionCasa.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBFE635B20A28B09009EC27B /* ConstruccionCasa.cpp */; };
+		BBFE635D20A28B09009EC27B /* Construccion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBFE635B20A28B09009EC27B /* Construccion.cpp */; };
 		BBFE636120A28B2F009EC27B /* ObjetosAdicionales.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBFE635F20A28B2F009EC27B /* ObjetosAdicionales.cpp */; };
 /* End PBXBuildFile section */
 
@@ -49,8 +49,8 @@
 		BBF23DB9207FD7720089515D /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		BBF72027209B6C020084703A /* KeyFrame.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyFrame.hpp; sourceTree = "<group>"; };
 		BBF72028209B6C020084703A /* KeyFrame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyFrame.cpp; sourceTree = "<group>"; };
-		BBFE635B20A28B09009EC27B /* ConstruccionCasa.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ConstruccionCasa.cpp; sourceTree = "<group>"; };
-		BBFE635C20A28B09009EC27B /* ConstruccionCasa.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ConstruccionCasa.hpp; sourceTree = "<group>"; };
+		BBFE635B20A28B09009EC27B /* Construccion.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Construccion.cpp; sourceTree = "<group>"; };
+		BBFE635C20A28B09009EC27B /* Construccion.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Construccion.hpp; sourceTree = "<group>"; };
 		BBFE635F20A28B2F009EC27B /* ObjetosAdicionales.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ObjetosAdicionales.cpp; sourceTree = "<group>"; };
 		BBFE636020A28B2F009EC27B /* ObjetosAdicionales.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ObjetosAdicionales.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -110,11 +110,11 @@
 			isa = PBXGroup;
 			children = (
 				BBFE635E20A28B14009EC27B /* ObjetosAdicionales */,
-				BBFE635A20A28AA4009EC27B /* ConstruccionCasa */,
+				BBFE635A20A28AA4009EC27B /* Construccion */,
 				BBF72026209B6BDF0084703A /* KeyFrame */,
 				BB5854922092B97C00F4F6E3 /* Primitivas */,
-				BBE7942E208A797700A1CE54 /* Camara */,
 				BBE7942F208A79A600A1CE54 /* CargadorImage */,
+				BBE7942E208A797700A1CE54 /* Camara */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -166,13 +166,13 @@
 			path = KeyFrame;
 			sourceTree = "<group>";
 		};
-		BBFE635A20A28AA4009EC27B /* ConstruccionCasa */ = {
+		BBFE635A20A28AA4009EC27B /* Construccion */ = {
 			isa = PBXGroup;
 			children = (
-				BBFE635B20A28B09009EC27B /* ConstruccionCasa.cpp */,
-				BBFE635C20A28B09009EC27B /* ConstruccionCasa.hpp */,
+				BBFE635B20A28B09009EC27B /* Construccion.cpp */,
+				BBFE635C20A28B09009EC27B /* Construccion.hpp */,
 			);
-			path = ConstruccionCasa;
+			path = Construccion;
 			sourceTree = "<group>";
 		};
 		BBFE635E20A28B14009EC27B /* ObjetosAdicionales */ = {
@@ -241,7 +241,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BB22A4242084F45E0039685A /* Camera.cpp in Sources */,
-				BBFE635D20A28B09009EC27B /* ConstruccionCasa.cpp in Sources */,
+				BBFE635D20A28B09009EC27B /* Construccion.cpp in Sources */,
 				BBF23DB0207FD75E0089515D /* main.cpp in Sources */,
 				BBF72029209B6C020084703A /* KeyFrame.cpp in Sources */,
 				BBFE636120A28B2F009EC27B /* ObjetosAdicionales.cpp in Sources */,

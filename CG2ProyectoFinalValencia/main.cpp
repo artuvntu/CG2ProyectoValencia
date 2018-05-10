@@ -21,25 +21,31 @@ void funcionAnimacion(void);
 char teclasMovimiento[25] = "wsadqehlkjuiWSADQEHLKJUI";
 bool blockCursor = false;
 int ventana [2];
+
 CargadorImage vCargadorImage;
-TypeTexture vTypeTexture;
 Camara vCamara;
 Primitivas vPrimitivas;
 KeyFrame vKeyFrame;
+Construccion vConstruccion;
 
-struct h  {
-    std::vector<int> a;
-};
+PrimitivasSelectTexture forMundo[4];
+std::vector<PrimitivasSelectTexture> prismaPruebas;
+double posicion[3] = {0, 0, 0};
+double tam[3] = {0, 0, 0};
 
 int main(int argc,char * argv[]) {
     //48 11 0000
+//    std::cout<<"Tam enteros sin signo "<<sizeof(unsigned int)<<std::endl;
+//    std::cout<<sizeof(CargadorImageTexture)<<" " << sizeof(CargadorImageTexture*)<<std::endl;
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(500, 500);
     glutInitWindowPosition(0, 0);
     glutCreateWindow("vProyecto Final");
+    
     iniciarOpenGL();
+    
     glutDisplayFunc(dibuja);
     glutReshapeFunc(reajusta);
     glutKeyboardFunc(teclado);
@@ -67,40 +73,37 @@ void iniciarOpenGL(void){
     glEnable(GL_AUTO_NORMAL);
     glEnable(GL_NORMALIZE);
     
-//    Pruebas
-    vTypeTexture.skybox = vCargadorImage.newTypeTexture();
-    vCargadorImage.newTexture("CG2ProyectoFinalValencia/Textureimg/cielo01.tga");
-    vCargadorImage.newTexture("CG2ProyectoFinalValencia/Textureimg/pasto01.tga");
-    vTypeTexture.fachadaCasaExterna = vCargadorImage.newTypeTexture();
-    vCargadorImage.newTexture("CG2ProyectoFinalValencia/Textureimg/casa01.tga");
-    vCargadorImage.newTexture("CG2ProyectoFinalValencia/Textureimg/casa02.tga");
     
-    vPrimitivas.vKeyFrame = &vKeyFrame;
-    vPrimitivas.vCargadorImage = &vCargadorImage;
-
+    vCargadorImage.inicializar();
+    vPrimitivas.inicializar(&vCargadorImage);
+    vConstruccion.inicializar(&vPrimitivas, &vCargadorImage, &vKeyFrame);
     vKeyFrame.inicializar(10);
-
-
+//    Pruebas
+    
+    forMundo[0].cualTextura = 0;
+    forMundo[0].posicionInicio[1] = 0.5;
+    forMundo[1].cualTextura = 1;
+    forMundo[2].cualTextura = 5;
+    posicion[1] = 10;
+    for (int i=0; i<6; i++) {
+        forMundo[3].cualTextura = i;
+        prismaPruebas.push_back(forMundo[3]);
+    }
+    for (int j = 0; j<3; j++) {
+        tam[j] = 20;
+    }
+    
 }
 
 void dibuja(void){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     vCamara.easyPosition();
-    vCargadorImage.setDefaultTypeTexture(vTypeTexture.skybox);
-    glTranslated(0, 0, -50);
-    vPrimitivas.mundo(vCargadorImage.get(1), 0, 24, vCargadorImage.get(0), vCargadorImage.get(1));
-    vCargadorImage.setDefaultTypeTexture(vTypeTexture.fachadaCasaExterna);
-    vPrimitivas.setTextPared(PRIMITIVASTEXTPARED, 2,vCargadorImage.get(0), vCargadorImage.get(1));
-    glPushMatrix();{
-        glTranslated(vKeyFrame.varMovimientos[0].value, vKeyFrame.varMovimientos[1].value, vKeyFrame.varMovimientos[2].value);
-        vPrimitivas.prismaEstandar(0, 10, 5, 2);
-    }glPopMatrix();
-    glPushMatrix();{
-        glTranslated(10, 10, 10);
-        vPrimitivas.setTextPared(PRIMITIVASTEXTPAREDINICIOY, 2, 0.5, 0.5);
-        vPrimitivas.prismaEstandar(0, 10, 10, 10);
-    }glPopMatrix();
+    
+    vPrimitivas.mundo(&forMundo[0], &forMundo[2], &forMundo[1]);
+    
+    vPrimitivas.prismaEstandar(&prismaPruebas, posicion, tam);
+    
     glutSwapBuffers ( );
 }
 void reajusta(int ancho,int largo){
@@ -110,7 +113,8 @@ void reajusta(int ancho,int largo){
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 //    glOrtho(-5,5,-5,5,0.2,20);
-    glFrustum(-0.1*aspecto, 0.1*aspecto, -0.1, 0.1, 0.1, 250.0);
+//    glFrustum(-0.1, 0.1, -0.1, 0.1, 0.1, 250.0);
+    glFrustum(-0.1*aspecto, 0.1*aspecto, -0.1*aspecto, 0.1*aspecto, 0.1, 250.0);
     glMatrixMode(GL_MODELVIEW);
     ventana[0] = ancho/2;
     ventana[1] = largo/2;
@@ -132,8 +136,20 @@ void teclado(unsigned char tecla,int x,int y){
         vKeyFrame.teclaDeMenu(tecla);
         return;
     }
+    if (vConstruccion.menuActivado) {
+        vConstruccion.teclaDeMenu(tecla);
+        return;
+    }
     if (tecla == '!') {
         vKeyFrame.teclaActivaMenu();
+        return;
+    }
+    if (tecla == '@') {
+        vCargadorImage.reCargarArchivo();
+        return;
+    }
+    if (tecla == '#') {
+        
         return;
     }
     for (int i=0; teclasMovimiento[i] != '\0'; i++) {
