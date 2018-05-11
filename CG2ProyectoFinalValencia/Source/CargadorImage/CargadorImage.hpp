@@ -16,7 +16,7 @@
 struct _cargadorimagetexture{
     unsigned int glIndex;
     double cantidadRep[2] = {0, 0};
-    char nombreTexture [30] = "NULO";
+    char nombreTexture [50] = "NULO";
 }typedef CargadorImageTexture;
 
 class CargadorImage{
@@ -28,7 +28,7 @@ private:
     bool newTexture(char * path,CargadorImageTexture *texture);
     int ancho = -1;
     int alto = -1;
-    char path [75] = "CG2ProyectoFinalValencia/Textureimg/";//    36
+    char path [100] = "CG2ProyectoFinalValencia/Textureimg/";//    36
 };
 
 #endif

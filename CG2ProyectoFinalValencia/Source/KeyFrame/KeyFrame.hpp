@@ -22,7 +22,7 @@ struct _keyframemovemovimiento{
 }typedef KeyFrameMoveMovimiento;
 struct _keyframemovimiento{
     double value;
-    char name[30] = "NULO";
+    char name[50] = "NULO";
 }typedef KeyFrameMovimiento;
 struct _keyframekeyframe{
     std::vector<KeyFrameMoveMovimiento> movimientos ;
@@ -92,7 +92,6 @@ private:
     std::vector<unsigned long> vAnimacionesActivas;
     
     int reproduccionExterna = -1;
-    KeyFrameTipoAccionDespuesBuscarUInt tipoAccionDespuesBuscarInt = nada;
     
     keyFrameAnimacion temporalAnimacion = keyFrameAnimacion();
     KeyFrameKeyFrame temporalCuadroClave = KeyFrameKeyFrame();
@@ -107,5 +106,8 @@ private:
     unsigned int maxDondeGuardar = 0;
     KeyFrameEstados estadoARegresar = inicial;
     unsigned int temporalIntFromKeyBoard = 0;
+    KeyFrameTipoAccionDespuesBuscarUInt tipoAccionDespuesBuscarInt = nada;
+
+    bool echateABuscarPorNombre(char *nombre,unsigned int *donde);
 };
 #endif

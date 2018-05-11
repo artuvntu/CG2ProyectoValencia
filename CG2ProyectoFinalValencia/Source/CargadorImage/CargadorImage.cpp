@@ -98,7 +98,7 @@ bool CargadorImage::inicializar(){
                 tTexture = CargadorImageTexture();
             }
         }else{
-            if (puntero < 25) puntero++;
+            if (puntero < 40) puntero++;
             tTexture.nombreTexture[puntero] = caracter;
             this->path[puntero+36] = caracter;
         }

@@ -14,6 +14,7 @@
 #include "../KeyFrame/KeyFrame.hpp"
 #include "../CargadorImage/CargadorImage.hpp"
 
+#define PRIMITIVARVTPRISMAESTANDAR 6
 //#define GROSORPARED 1
 //#define ALTOPARED 25
 //#define PRIMITIVASTEXTPARED 0

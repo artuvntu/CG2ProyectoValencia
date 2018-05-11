@@ -37,7 +37,10 @@ int main(int argc,char * argv[]) {
     //48 11 0000
 //    std::cout<<"Tam enteros sin signo "<<sizeof(unsigned int)<<std::endl;
 //    std::cout<<sizeof(CargadorImageTexture)<<" " << sizeof(CargadorImageTexture*)<<std::endl;
-
+//    char hola[50] = "HOLA";
+//    char hol[50] = "HOLA";
+//    char adi[50] = "ADIOS";
+//    std::cout<< memcmp(hola, hol, sizeof(hola) )<<" "<<memcmp(adi, hola, sizeof(hola)); //0 true
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(500, 500);
@@ -102,7 +105,8 @@ void dibuja(void){
     
     vPrimitivas.mundo(&forMundo[0], &forMundo[2], &forMundo[1]);
     
-    vPrimitivas.prismaEstandar(&prismaPruebas, posicion, tam);
+//    vPrimitivas.prismaEstandar(&prismaPruebas, posicion, tam);
+    vConstruccion.dibuja();
     
     glutSwapBuffers ( );
 }
@@ -149,7 +153,7 @@ void teclado(unsigned char tecla,int x,int y){
         return;
     }
     if (tecla == '#') {
-        
+        vConstruccion.teclaActivaMenu();
         return;
     }
     for (int i=0; teclasMovimiento[i] != '\0'; i++) {

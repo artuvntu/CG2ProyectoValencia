@@ -538,14 +538,15 @@ double KeyFrame::moverMovimiento(int mov){
 }
 void KeyFrame::guardar() {
     FILE * archivo = fopen(KEYFRAMEPATHFILE, "w");
-    unsigned int cabecera = 0x18FF;
+    char *nombre = NULL;
+    unsigned int cabecera = 0x19FF;
     unsigned int numeroMovimientos = (unsigned int) this->varMovimientos.size();
     unsigned int numeroAnimaciones = (unsigned int) this->vAnimaciones.size();
     unsigned int tipoRepeticionAnimacion = 0;
     unsigned int numeroKeyFrame = 0;
     unsigned int duracionKeyFrame = 0;
     unsigned int numeroMoveMoviemitos = 0;
-    unsigned int cualMoveMovimiento = 0;
+//    unsigned int cualMoveMovimiento = 0;
     double posicionInicial = 0;
     double posicionFinal = 0;
     double incremento = 0;
@@ -571,11 +572,12 @@ void KeyFrame::guardar() {
             fwrite(&duracionKeyFrame, sizeof(unsigned int), 1, archivo);
             fwrite(&numeroMoveMoviemitos, sizeof(unsigned int), 1, archivo);
             for (int k = 0; k<numeroMoveMoviemitos; k++) {
-                cualMoveMovimiento = this->vAnimaciones[i].cuadrosClaves[j].movimientos[k].cual;
+//                cualMoveMovimiento = this->vAnimaciones[i].cuadrosClaves[j].movimientos[k].cual;
+                nombre = this->varMovimientos[this->vAnimaciones[i].cuadrosClaves[j].movimientos[k].cual].name;
                 posicionInicial = this->vAnimaciones[i].cuadrosClaves[j].movimientos[k].posicionInicial;
                 posicionFinal = this->vAnimaciones[i].cuadrosClaves[j].movimientos[k].posicionFinal;
                 incremento = this->vAnimaciones[i].cuadrosClaves[j].movimientos[k].incremento;
-                fwrite(&cualMoveMovimiento, sizeof(unsigned int), 1, archivo);
+                fwrite(&nombre, sizeof(char)*50, 1, archivo);
                 fwrite(&posicionInicial, sizeof(double), 1, archivo);
                 fwrite(&posicionFinal, sizeof(double), 1, archivo);
                 fwrite(&incremento, sizeof(double), 1, archivo);
@@ -588,6 +590,7 @@ void KeyFrame::guardar() {
 }
 void KeyFrame::cargar() {
     FILE * archivo = fopen(KEYFRAMEPATHFILE, "r");
+    char nombre[50] = "";
     unsigned int cabecera = 0;
     unsigned int numeroMovimientos = 0;
     unsigned int numeroAnimaciones = 0;
@@ -611,8 +614,8 @@ void KeyFrame::cargar() {
         return;
     }
     fread(&cabecera, sizeof(unsigned int), 1, archivo);
-    if (cabecera != 0x18FF) {
-        std::cout<<"Cabecera incompatible\n";
+    if (cabecera != 0x19FF) {
+        std::cout<<"Cabecera incompatible posible version anterios "<<cabecera<<"\n";
         fclose(archivo);
         return;
     }
@@ -629,7 +632,11 @@ void KeyFrame::cargar() {
             fread(&duracionKeyFrame, sizeof(unsigned int), 1, archivo);
             fread(&numeroMoveMoviemitos, sizeof(unsigned int), 1, archivo);
             for (int k = 0; k<numeroMoveMoviemitos; k++) {
-                fread(&cualMoveMovimiento, sizeof(unsigned int), 1, archivo);
+                fread(nombre, sizeof(char)*50, 1, archivo);
+                if (!this->echateABuscarPorNombre(nombre, &cualMoveMovimiento)) {
+                    std::cout<<"Archivo corrupto "<<k<<" "<<j<<" "<<i<<" espero no arruine lo demas\n";
+                }
+//                fread(&cualMoveMovimiento, sizeof(unsigned int), 1, archivo);
                 fread(&posicionInicial, sizeof(double), 1, archivo);
                 fread(&posicionFinal, sizeof(double), 1, archivo);
                 fread(&incremento, sizeof(double), 1, archivo);
@@ -821,4 +828,13 @@ bool KeyFrame::reproduceAlgunaAnimacion(unsigned long cual){
     }
     this->vAnimacionesActivas.push_back(cual);
     return true;
+}
+bool KeyFrame::echateABuscarPorNombre(char *nombre, unsigned int *donde){
+    for (int i = 0; i<this->varMovimientos.size(); i++) {
+        if (!memcmp(nombre, this->varMovimientos[i].name, sizeof(char)*50)) {
+            *donde = i;
+            return true;
+        }
+    }
+    return false;
 }

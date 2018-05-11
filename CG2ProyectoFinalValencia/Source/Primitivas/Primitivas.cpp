@@ -56,6 +56,10 @@ void Primitivas::mundo(PrimitivasSelectTexture *cielo,PrimitivasSelectTexture *b
     glEnd();
 }
 void Primitivas::prismaEstandar(std::vector<PrimitivasSelectTexture>*vectorSelecTexture,double posicion[3],double tam[3]){
+    if (vectorSelecTexture->size()!= PRIMITIVARVTPRISMAESTANDAR){
+        std::cout<<"Prisma estandar Error tam vectorSelec\n";
+        return;
+    }
     PrimitivasSelectTexture *tActual;
     double posicionFinal[2] = {0, 0};
     tActual = &((*vectorSelecTexture)[0]);
