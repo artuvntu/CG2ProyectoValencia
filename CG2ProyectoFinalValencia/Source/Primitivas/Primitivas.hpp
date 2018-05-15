@@ -15,6 +15,10 @@
 #include "../CargadorImage/CargadorImage.hpp"
 
 #define PRIMITIVARVTPRISMAESTANDAR 6
+#define PRIMITIVARVTSUELOPOLIGONAL 2
+#define PRIMITIVARVTCILINDRO 1
+#define PRIMITIVAVRTESFERA 1
+#define PRIMITIVAVRTPLANO 1
 //#define GROSORPARED 1
 //#define ALTOPARED 25
 //#define PRIMITIVASTEXTPARED 0
@@ -22,20 +26,28 @@
 //#define PRIMITIVASTEXTPAREDINICIOX 2
 //#define PRIMITIVASTEXTPAREDINICIOY 3
 struct _primitivasselecttexture{
-    unsigned long cualTextura = 0;
+    unsigned int cualTextura = 0;
     double posicionInicio [2] = {0, 0};
 }typedef PrimitivasSelectTexture;
 class Primitivas {
 public:
     
     void inicializar(CargadorImage * cargadorImagenes);
+    void describeSelecTextureVector(std::vector<PrimitivasSelectTexture> *vector);
     void mundo(PrimitivasSelectTexture *cielo,PrimitivasSelectTexture *boveda,PrimitivasSelectTexture *suelo);
-    void prismaEstandar(std::vector<PrimitivasSelectTexture>*vectorSelecTexture,double posicion[3],double tam[3]);
     
+    
+    void planoEstandar(std::vector<PrimitivasSelectTexture>*vector,unsigned int desdeDonde,double posicion[3],double tam[3]);
+    void prismaEstandar(std::vector<PrimitivasSelectTexture>*vectorSelecTexture,unsigned int desdeDonde,double posicion[3],double tam[3],double angulo);
+    void escaleras(std::vector<PrimitivasSelectTexture>*vectorSelectTexture,unsigned int desdeDonde,double posicion[3],double tam[3],unsigned int canEscalones,double angulo);
+    void sueloPoligonal(std::vector<PrimitivasSelectTexture>*vectorSelecTexture,unsigned int desdeDonde,std::vector<Cg2ValenciaPunto3D>*vectorVertices);
+    void cruceta(bool swithColor = false);
+    void describePunto(Cg2ValenciaPunto3D punto);
 private:
 
     CargadorImage *vCargadorImage;
-    void obtenerPosicionFinal(double *posicionFinal, PrimitivasSelectTexture * selectTexture,double x,double y);
+    void obtenerPosicionFinalEInicial(double *posicionFinal,double *posicionInicial, PrimitivasSelectTexture * selectTexture,double x,double y);
+
 };
 
 #endif

@@ -11,7 +11,7 @@
 
 #include "../../Libraries.hpp"
 
-#define CARGADORIMAGEPATHFILE "CG2ProyectoFinalValencia.vci"
+#define CARGADORIMAGEPATHFILE "CG2ProyectoFinalValencia/Documents/CG2ProyectoFinalValencia.vci"
 
 struct _cargadorimagetexture{
     unsigned int glIndex;
@@ -23,6 +23,9 @@ class CargadorImage{
 public:
     void reCargarArchivo();
     bool inicializar();
+    void escribeTexturasDisponibles();
+    void describeTextura(CargadorImageTexture *tex);
+    bool echateABuscarTexture(char *nombre, unsigned int *donde);
     std::vector<CargadorImageTexture> texturas;
 private:
     bool newTexture(char * path,CargadorImageTexture *texture);

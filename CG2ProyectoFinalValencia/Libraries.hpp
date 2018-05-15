@@ -30,4 +30,15 @@
 #error "Unknown compiler"
 #endif
 
+struct _cg2valencia3d {
+    double coordenadas[3] = {0, 0, 0};
+}typedef Cg2ValenciaPunto3D;
+
+
+#define MAXCHAR 50
+
+//bool coincidenciaChar(char *fuente,char *comparacion,unsigned int){
+//    
+//}
+
 #endif

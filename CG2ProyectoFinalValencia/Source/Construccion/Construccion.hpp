@@ -13,71 +13,70 @@
 
 #include "../Primitivas/Primitivas.hpp"
 
-#define CONSTRUCCIONPATHFILE "CG2ProyectoFinalValencia.vc"
-enum ConstruccionTipoPared: unsigned int {
-    paredNormal=0,paredVentana=1,paredPuerta=2
-};
-enum ConstruccionTipoVentana: unsigned int {
-    ventanaNormal=0
-};
-enum ConstruccionTipoPuerta: unsigned int {
-    puertaNormal=0,zaguanDerecho=1,zaguanIzquiedo=2,cortinaAccesoria=3
-};
-struct _construccionpunto {
-    double coordenadas[3] = {0, 0, 0};
-}typedef ConstruccionPunto;
-struct _construccionpared {
-    char id[50] = "NULO";
-    ConstruccionPunto posicion = ConstruccionPunto();
-    ConstruccionPunto tam = ConstruccionPunto();
-    double angulo = 0;
-    std::vector<PrimitivasSelectTexture> texturaMain;
-    ConstruccionTipoPared tipoPared = paredNormal;
-    ConstruccionTipoVentana tipoVentana = ventanaNormal;
-    ConstruccionTipoPuerta tipoPuerta = puertaNormal;
-}typedef ConstruccionPared;
-struct _construccionsuelo {
-    char id[50] = "NULO";
-    ConstruccionPunto posicion = ConstruccionPunto();
-    std::vector<ConstruccionPunto> vertices;
-    std::vector<PrimitivasSelectTexture> texturaMain;
-}typedef ConstruccionSuelo;
-struct _construccionescaleras {
-    char id[50] = "@NULO";
-    ConstruccionPunto posicion = ConstruccionPunto();
-    ConstruccionPunto tam = ConstruccionPunto();
-    double angulo = 0;
-    unsigned int cantidadEscalones = 0;
-    std::vector<PrimitivasSelectTexture> texturaMain;
-}typedef ConstruccionEscaleras;
+#define CONSTRUCCIONPATHFILE "CG2ProyectoFinalValencia/Documents/CG2ProyectoFinalValencia.vc"
 
 class Construccion{
 public:
+
     void inicializar(Primitivas *primitivas,CargadorImage *cargadorImage,KeyFrame *keyFrame);
     void teclaActivaMenu();
     void teclaDeMenu(unsigned char tecla);
-    void dibuja();
+    void dibujaAntes();
+    void dibujaDespues();
     bool menuActivado = false;
 
 private:
-    const char ConstruccionTipoParedToChar[3][30]={
+    enum ConstruccionTipoPared: unsigned int {
+        paredNormal=0,paredVentana=1,paredPuerta=2
+    };
+    enum ConstruccionTipoVentana: unsigned int {
+        ventananulo=0,ventanaNormal=1
+    };
+    enum ConstruccionTipoPuerta: unsigned int {
+        puertanulo=0,puertaNormal=1,zaguanDerecho=2,zaguanIzquiedo=3,cortinaAccesoria=4
+    };
+    struct _construccionpared {
+        char id[50] = "NULO";
+        std::vector<Cg2ValenciaPunto3D> vertice={Cg2ValenciaPunto3D(),Cg2ValenciaPunto3D()};
+        double angulo = 0;
+        unsigned int cualVarMovimiento = 0;
+        std::vector<PrimitivasSelectTexture> texturaMain;
+        ConstruccionTipoPared tipoPared = paredNormal;
+        ConstruccionTipoVentana tipoVentana = ventananulo;
+        ConstruccionTipoPuerta tipoPuerta = puertanulo;
+    }typedef ConstruccionPared;
+    struct _construccionsuelo {
+        char id[50] = "NULO";
+        std::vector<Cg2ValenciaPunto3D> vertices;
+        std::vector<PrimitivasSelectTexture> texturaMain;
+        unsigned int cualVarMovimiento[2] = {0, 0};
+    }typedef ConstruccionSuelo;
+    struct _construccionescaleras {
+        char id[50] = "@NULO";
+        std::vector<Cg2ValenciaPunto3D> vertice={Cg2ValenciaPunto3D(),Cg2ValenciaPunto3D()};
+        double angulo = 0;
+        unsigned int cantidadEscalones = 0;
+        std::vector<PrimitivasSelectTexture> texturaMain;
+    }typedef ConstruccionEscaleras;
+    
+    char ConstruccionTipoParedToChar[3][30]={
         "Pared Normal","Pared Ventana","Pared Puerta"
     };
-    const char ConstruccionTipoVentanaToChar[1][30]={
-        "Ventana Normal"
+    char ConstruccionTipoVentanaToChar[2][30]={
+        "NULO","Ventana Normal"
     };
-    const char ConstruccionTipoPuertaToChar[4][30]={
-        "Puerta Normal","Zaguan D","Zaguan I","Cortina A"
+    char ConstruccionTipoPuertaToChar[5][30]={
+        "NULO","Puerta Normal","Zaguan D","Zaguan I","Cortina A"
     };
-    const char estadosToChar[9][30] = {
+    char estadosToChar[9][30] = {
         "Inicial","Buscando UInt","Agregar","Editar","Borrar","MPared","MSuelo","MEscaleras","Textura"
     };
     enum ConstruccionEstados:unsigned char{
-        inicial=0,buscaUInt=1,agregarCosa=2,editarCosa=3,borrarCosa=4,modificarPared=5,modificarSuelo=6,modificarEscaleras=7,textura=8
+        inicial=0,buscaUInt=1,agregarCosa=2,editarCosa=3,borrarCosa=4,modificarPared=5,modificarSuelo=6,modificarEscaleras=7,modificarTextura=8
     };
-    const char accionesBuscarUIntToChar[3][30] = {"Nada","CopiTexture","Empezar A Crear"};
-    enum ConstruccionAccionDespuesBuscarUInt:unsigned char{nada,copiTexture,empezarACrear};
-    const char tipoConstruccionToChar[3][30] = {"Pared","Escalera","Suelo"};
+    char accionesBuscarUIntToChar[3][30] = {"Nada","CopiTexture","Empezar A Crear"};
+    enum ConstruccionAccionDespuesBuscarUInt:unsigned char{nada,copiTexture,empezarACrear,modificarParedAsegurateCambioTipoCompleto};
+    char tipoConstruccionToChar[3][30] = {"Pared","Escalera","Suelo"};
     enum ConstruccionTipoConstruccion:unsigned int {pared=0, escalera=1, suelo=2};
     
     ConstruccionEstados estado = inicial;
@@ -107,10 +106,10 @@ private:
     void escribeEscalerasDisponibles();
     void escribeSueloDisponibles();
     
-    void describePunto(ConstruccionPunto punto);
     void describePared(ConstruccionPared pared);
     void describeSuelo(ConstruccionSuelo suelo);
     void describeEscaleras(ConstruccionEscaleras escaleras);
+    void describePuntos(std::vector<Cg2ValenciaPunto3D> puntos);
     
     void teclaDeMenuInicial(unsigned char tecla);
     void teclaDeMenuBuscaUInt(unsigned char tecla);
@@ -134,6 +133,21 @@ private:
     void empezarAModificarTextura(std::vector<PrimitivasSelectTexture> *textura,ConstruccionEstados estadoRegresar);
     
     std::vector<PrimitivasSelectTexture> *texturaModificable;
+    unsigned int punteroModificarTextura = 0;
+
+    
+    unsigned int punteroModificarSuelo = 0;
+    
+    void aseguraIntegridadParedTam(ConstruccionPared *pared);
+    void aseguraIntegridadParedTamByNumber(ConstruccionPared *pared,unsigned int texturas,unsigned int segmentos);
+    
+    void asegurarIntegridadParedCalculos(ConstruccionPared *pared);
+    void asegurarIntegridadParedVentanaNormalCalculos(ConstruccionPared *pared);
+    void asegurarIntegridadParedPuertaNormalCalculos(ConstruccionPared *pared);
+    
+    void aseguraIntegridadSueloTam(ConstruccionSuelo *suelo);
+    void aseguraIntegridadSueloCalculos(ConstruccionSuelo *suelo);
+
     
     void empezarADibujarTemporal();
     void guardarModificacionTemporal();
@@ -142,6 +156,7 @@ private:
     void dibujaPared(ConstruccionPared *pared);
     void dibujaEscaleras(ConstruccionEscaleras *escalera);
     void dibujaSuelo(ConstruccionSuelo *suelo);
+    void dibujaParedVentanaNormal(ConstruccionPared *pared);
     
     void borrarObjeto(unsigned long cual,ConstruccionTipoConstruccion tipo);
     
@@ -162,9 +177,19 @@ private:
     ConstruccionEstados estadoARegresarModificar = inicial;
     ConstruccionEstados estadoARegresarTextura = inicial;
     
+    std::vector<PrimitivasSelectTexture> puertaNormalTexturas;
+    std::vector<PrimitivasSelectTexture> ventanaNormalTexturas;
+    PrimitivasSelectTexture defaultTexture;
+    
+    std::vector<unsigned long> ventanasADibujar;
+    
     void cargar();
     void guardar();
+        
+    void escribeEnOrdencharArray(char arreglo[][30],unsigned int cuantos);
     
+    PrimitivasSelectTexture textureMundo[3] = {PrimitivasSelectTexture(),PrimitivasSelectTexture(),PrimitivasSelectTexture()};
+
     unsigned int auxiliarBasura = 0;
     
 };

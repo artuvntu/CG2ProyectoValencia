@@ -6,6 +6,8 @@
 //  Copyright © 2018 vApps. All rights reserved.
 //  Esto es una prueba desde Linux
 //  Esto es una pruena desde Windows
+//  Esto significa que se creo casi por completo en Mac
+//
 
 #include "main.hpp"
 
@@ -18,7 +20,8 @@ void raton(int x,int y);
 void clickRaton(int boton, int estado, int x, int y);
 void funcionAnimacion(void);
 //    w,s,a,d,q,e,h,l,j,k,u,i MINMAY
-char teclasMovimiento[25] = "wsadqehlkjuiWSADQEHLKJUI";
+//char teclasMovimiento[25] = "wsadqehlkjuiWSADQEHLKJUI";
+  char teclasMovimiento[25] = "wsadqejlikuoWSADQEJLIKUO";
 bool blockCursor = false;
 int ventana [2];
 
@@ -27,20 +30,10 @@ Camara vCamara;
 Primitivas vPrimitivas;
 KeyFrame vKeyFrame;
 Construccion vConstruccion;
-
-PrimitivasSelectTexture forMundo[4];
-std::vector<PrimitivasSelectTexture> prismaPruebas;
-double posicion[3] = {0, 0, 0};
-double tam[3] = {0, 0, 0};
+CreadorObjetos vCreadorObjetos;
 
 int main(int argc,char * argv[]) {
-    //48 11 0000
-//    std::cout<<"Tam enteros sin signo "<<sizeof(unsigned int)<<std::endl;
-//    std::cout<<sizeof(CargadorImageTexture)<<" " << sizeof(CargadorImageTexture*)<<std::endl;
-//    char hola[50] = "HOLA";
-//    char hol[50] = "HOLA";
-//    char adi[50] = "ADIOS";
-//    std::cout<< memcmp(hola, hol, sizeof(hola) )<<" "<<memcmp(adi, hola, sizeof(hola)); //0 true
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(500, 500);
@@ -61,7 +54,7 @@ int main(int argc,char * argv[]) {
 }
 
 void iniciarOpenGL(void){
-    glClearColor(1, 1, 1, 0);
+    glClearColor(0.2, 0.2, 0.2, 0);
     
     glEnable(GL_TEXTURE_2D);
     glShadeModel(GL_SMOOTH);
@@ -80,39 +73,31 @@ void iniciarOpenGL(void){
     vCargadorImage.inicializar();
     vPrimitivas.inicializar(&vCargadorImage);
     vConstruccion.inicializar(&vPrimitivas, &vCargadorImage, &vKeyFrame);
-    vKeyFrame.inicializar();
+    vCreadorObjetos.inicializar(&vPrimitivas, &vKeyFrame, &vCargadorImage);
+    vKeyFrame.inicializar(); //Siempre Al ultimo
 //    Pruebas
-    
-    forMundo[0].cualTextura = 0;
-    forMundo[0].posicionInicio[1] = 0.5;
-    forMundo[1].cualTextura = 1;
-    forMundo[2].cualTextura = 5;
-    posicion[1] = 10;
-    for (int i=0; i<6; i++) {
-        forMundo[3].cualTextura = i;
-        prismaPruebas.push_back(forMundo[3]);
-    }
-    for (int j = 0; j<3; j++) {
-        tam[j] = 20;
-    }
-    
-}
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+}
+//long i = 0;
 void dibuja(void){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+    
     vCamara.easyPosition();
     
-    vPrimitivas.mundo(&forMundo[0], &forMundo[2], &forMundo[1]);
-    
-//    vPrimitivas.prismaEstandar(&prismaPruebas, posicion, tam);
-    vConstruccion.dibuja();
-    
+    if (vCreadorObjetos.bloquearDibujo) {
+        vCreadorObjetos.dibuja();
+    }else{
+        vConstruccion.dibujaAntes();
+        vConstruccion.dibujaDespues();
+    }
+//    i++;
     glutSwapBuffers ( );
 }
 void reajusta(int ancho,int largo){
-	double aspecto = (((double)ancho) / ((double)largo))/2;
     if (largo == 0) largo = 1;
+	double aspecto = (((double)ancho) / ((double)largo))/2;
     glViewport(0, 0, ancho, largo);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -144,6 +129,10 @@ void teclado(unsigned char tecla,int x,int y){
         vConstruccion.teclaDeMenu(tecla);
         return;
     }
+    if (vCreadorObjetos.menuActivado) {
+        vCreadorObjetos.teclaDeMenu(tecla);
+        return;
+    }
     if (tecla == '!') {
         vKeyFrame.teclaActivaMenu();
         return;
@@ -155,6 +144,9 @@ void teclado(unsigned char tecla,int x,int y){
     if (tecla == '#') {
         vConstruccion.teclaActivaMenu();
         return;
+    }
+    if(tecla == '$'){
+        vCreadorObjetos.teclaActivaMenu();
     }
     for (int i=0; teclasMovimiento[i] != '\0'; i++) {
         if (teclasMovimiento[i] == tecla) {

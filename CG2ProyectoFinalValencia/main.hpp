@@ -15,5 +15,6 @@
 #include "Source/KeyFrame/KeyFrame.hpp"
 #include "Source/Primitivas/Primitivas.hpp"
 #include "Source/Construccion/Construccion.hpp"
+#include "Source/CreadorObjetos/CreadorObjetos.hpp"
 
 #endif

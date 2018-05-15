@@ -12,7 +12,7 @@
 
 void KeyFrame::escribeMenu(KeyFrameEstados tipo) {
     switch (tipo) {
-        case inicial:
+        case inicialKF:
             std::cout << "F->Set Animacion Forever "<<this->animacionInfinitasActivas<<"\nC->Cantidad movimientos\nP->Prueba Movimiento\nA->Animacion\nS->Salir\nG->Guardar En Archivo\nL->Cargar De Archivo\n";
             break;
         case pmovimiento:
@@ -22,7 +22,7 @@ void KeyFrame::escribeMenu(KeyFrameEstados tipo) {
             std::cout << "C->Cambio\nN->Nueva\nR->Reproducir\nP->Parar Reproduccion\nF->ReproducirSiempre\nD->Eliminar\nE->Editar Reproduccion\nM->Mostrar\nS->Salir\n";
             break;
         case animacionNueva:
-            std::cout << "23[0.1],45[1],67[10],89[100],01[359]\nS->Save KeyFrame\nT->SetTime\nC->Cambio Movimiento\nM->Mostrar Movimientos\nR->Set Reproduccion\nF->Repetitivo\n\nG->Guardar\n\"-\"->Reset\nQ->Salir (Cuidado no se guardaran Cambios)\n";
+            std::cout << "23[0.1],45[1],67[10],89[100],01[359]\nS->Save KeyFrame\nT->SetTime\nC->Cambio Movimiento\nM->Mostrar Movimientos\nR->Set Reproduccion\nF->Repetitivo\nG->Guardar\n\"-\"->Reset\nQ->Salir (Cuidado no se guardaran Cambios)\n";
             break;
         default:
             std::cout << "Error Escribir menu KeyFrame\n";
@@ -59,8 +59,8 @@ void KeyFrame::teclaActivaMenu() {
     glutPostRedisplay();
 }
 void KeyFrame::teclaDeMenuInicialReset(){
-    this->estado = inicial;
-    this->escribeMenu(inicial);
+    this->estado = inicialKF;
+    this->escribeMenu(inicialKF);
     this->drawCursor();
 }
 void KeyFrame::teclaDeMenu(unsigned char tecla) {
@@ -71,7 +71,7 @@ void KeyFrame::teclaDeMenu(unsigned char tecla) {
         return;
     }
     switch (this->estado) {
-        case inicial:
+        case inicialKF:
             this->teclaDeMenuInicial(tecla);
             break;
         case pmovimiento:
@@ -135,6 +135,7 @@ void KeyFrame::teclaDeMenuInicial(unsigned char tecla){
                 this->pararAnimacion(&(this->vAnimaciones[this->reproduccionExterna]));
                 this->reproduccionExterna = -1;
             }
+            this->recargarAnimacionesForever();
 //            this->aCeroTodosMovimientosDisponibles();
             glutPostRedisplay();
             return;
@@ -195,7 +196,7 @@ void KeyFrame::teclaDeMenuPruebaMovimiento(unsigned char tecla){
 }
 void KeyFrame::teclaDeMenuAnimacion(unsigned char tecla){
     std::cout<<tecla<<std::endl;
-    unsigned int temporalUInt;
+//    unsigned int temporalUInt;
     switch (tecla) {
         case 'c':
         case 'C':
@@ -311,7 +312,7 @@ void KeyFrame::teclaDeMenuAnimacionNueva(unsigned char tecla){
             }else{
                 std::cout<<"\nKey Frame Guardado\n";
                 for (int i = 0; i<this->temporalCuadroClave.movimientos.size(); i++) {
-                    this->interpolarMoveMovimiento(&(this->temporalCuadroClave.movimientos[i]));
+                    this->interpolarMoveMovimiento(&(this->temporalCuadroClave.movimientos[i]),this->temporalCuadroClave.duracion);
                 }
                 this->temporalAnimacion.cuadrosClaves.push_back(this->temporalCuadroClave);
                 this->temporalCuadroClave = KeyFrameKeyFrame();
@@ -322,6 +323,7 @@ void KeyFrame::teclaDeMenuAnimacionNueva(unsigned char tecla){
         case 'c':
         case 'C':
             std::cout << "Cambio de MoveMovimiento\n";
+            this->escribeMovimientos();
             if (this->temporalMoveMovimiento.posicionInicial != this->varMovimientos[this->temporalMoveMovimiento.cual].value) {
                 //Proceso de agregar movemovimiento
                 std::cout<<"Guardado automatico"<< this->temporalCuadroClave.movimientos.size() << std::endl;
@@ -415,7 +417,7 @@ void KeyFrame::escribeTiposRepeticion(){
 }
 void KeyFrame::escribeTipoRepeticionSegun(KeyFrameTipoReproduccion rep){
     switch (rep) {
-        case nulo:
+        case nuloKF:
             std::cout<<"Nulo ";
             break;
         case brincarAlInicio:
@@ -503,7 +505,7 @@ bool KeyFrame::reproduceAnimacion(keyFrameAnimacion *animacion){
                 case brincarAlInicio:
                     this->pararAnimacion(animacion);
                     return animacion->repetitivo;
-                case nulo:
+                case nuloKF:
                     //                    borrar
                     animacion->ascendente = true;
                     animacion->cuadroActual=0;
@@ -577,7 +579,7 @@ void KeyFrame::guardar() {
                 posicionInicial = this->vAnimaciones[i].cuadrosClaves[j].movimientos[k].posicionInicial;
                 posicionFinal = this->vAnimaciones[i].cuadrosClaves[j].movimientos[k].posicionFinal;
                 incremento = this->vAnimaciones[i].cuadrosClaves[j].movimientos[k].incremento;
-                fwrite(&nombre, sizeof(char)*50, 1, archivo);
+                fwrite(nombre, sizeof(char)*50, 1, archivo);
                 fwrite(&posicionInicial, sizeof(double), 1, archivo);
                 fwrite(&posicionFinal, sizeof(double), 1, archivo);
                 fwrite(&incremento, sizeof(double), 1, archivo);
@@ -656,16 +658,16 @@ void KeyFrame::cargar() {
         this->vAnimaciones.push_back(tAnimacion);
         tAnimacion = keyFrameAnimacion();
     }
-    this->escribeAnimacionesDisponibles();
+    std::cout<<"Key Frame: " <<this->vAnimaciones.size()<<" Cargadas\n";
     this->recargarAnimacionesForever();
 }
 void KeyFrame::inicializar(){
 //    if (cantidad > 100) cantidad = 100;
-    for (int i = 0; i<10; i++) {
-        this->varMovimientos.push_back(KeyFrameMovimiento());
-        this->varMovimientos[i].value = 0;
-//        this->varMovimientos[i].name = nombre + std::to_string(i);
-    }
+//    for (int i = 0; i<10; i++) {
+//        this->varMovimientos.push_back(KeyFrameMovimiento());
+//        this->varMovimientos[i].value = 0;
+////        this->varMovimientos[i].name = nombre + std::to_string(i);
+//    }
 //    std::cout<<"Inicializando KeyFrame\n";
     this->cargar();
 }
@@ -695,7 +697,7 @@ void KeyFrame::teclaDeMenuBuscandoUInt(unsigned char tecla){
         if (this->temporalIntFromKeyBoard >= this->maxDondeGuardar){
                 std::cout<<"\nNumero mayor a los disponibles\n";
             this->estado = this->estadoARegresar;
-            this->estadoARegresar = inicial;
+            this->estadoARegresar = inicialKF;
             this->drawCursor();
         }
     }else if (tecla == 13){
@@ -704,7 +706,7 @@ void KeyFrame::teclaDeMenuBuscandoUInt(unsigned char tecla){
         this->temporalIntFromKeyBoard = 0;
         this->escribeCabecera(this->estadoARegresar);
         this->estado = this->estadoARegresar;
-        this->estadoARegresar = inicial;
+        this->estadoARegresar = inicialKF;
         switch (tipoAccionDespuesBuscarInt) {
             case cambioPunteroMovimientoSetPosicionInicial:
                 this->temporalMoveMovimiento.posicionInicial=this->varMovimientos[this->temporalMoveMovimiento.cual].value;
@@ -717,7 +719,7 @@ void KeyFrame::teclaDeMenuBuscandoUInt(unsigned char tecla){
             case cambioPunteroMovimientoSetTemporal:
                 this->temporalPosicionAnteriorPruebaMovimiento = this->varMovimientos[this->movimientoActualPuntero].value;
                 break;
-            case nada:
+            case nadaKF:
             default:
                 break;
         }
@@ -725,13 +727,13 @@ void KeyFrame::teclaDeMenuBuscandoUInt(unsigned char tecla){
     }else{
         std::cout<<"\nCancelado\n";
         this->estado = this->estadoARegresar;
-        this->estadoARegresar = inicial;
+        this->estadoARegresar = inicialKF;
         this->drawCursor();
     }
 }
 const char * KeyFrame::nameEstado(KeyFrameEstados estado){
     switch (estado) {
-        case inicial:
+        case inicialKF:
             return "Inicial";
         case animacion:
             return "Animacion";
@@ -794,12 +796,12 @@ void KeyFrame::crearKeyFrameForCircular(keyFrameAnimacion *animacion,unsigned in
         }
     }
     for (unsigned long a =0; tKeyFrame.movimientos.size(); a++) {
-        this->interpolarMoveMovimiento(&(tKeyFrame.movimientos[a]));
+        this->interpolarMoveMovimiento(&(tKeyFrame.movimientos[a]),tKeyFrame.duracion);
     }
     animacion->cuadrosClaves.push_back(tKeyFrame);
 }
-void KeyFrame::interpolarMoveMovimiento(KeyFrameMoveMovimiento *moveMovimiento){
-    moveMovimiento->incremento = (moveMovimiento->posicionFinal - moveMovimiento->posicionInicial)/moveMovimiento->incremento;
+void KeyFrame::interpolarMoveMovimiento(KeyFrameMoveMovimiento *moveMovimiento,unsigned int duracion){
+    moveMovimiento->incremento = (moveMovimiento->posicionFinal - moveMovimiento->posicionInicial)/duracion;
 }
 void KeyFrame::pararAnimacionesFromVector(std::vector<unsigned long> vector){
     for (unsigned long i : vector) {
@@ -837,4 +839,16 @@ bool KeyFrame::echateABuscarPorNombre(char *nombre, unsigned int *donde){
         }
     }
     return false;
+}
+unsigned int KeyFrame::crearVarMovimiento(char *nombre){
+    KeyFrameMovimiento moveNew;
+    unsigned int r = (unsigned int) this->varMovimientos.size();
+    for (int i=0; i<this->varMovimientos.size(); i++) {
+        if (!memcmp(nombre, this->varMovimientos[i].name, sizeof(char)*50)) {
+            return i;
+        }
+    }
+    memcpy(moveNew.name, nombre, sizeof(char)*50);
+    this->varMovimientos.push_back(moveNew);
+    return r;
 }

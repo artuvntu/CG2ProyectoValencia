@@ -9,13 +9,13 @@
 /* Begin PBXBuildFile section */
 		BB22A4242084F45E0039685A /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB22A4222084F45E0039685A /* Camera.cpp */; };
 		BB5854952092B99000F4F6E3 /* Primitivas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB5854932092B99000F4F6E3 /* Primitivas.cpp */; };
+		BBCF58B520AB5208004D9DB7 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBF23DB9207FD7720089515D /* OpenGL.framework */; };
+		BBCF58B620AB520E004D9DB7 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBF23DB7207FD76B0089515D /* GLUT.framework */; };
 		BBE79433208A79DF00A1CE54 /* CargadorImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBE79431208A79DF00A1CE54 /* CargadorImage.cpp */; };
 		BBF23DB0207FD75E0089515D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBF23DAF207FD75E0089515D /* main.cpp */; };
-		BBF23DB8207FD76B0089515D /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBF23DB7207FD76B0089515D /* GLUT.framework */; };
-		BBF23DBA207FD7720089515D /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBF23DB9207FD7720089515D /* OpenGL.framework */; };
 		BBF72029209B6C020084703A /* KeyFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBF72028209B6C020084703A /* KeyFrame.cpp */; };
 		BBFE635D20A28B09009EC27B /* Construccion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBFE635B20A28B09009EC27B /* Construccion.cpp */; };
-		BBFE636120A28B2F009EC27B /* ObjetosAdicionales.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBFE635F20A28B2F009EC27B /* ObjetosAdicionales.cpp */; };
+		BBFE636120A28B2F009EC27B /* CreadorObjetos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBFE635F20A28B2F009EC27B /* CreadorObjetos.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -38,7 +38,6 @@
 		BB22A4232084F45E0039685A /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
 		BB5854932092B99000F4F6E3 /* Primitivas.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Primitivas.cpp; sourceTree = "<group>"; };
 		BB5854942092B99000F4F6E3 /* Primitivas.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Primitivas.hpp; sourceTree = "<group>"; };
-		BBADBAB92097B9C1009A7321 /* casa02.tga */ = {isa = PBXFileReference; lastKnownFileType = file; path = casa02.tga; sourceTree = "<group>"; };
 		BBE79431208A79DF00A1CE54 /* CargadorImage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CargadorImage.cpp; sourceTree = "<group>"; };
 		BBE79432208A79DF00A1CE54 /* CargadorImage.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CargadorImage.hpp; sourceTree = "<group>"; };
 		BBE79434208A7BA400A1CE54 /* main.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = main.hpp; sourceTree = "<group>"; };
@@ -51,8 +50,8 @@
 		BBF72028209B6C020084703A /* KeyFrame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyFrame.cpp; sourceTree = "<group>"; };
 		BBFE635B20A28B09009EC27B /* Construccion.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Construccion.cpp; sourceTree = "<group>"; };
 		BBFE635C20A28B09009EC27B /* Construccion.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Construccion.hpp; sourceTree = "<group>"; };
-		BBFE635F20A28B2F009EC27B /* ObjetosAdicionales.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ObjetosAdicionales.cpp; sourceTree = "<group>"; };
-		BBFE636020A28B2F009EC27B /* ObjetosAdicionales.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ObjetosAdicionales.hpp; sourceTree = "<group>"; };
+		BBFE635F20A28B2F009EC27B /* CreadorObjetos.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CreadorObjetos.cpp; sourceTree = "<group>"; };
+		BBFE636020A28B2F009EC27B /* CreadorObjetos.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CreadorObjetos.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,8 +59,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BBF23DBA207FD7720089515D /* OpenGL.framework in Frameworks */,
-				BBF23DB8207FD76B0089515D /* GLUT.framework in Frameworks */,
+				BBCF58B620AB520E004D9DB7 /* GLUT.framework in Frameworks */,
+				BBCF58B520AB5208004D9DB7 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,9 +73,15 @@
 				BB0F17B4208E88BF006EF747 /* pasto01.tga */,
 				BB0F17B6208ECA25006EF747 /* cielo01.tga */,
 				BB0F17B5208EC8B2006EF747 /* casa01.tga */,
-				BBADBAB92097B9C1009A7321 /* casa02.tga */,
 			);
 			path = Textureimg;
+			sourceTree = "<group>";
+		};
+		BB3E7B6D20AAA28F00532B6E /* Documents */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Documents;
 			sourceTree = "<group>";
 		};
 		BB5854922092B97C00F4F6E3 /* Primitivas */ = {
@@ -109,7 +114,7 @@
 		BBE79430208A79BA00A1CE54 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				BBFE635E20A28B14009EC27B /* ObjetosAdicionales */,
+				BBFE635E20A28B14009EC27B /* CreadorObjetos */,
 				BBFE635A20A28AA4009EC27B /* Construccion */,
 				BBF72026209B6BDF0084703A /* KeyFrame */,
 				BB5854922092B97C00F4F6E3 /* Primitivas */,
@@ -143,6 +148,7 @@
 				BBE79434208A7BA400A1CE54 /* main.hpp */,
 				BBE79435208A82A900A1CE54 /* Libraries.hpp */,
 				BB0F17B3208E8832006EF747 /* Textureimg */,
+				BB3E7B6D20AAA28F00532B6E /* Documents */,
 				BBE79430208A79BA00A1CE54 /* Source */,
 			);
 			path = CG2ProyectoFinalValencia;
@@ -175,13 +181,13 @@
 			path = Construccion;
 			sourceTree = "<group>";
 		};
-		BBFE635E20A28B14009EC27B /* ObjetosAdicionales */ = {
+		BBFE635E20A28B14009EC27B /* CreadorObjetos */ = {
 			isa = PBXGroup;
 			children = (
-				BBFE635F20A28B2F009EC27B /* ObjetosAdicionales.cpp */,
-				BBFE636020A28B2F009EC27B /* ObjetosAdicionales.hpp */,
+				BBFE635F20A28B2F009EC27B /* CreadorObjetos.cpp */,
+				BBFE636020A28B2F009EC27B /* CreadorObjetos.hpp */,
 			);
-			path = ObjetosAdicionales;
+			path = CreadorObjetos;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -244,7 +250,7 @@
 				BBFE635D20A28B09009EC27B /* Construccion.cpp in Sources */,
 				BBF23DB0207FD75E0089515D /* main.cpp in Sources */,
 				BBF72029209B6C020084703A /* KeyFrame.cpp in Sources */,
-				BBFE636120A28B2F009EC27B /* ObjetosAdicionales.cpp in Sources */,
+				BBFE636120A28B2F009EC27B /* CreadorObjetos.cpp in Sources */,
 				BBE79433208A79DF00A1CE54 /* CargadorImage.cpp in Sources */,
 				BB5854952092B99000F4F6E3 /* Primitivas.cpp in Sources */,
 			);
@@ -367,6 +373,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 84JDBR2E75;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -376,6 +383,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 84JDBR2E75;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

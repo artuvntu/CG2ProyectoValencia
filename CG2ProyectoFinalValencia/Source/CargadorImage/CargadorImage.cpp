@@ -105,10 +105,29 @@ bool CargadorImage::inicializar(){
 
         
     }
+    std::cout<<"Cargador image: " << this->texturas.size() << " Cargadas\n";
     return true;
 }
-
+bool CargadorImage::echateABuscarTexture(char *nombre, unsigned int *donde){
+    for (int i = 0; i<this->texturas.size(); i++) {
+        if (!memcmp(nombre,this->texturas[i].nombreTexture, sizeof(char)*MAXCHAR)) {
+            *donde = i;
+            return true;
+        }
+        
+    }
+    return false;
+}
 void CargadorImage::reCargarArchivo(){
     this->texturas.clear();
     this->inicializar();
+}
+void CargadorImage::escribeTexturasDisponibles(){
+    for (int i = 0; i<this->texturas.size(); i++) {
+        std::cout<<i<<".- ";
+        this->describeTextura(&this->texturas[i]);
+    }
+}
+void CargadorImage::describeTextura(CargadorImageTexture *tex){
+    std::cout<<tex->nombreTexture<<" "<<tex->cantidadRep[0]<<" "<<tex->cantidadRep[1]<<std::endl;
 }
