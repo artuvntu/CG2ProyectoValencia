@@ -344,3 +344,189 @@ void Primitivas::describeSelecTextureVector(std::vector<PrimitivasSelectTexture>
 void Primitivas::describePunto(Cg2ValenciaPunto3D punto){
     std::cout<<"{"<<punto.coordenadas[0]<<", "<<punto.coordenadas[1]<<", "<<punto.coordenadas[2]<<"}";
 }
+#define PRIMITIVAESFERARESOLUCION 20.0
+void Primitivas::esferaEstandar(std::vector<PrimitivasSelectTexture> *vector, unsigned int desdeDonde, double diametro, unsigned int porcion){
+    if (vector->size()-desdeDonde<PRIMITIVAVRTESFERA) {
+        std::cout<<"Llamada Esfera Corrupta\n";
+        return;
+    }
+    double posicionTextura[2] = {0,0};
+    double posicionInicio[2] = {0,0};
+    double recorrido = diametro*6.28318531;
+    double angulos[2];
+    double radio = diametro/2;
+    double vertices[4][3] {
+        {0,0,0},
+        {0,0,0},
+        {0,0,0},
+        {0,0,0}
+    };
+    PrimitivasSelectTexture selectActual = vector->at(desdeDonde);
+    CargadorImageTexture texturaActual = vCargadorImage->texturas[selectActual.cualTextura];
+    glBindTexture(GL_TEXTURE_2D,texturaActual.glIndex);
+    if(porcion == 0) porcion = 1;
+    for (int i = 0; i<2; i++) {
+        posicionInicio[i] = selectActual.posicionInicio[i]/PRIMITIVAESFERARESOLUCION;
+        if (texturaActual.cantidadRep[i] == -1) {
+            posicionTextura[i] = (1.0/(double)porcion)/PRIMITIVAESFERARESOLUCION;
+        }else{
+            posicionTextura[i] = ((recorrido/texturaActual.cantidadRep[i])/(double)porcion)/PRIMITIVAESFERARESOLUCION;
+        }
+    }
+    angulos[0] = (6.28318531/porcion)/PRIMITIVAESFERARESOLUCION;
+    angulos[1] = 3.141592654/PRIMITIVAESFERARESOLUCION;
+    for (int i = 0; i<PRIMITIVAESFERARESOLUCION; i++) {
+        for (int j = 0; j<PRIMITIVAESFERARESOLUCION; j++) {
+            vertices[0][0] = radio*cos(angulos[0]*i)*sin(angulos[1]*j);
+            vertices[0][1] = radio*cos(angulos[1]*j);
+            vertices[0][2] = radio*sin(angulos[0]*i)*sin(angulos[1]*j);
+            
+            vertices[1][0] = radio*cos(angulos[0]*i)*sin(angulos[1]*(j+1));
+            vertices[1][1] = radio*cos(angulos[1]*(j+1));
+            vertices[1][2] = radio*sin(angulos[0]*i)*sin(angulos[1]*(j+1));
+            
+            vertices[2][0] = radio*cos(angulos[0]*(i+1))*sin(angulos[1]*(j+1));
+            vertices[2][1] = radio*cos(angulos[1]*(j+1));
+            vertices[2][2] = radio*sin(angulos[0]*(i+1))*sin(angulos[1]*(j+1));
+            
+            vertices[3][0] = radio*cos(angulos[0]*(i+1))*sin(angulos[1]*j);
+            vertices[3][1] = radio*cos(angulos[1]*j);
+            vertices[3][2] = radio*sin(angulos[0]*(i+1))*sin(angulos[1]*j);
+            
+            glBegin(GL_POLYGON);
+            glNormal3dv(vertices[0]);
+            glTexCoord2d((posicionTextura[0]*i)+posicionInicio[0], (-posicionTextura[1]*j)+posicionInicio[1]);
+            glVertex3dv(vertices[0]);
+            
+            glNormal3dv(vertices[1]);
+            glTexCoord2d((posicionTextura[0]*i)+posicionInicio[0], (-posicionTextura[1]*(j+1))+posicionInicio[1]);
+            glVertex3dv(vertices[1]);
+            
+            glNormal3dv(vertices[2]);
+            glTexCoord2d((posicionTextura[0]*(i+1))+posicionInicio[0], (-posicionTextura[1]*(j+1))+posicionInicio[1]);
+            glVertex3dv(vertices[2]);
+            
+            glNormal3dv(vertices[3]);
+            glTexCoord2d((posicionTextura[0]*(i+1))+posicionInicio[0], (-posicionTextura[1]*j)+posicionInicio[1]);
+            glVertex3dv(vertices[3]);
+            
+            glEnd();
+            
+        }
+    }
+}
+void Primitivas::cilindroEstandar(std::vector<PrimitivasSelectTexture> *vector, unsigned int desdeDonde, double diametro, double altura,unsigned int porcion){
+    if (vector->size()-desdeDonde<PRIMITIVARVTCILINDRO) {
+        std::cout<<"Llamada Cilindro Corrupta\n";
+        return;
+    }
+    double recorridoTapas[2][2]{
+        {0,0},
+        {0,0}
+    };
+    double centroTexturas[2][2] = {
+        {0,0},
+        {0,0}
+    };
+    
+    if (porcion == 0) porcion = 1;
+    double posicionTextura[2] = {0,0};
+    double posicionInicio = 0;
+    double recorrido = diametro*6.28318531;
+    double angulo = (6.28318531/porcion)/PRIMITIVAESFERARESOLUCION;
+    double radio = diametro/2;
+    double vertices[4][3] {
+        {0,0,0},
+        {0,0,0},
+        {0,0,0},
+        {0,0,0}
+    };
+    
+    PrimitivasSelectTexture selectActual = vector->at(desdeDonde);
+    CargadorImageTexture texturaActual = vCargadorImage->texturas[selectActual.cualTextura];
+    
+    PrimitivasSelectTexture selectTapas[2] = {
+        vector->at(desdeDonde+1),vector->at(desdeDonde+2)
+    };
+    CargadorImageTexture texturaTapas[2] = {
+        vCargadorImage->texturas[selectTapas[0].cualTextura],vCargadorImage->texturas[selectTapas[1].cualTextura]
+    };
+    
+    posicionInicio = selectActual.posicionInicio[0]/PRIMITIVAESFERARESOLUCION;
+    if (texturaActual.cantidadRep[0] == -1) {
+        posicionTextura[0] = (1.0/porcion)/PRIMITIVAESFERARESOLUCION;
+    }else {
+        posicionTextura[0] = ((recorrido/texturaActual.cantidadRep[0])/(double)porcion)/PRIMITIVAESFERARESOLUCION;
+    }
+    if (texturaActual.cantidadRep[0] == -1) {
+        posicionTextura[1] = 1;
+    }else{
+        posicionTextura[1] = altura/texturaActual.cantidadRep[1];
+    }
+    
+    for (int n = 0; n<2; n++) {
+        for (int i = 0; i<2; i++) {
+            if (texturaTapas[n].cantidadRep[i] == -1) {
+                recorridoTapas[n][i] = 1;
+            }else{
+                recorridoTapas[n][i] = diametro/texturaTapas[n].cantidadRep[i];
+            }
+            centroTexturas[n][i]=recorridoTapas[n][i]/2;
+            centroTexturas[n][i]=recorridoTapas[n][i]/2;
+        }
+    }
+    
+    
+    for (int i = 0; i<PRIMITIVAESFERARESOLUCION; i++) {
+        vertices[0][0] = radio*cos(angulo*i);
+        vertices[0][1] = 0;
+        vertices[0][2] = radio*sin(angulo*i);
+        
+        vertices[1][0] = radio*cos(angulo*(i+1));
+        vertices[1][1] = 0;
+        vertices[1][2] = radio*sin(angulo*(i+1));
+        
+        vertices[2][0] = radio*cos(angulo*(i+1));
+        vertices[2][1] = altura;
+        vertices[2][2] = radio*sin(angulo*(i+1));
+        
+        vertices[3][0] = radio*cos(angulo*i);
+        vertices[3][1] = altura;
+        vertices[3][2] = radio*sin(angulo*i);
+        
+        glBindTexture(GL_TEXTURE_2D,texturaActual.glIndex);
+        glBegin(GL_POLYGON);
+        glNormal3dv(vertices[0]);
+        glTexCoord2d(posicionTextura[0]*i+posicionInicio, selectActual.posicionInicio[1]);
+        glVertex3dv(vertices[0]);
+        glTexCoord2d(posicionTextura[0]*(i+1)+posicionInicio, selectActual.posicionInicio[1]);
+        glVertex3dv(vertices[1]);
+        glTexCoord2d(posicionTextura[0]*(i+1)+posicionInicio, selectActual.posicionInicio[1]+posicionTextura[1]);
+        glVertex3dv(vertices[2]);
+        glTexCoord2d(posicionTextura[0]*i+posicionInicio, selectActual.posicionInicio[1]+posicionTextura[1]);
+        glVertex3dv(vertices[3]);
+        glEnd();
+        
+        glBindTexture(GL_TEXTURE_2D, texturaTapas[0].glIndex);
+        glBegin(GL_POLYGON);
+        glNormal3d(0.0, -1.0, 0.0);
+        glTexCoord2d(centroTexturas[0][0]+selectTapas[0].posicionInicio[0], centroTexturas[0][1]+selectTapas[0].posicionInicio[1]);
+        glVertex3f(0.0, 0.0, 0.0);
+        glTexCoord2d(recorridoTapas[0][1]*cos(angulo*i)+selectTapas[0].posicionInicio[0], recorridoTapas[0][1]*sin(angulo*i)+selectTapas[0].posicionInicio[1]);
+        glVertex3dv(vertices[0]);
+        glTexCoord2d(recorridoTapas[0][1]*cos(angulo*(i+1))+selectTapas[0].posicionInicio[0], recorridoTapas[0][1]*sin(angulo*(i+1))+selectTapas[0].posicionInicio[1]);
+        glVertex3dv(vertices[1]);
+        glEnd();
+        
+        glBindTexture(GL_TEXTURE_2D, texturaTapas[1].glIndex);
+        glBegin(GL_POLYGON);
+        glNormal3d(0.0, 1.0, 0.0);
+        glTexCoord2d(centroTexturas[1][0]+selectTapas[1].posicionInicio[0], centroTexturas[1][1]+selectTapas[1].posicionInicio[1]);
+        glVertex3f(0.0, altura, 0.0);
+        glTexCoord2d(recorridoTapas[1][1]*cos(angulo*i)+selectTapas[1].posicionInicio[0], recorridoTapas[1][1]*sin(angulo*i)+selectTapas[1].posicionInicio[1]);
+        glVertex3dv(vertices[3]);
+        glTexCoord2d(recorridoTapas[1][1]*cos(angulo*(i+1))+selectTapas[1].posicionInicio[0], recorridoTapas[1][1]*sin(angulo*(i+1))+selectTapas[1].posicionInicio[1]);
+        glVertex3dv(vertices[2]);
+        glEnd();
+    }
+}

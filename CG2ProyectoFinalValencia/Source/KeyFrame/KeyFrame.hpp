@@ -39,6 +39,7 @@ public:
         bool ascendente = true;
         long cuadroActual = 0;
         unsigned int pasoActual = 0;
+//        char id[MAXCHAR]="NULO";
     }typedef  keyFrameAnimacion;
 
     
@@ -52,7 +53,7 @@ public:
     bool menuActivado = false;
     bool animacionInfinitasActivas = true;
     void pararTodasLasAnimacionesEnCurso();
-    bool reproduceAlgunaAnimacion(unsigned long cual);
+    bool reproduceAlgunaAnimacion(unsigned int cual);
     std::vector<KeyFrameMovimiento> varMovimientos;
 private:
     

@@ -160,6 +160,7 @@ void KeyFrame::teclaDeMenuPruebaMovimiento(unsigned char tecla){
         case 'c':
         case 'C':
             std::cout<<"Cambio\n";
+            this->escribeMovimientos();
             this->varMovimientos[this->movimientoActualPuntero].value = this->temporalPosicionAnteriorPruebaMovimiento;
             glutPostRedisplay();
             this->empezarABuscarUInt(&this->movimientoActualPuntero,(unsigned int) this->varMovimientos.size(), this->estado,cambioPunteroMovimientoSetTemporal);
@@ -812,13 +813,14 @@ void KeyFrame::pararTodasLasAnimacionesEnCurso(){
     this->pararAnimacionesFromVector(this->vAnimacionesForever);
     this->pararAnimacionesFromVector(this->vAnimacionesActivas);
 }
-bool KeyFrame::reproduceAlgunaAnimacion(unsigned long cual){
+bool KeyFrame::reproduceAlgunaAnimacion(unsigned int cual){
     if (cual >= this->vAnimaciones.size()) {
         std::cout<<"Animacion no creada\n";
         return false;
     }
     if (this->vAnimaciones[cual].repetitivo) {
         std::cout<<"Animacion infinitta\n";
+        this->pararAnimacion(&this->vAnimaciones[cual]);
         return false;
     }
     for (auto j : this->vAnimacionesActivas) {
@@ -828,6 +830,7 @@ bool KeyFrame::reproduceAlgunaAnimacion(unsigned long cual){
             return false;
         }
     }
+    this->pararAnimacion(&this->vAnimaciones[cual]);
     this->vAnimacionesActivas.push_back(cual);
     return true;
 }

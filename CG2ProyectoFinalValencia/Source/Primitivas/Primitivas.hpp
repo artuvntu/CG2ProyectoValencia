@@ -16,9 +16,10 @@
 
 #define PRIMITIVARVTPRISMAESTANDAR 6
 #define PRIMITIVARVTSUELOPOLIGONAL 2
-#define PRIMITIVARVTCILINDRO 1
+#define PRIMITIVARVTCILINDRO 3
 #define PRIMITIVAVRTESFERA 1
 #define PRIMITIVAVRTPLANO 1
+
 //#define GROSORPARED 1
 //#define ALTOPARED 25
 //#define PRIMITIVASTEXTPARED 0
@@ -36,7 +37,8 @@ public:
     void describeSelecTextureVector(std::vector<PrimitivasSelectTexture> *vector);
     void mundo(PrimitivasSelectTexture *cielo,PrimitivasSelectTexture *boveda,PrimitivasSelectTexture *suelo);
     
-    
+    void cilindroEstandar(std::vector<PrimitivasSelectTexture>*vector,unsigned int desdeDonde,double diametro,double altura,unsigned int porcion);
+    void esferaEstandar(std::vector<PrimitivasSelectTexture>*vector,unsigned int desdeDonde,double diametro,unsigned int porcion);
     void planoEstandar(std::vector<PrimitivasSelectTexture>*vector,unsigned int desdeDonde,double posicion[3],double tam[3]);
     void prismaEstandar(std::vector<PrimitivasSelectTexture>*vectorSelecTexture,unsigned int desdeDonde,double posicion[3],double tam[3],double angulo);
     void escaleras(std::vector<PrimitivasSelectTexture>*vectorSelectTexture,unsigned int desdeDonde,double posicion[3],double tam[3],unsigned int canEscalones,double angulo);

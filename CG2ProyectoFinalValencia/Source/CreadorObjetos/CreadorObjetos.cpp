@@ -8,7 +8,7 @@
 
 #include "CreadorObjetos.hpp"
 
-
+#define CREADOROBJETOSVERSIONARCHIVOS 0x18FF
 //Directiva Vertice orden {Posicion Angulo Tamaño}
 
 void CreadorObjetos::inicializar(Primitivas *p, KeyFrame *k, CargadorImage *c){
@@ -73,7 +73,7 @@ void CreadorObjetos::esribeMenu(){
 //            std::cout<<"wsadqeikjluotgfhry\n";
             if (yObjetos[punteroSeleccion].primitivas.size()!=0) {
                 this->describePrimitiva(&this->yObjetos[this->punteroSeleccion].primitivas[this->punteroPrimitiva]);
-                std::cout<<" Actual: "<<this->punteroPrimitiva<<" Disponibles: "<<this->yObjetos[punteroSeleccion].primitivas.size()<<"\nM->Mostrar Disponibles\n3->Duplicar\n2->Set Cual Textura\n4->Create Texture for Actual\nC->Cambiar Primitiva\nB->Borrar\nV->Cambio Tipo\n";
+                std::cout<<" Actual: "<<this->punteroPrimitiva<<" Disponibles: "<<this->yObjetos[punteroSeleccion].primitivas.size()<<"\nM->Mostrar Disponibles\n3->Duplicar\n2->Set Cual Textura\n4->Create Texture for Actual\nC->Cambiar Primitiva\nB->Borrar\nV->Cambio Tipo\n5->Set Special value\n6->Set Transparencia\n";
             }else{
                 std::cout<<"Crea una primitiva\n";
             }
@@ -107,12 +107,38 @@ void CreadorObjetos::dibujaObjeto(unsigned int cual,bool dVertice){
     glPushMatrix();
     for (int dop = 0; dop<objetoDibujando->primitivas.size(); dop++) {
         primitivaDibujando = &objetoDibujando->primitivas[dop];
+        switch (primitivaDibujando->tipoTransparencia) {
+            case desactivado:
+                break;
+            case blend:
+                glEnable(GL_BLEND);
+                break;
+            case removeTest:
+                glEnable(GL_ALPHA_TEST);
+                break;
+            default:
+                break;
+        }
         switch (primitivaDibujando->tipoPrimitiva) {
             case cilindro:
                 //Cilindro;
+                glPushMatrix();
+                glTranslated(primitivaDibujando->vertices[0].coordenadas[0], primitivaDibujando->vertices[0].coordenadas[1], primitivaDibujando->vertices[0].coordenadas[2]);
+                glRotated(primitivaDibujando->vertices[1].coordenadas[0], 1, 0, 0);
+                glRotated(primitivaDibujando->vertices[1].coordenadas[1], 0, 1, 0);
+                glRotated(primitivaDibujando->vertices[1].coordenadas[2], 0, 0, 1);
+                vPrimitivas->cilindroEstandar(&objetoDibujando->texturas, primitivaDibujando->desdeCualTexture, primitivaDibujando->vertices[2].coordenadas[0], primitivaDibujando->vertices[2].coordenadas[1], primitivaDibujando->valorEspecial);
+                glPopMatrix();
                 break;
             case esfera:
-                //Esfera
+                glPushMatrix();
+                glTranslated(primitivaDibujando->vertices[0].coordenadas[0], primitivaDibujando->vertices[0].coordenadas[1], primitivaDibujando->vertices[0].coordenadas[2]);
+                glRotated(primitivaDibujando->vertices[1].coordenadas[0], 1, 0, 0);
+                glRotated(primitivaDibujando->vertices[1].coordenadas[1], 0, 1, 0);
+                glRotated(primitivaDibujando->vertices[1].coordenadas[2], 0, 0, 1);
+//                glScaled(primitivaDibujando->vertices[2].coordenadas[0], primitivaDibujando->vertices[2].coordenadas[1], primitivaDibujando->vertices[2].coordenadas[2]);
+                vPrimitivas->esferaEstandar(&objetoDibujando->texturas, primitivaDibujando->desdeCualTexture, primitivaDibujando->vertices[2].coordenadas[0], primitivaDibujando->valorEspecial);
+                glPopMatrix();
                 break;
             case plano:
                 glPushMatrix();
@@ -122,27 +148,17 @@ void CreadorObjetos::dibujaObjeto(unsigned int cual,bool dVertice){
                 glRotated(primitivaDibujando->vertices[1].coordenadas[2], 0, 0, 1);
                 vPrimitivas->planoEstandar(&objetoDibujando->texturas, primitivaDibujando->desdeCualTexture, puntoCentro.coordenadas, primitivaDibujando->vertices[2].coordenadas);
                 glPopMatrix();
-            case planoTransparente:
-                //Plano alpha
                 break;
             case popm:
                 if (contadorPushPop>=0) {
                     std::cout<<"Error contador pop ";
                     this->describeObjeto(objetoDibujando);
-                }else glPopMatrix();
+                }else {
+                    glPopMatrix();
+                    contadorPushPop--;
+                }
                 break;
             case nadaPrimiva:
-                break;
-            case prismaTransparente:
-                glPushMatrix();
-                glEnable(GL_BLEND);
-                glTranslated(primitivaDibujando->vertices[0].coordenadas[0], primitivaDibujando->vertices[0].coordenadas[1], primitivaDibujando->vertices[0].coordenadas[2]);
-                glRotated(primitivaDibujando->vertices[1].coordenadas[0], 1, 0, 0);
-                glRotated(primitivaDibujando->vertices[1].coordenadas[1], 0, 1, 0);
-                glRotated(primitivaDibujando->vertices[1].coordenadas[2], 0, 0, 1);
-                vPrimitivas->prismaEstandar(&objetoDibujando->texturas, primitivaDibujando->desdeCualTexture, this->puntoCentro.coordenadas, primitivaDibujando->vertices[2].coordenadas, 0);
-                glDisable(GL_BLEND);
-                glPopMatrix();
                 break;
             case prisma:
                 glPushMatrix();
@@ -154,10 +170,12 @@ void CreadorObjetos::dibujaObjeto(unsigned int cual,bool dVertice){
                 glPopMatrix();
                 break;
             case translate:
+                glPushMatrix();
                 glTranslated(vKeyFrame->varMovimientos[primitivaDibujando->cualkey[0]].value, vKeyFrame->varMovimientos[primitivaDibujando->cualkey[1]].value,vKeyFrame->varMovimientos[primitivaDibujando->cualkey[2]].value);
                 contadorPushPop++;
                 break;
             case verticeAngulo:
+                glPushMatrix();
                 glTranslated(primitivaDibujando->vertices[0].coordenadas[0], primitivaDibujando->vertices[0].coordenadas[1], primitivaDibujando->vertices[0].coordenadas[2]);
                 if (dVertice) {
                     this->vPrimitivas->cruceta(true);
@@ -166,7 +184,12 @@ void CreadorObjetos::dibujaObjeto(unsigned int cual,bool dVertice){
                 glRotated(vKeyFrame->varMovimientos[primitivaDibujando->cualkey[1]].value, 0, 1, 0);
                 glRotated(vKeyFrame->varMovimientos[primitivaDibujando->cualkey[2]].value, 0, 0, 1);
                 glTranslated(-primitivaDibujando->vertices[0].coordenadas[0], -primitivaDibujando->vertices[0].coordenadas[1], -primitivaDibujando->vertices[0].coordenadas[2]);
-                contadorPushPop--;
+                contadorPushPop++;
+                break;
+            case scaled:
+                glPushMatrix();
+                glScaled(vKeyFrame->varMovimientos[primitivaDibujando->cualkey[0]].value+1, vKeyFrame->varMovimientos[primitivaDibujando->cualkey[1]].value+1,vKeyFrame->varMovimientos[primitivaDibujando->cualkey[2]].value+1);
+                contadorPushPop++;
                 break;
             case otroObjeto:
                 if (cual != this->primitivaDibujando->valorEspecial) {
@@ -179,6 +202,18 @@ void CreadorObjetos::dibujaObjeto(unsigned int cual,bool dVertice){
                     this->dibujaObjeto(this->primitivaDibujando->valorEspecial);
                     glPopMatrix();
                 }else std::cout<<"Error Recursividad de Objetos";
+                break;
+            default:
+                break;
+        }
+        switch (primitivaDibujando->tipoTransparencia) {
+            case desactivado:
+                break;
+            case blend:
+                glDisable(GL_BLEND);
+                break;
+            case removeTest:
+                glDisable(GL_ALPHA_TEST);
                 break;
             default:
                 break;
@@ -258,7 +293,7 @@ void CreadorObjetos::teclaDeMenuInicial(unsigned char tecla){
         case 'A':
         case 'a':
             std::cout<<"Agregar Name: ";
-//            std::cin>>nombre;
+            std::cin>>nombre;
             this->yObjetos.push_back(CreadorObjetosObjeto());
             this->punteroSeleccion = (unsigned int)yObjetos.size() - 1;
             this->punteroPrimitiva = 0;
@@ -417,6 +452,10 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
 
                 }
                 break;
+            case '6':
+                std::cout<<"Set Transparencia";
+                this->empezarABuscarUint((unsigned int*)&this->yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].tipoTransparencia, MAXTIPOTRANSPARENCIA, modificarObjetoCO);
+                break;
             default:
                 saltar = this->moviminetoModificarObjeto(tecla, &yObjetos[punteroSeleccion].primitivas[punteroPrimitiva]);
                 break;
@@ -450,7 +489,6 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
         case 'X':
             std::cout<<"Salir de Modificar Objeto\n";
             this->punteroTextura = 0;
-            this->punteroSeleccion = 0;
             this->punteroPrimitiva = 0;
             this->estado = inicialCO;
             this->esribeMenu();
@@ -514,6 +552,8 @@ void CreadorObjetos::teclaDeMenuModificarTexturas(unsigned char tecla){
             std::cout<<"Salir\n";
             this->estado = modificarObjetoCO;
             this->punteroTextura = 0;
+            this->esribeMenu();
+            this->drawCursor();
             break;
         case 'w':
         case 'W':
@@ -545,20 +585,20 @@ void CreadorObjetos::aseguraIntegridadCambio(){
     for (unsigned int i =(unsigned int) yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].vertices.size(); i < cantidadPuntos; i++) {
         yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].vertices.push_back(Cg2ValenciaPunto3D());
     }
-    if (yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].tipoPrimitiva == verticeAngulo || yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].tipoPrimitiva == translate) {
+    if (yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].tipoPrimitiva == verticeAngulo || yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].tipoPrimitiva == translate||yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].tipoPrimitiva == scaled) {
         sprintf(nomT,"%s@%04d0",yObjetos[punteroSeleccion].id,punteroPrimitiva);
         yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].cualkey[0] = this->vKeyFrame->crearVarMovimiento(nomT);
         sprintf(nomT,"%s@%04d1",yObjetos[punteroSeleccion].id,punteroPrimitiva);
         yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].cualkey[1] = this->vKeyFrame->crearVarMovimiento(nomT);
         sprintf(nomT,"%s@%04d2",yObjetos[punteroSeleccion].id,punteroPrimitiva);
         yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].cualkey[2] = this->vKeyFrame->crearVarMovimiento(nomT);
-        
-        
     }
 }
 void CreadorObjetos::escribeObjetosDisponibles(){
     for (int i = 0; i<yObjetos.size(); i++) {
+        std::cout<<i<<".- ";
         this->describeObjeto(&yObjetos[i]);
+        std::cout<<std::endl;
     }
 }
 unsigned int CreadorObjetos::puntosNecesariosPorTipoPrimitiva(CreadorObjetos::CreadorObjetosTipoPrimitiva tipo){
@@ -581,6 +621,8 @@ unsigned int CreadorObjetos::puntosNecesariosPorTipoPrimitiva(CreadorObjetos::Cr
             return 2;
         case otroObjeto:
             return 3;
+        case scaled:
+            return 0;
         default:
             break;
     }
@@ -606,6 +648,8 @@ unsigned int CreadorObjetos::textureNecesariasPorTipoPrimitiva(CreadorObjetos::C
             return 0;
         case otroObjeto:
             return 0;
+        case scaled:
+            return 0;
         default:
             break;
     }
@@ -624,11 +668,125 @@ void CreadorObjetos::escribePrimitivasDisponibles(CreadorObjetos::CreadorObjetos
     }
 }
 void CreadorObjetos::guardar(){
-    std::cout<<"Objetos Adicionales: Aun no puedo guardar\n";
-
+    FILE * archivo = fopen(CREADOROBJETOSPATHFILE, "w");
+    unsigned int cabecera = CREADOROBJETOSVERSIONARCHIVOS;
+    unsigned int cantidadObj = (unsigned int) this->yObjetos.size();
+    unsigned int cantidadPrimitivas = 0;
+    unsigned int cantidadVertices = 0;
+    unsigned int cantidadTexturas = 0;
+    unsigned int aux = 0;
+    CreadorObjetosPrimitivas *cualPrimitiva;
+    PrimitivasSelectTexture *cualTexture;
+    
+    if (archivo == NULL) {
+        std::cout<<"NO pude abrir el archivo";
+    }
+    fwrite(&cabecera, sizeof(unsigned int), 1, archivo);
+    //objetos
+    fwrite(&cantidadObj, sizeof(unsigned int), 1, archivo);
+    for (unsigned int  i = 0; i<cantidadObj; i++) {
+        fwrite(yObjetos[i].id, sizeof(char), MAXCHAR, archivo);
+        //Primitivas
+        cantidadPrimitivas = (unsigned int)yObjetos[i].primitivas.size();
+        fwrite(&cantidadPrimitivas, sizeof(unsigned int), 1, archivo);
+        for (unsigned int j = 0; j<cantidadPrimitivas; j++) {
+            cualPrimitiva = &yObjetos[i].primitivas[j];
+            aux = (unsigned int) cualPrimitiva->tipoPrimitiva;
+            fwrite(&aux, sizeof(unsigned int), 1, archivo);
+            aux = (unsigned int) cualPrimitiva->tipoTransparencia;
+            fwrite(&aux, sizeof(unsigned int), 1, archivo);
+            fwrite(&cualPrimitiva->desdeCualTexture, sizeof(unsigned int), 1, archivo);
+            fwrite(&cualPrimitiva->valorEspecial, sizeof(unsigned int), 1, archivo);
+            cantidadVertices = this->puntosNecesariosPorTipoPrimitiva(cualPrimitiva->tipoPrimitiva);
+            while (cualPrimitiva->vertices.size()<cantidadVertices) {
+                std::cout<<"Error al guardar corrupto ";
+                this->describeObjeto(&yObjetos[i]);
+                cualPrimitiva->vertices.push_back(Cg2ValenciaPunto3D());
+            }
+            fwrite(&cantidadVertices, sizeof(unsigned int), 1, archivo);
+            for (unsigned int k = 0; k<cantidadVertices; k++) {
+                fwrite(&cualPrimitiva->vertices[k].coordenadas, sizeof(double), 3, archivo);
+            }
+        }
+        //Texturas
+        cantidadTexturas = (unsigned int) yObjetos[i].texturas.size();
+        fwrite(&cantidadTexturas, sizeof(unsigned int), 1, archivo);
+        for (unsigned int l = 0; l<cantidadTexturas; l++) {
+            cualTexture = &yObjetos[i].texturas[l];
+            fwrite(cualTexture->posicionInicio, sizeof(double), 2, archivo);
+            fwrite(vCargadorImage->texturas[cualTexture->cualTextura].nombreTexture, sizeof(char), MAXCHAR, archivo);
+        }
+    }
+    fclose(archivo);
 }
 void CreadorObjetos::cargar(){
-    std::cout<<"Objetos Adicionales: Aun no puedo cargar\n";
+    FILE * archivo = fopen(CREADOROBJETOSPATHFILE, "r");
+    unsigned int cabecera = 0;
+    unsigned int cantidadObj = 0;
+    unsigned int cantidadPrimitivas = 0;
+    unsigned int cantidadVertices = 0;
+    unsigned int cantidadTexturas = 0;
+    unsigned int aux = 0;
+    char auxname[MAXCHAR] = "";
+    CreadorObjetosPrimitivas *cualPrimitiva;
+    PrimitivasSelectTexture *cualTexture;
+    
+    if (archivo == NULL) {
+        std::cout<<"NO esta el archivo";
+        this->guardar();
+        return;
+    }
+    fread(&cabecera, sizeof(unsigned int), 1, archivo);
+    if (cabecera != CREADOROBJETOSVERSIONARCHIVOS) {
+        std::cout<<cabecera<<" Cabecera incompatible posible incompatibilidad de versiones\n";
+        fclose(archivo);
+        return;
+    }
+    //objetos
+    fread(&cantidadObj, sizeof(unsigned int), 1, archivo);
+    for (unsigned int  i = 0; i<cantidadObj; i++) {
+        yObjetos.push_back(CreadorObjetosObjeto());
+        fread(yObjetos[i].id, sizeof(char), MAXCHAR, archivo);
+        //Primitivas
+        fread(&cantidadPrimitivas, sizeof(unsigned int), 1, archivo);
+        for (unsigned int j = 0; j<cantidadPrimitivas; j++) {
+            yObjetos[i].primitivas.push_back(CreadorObjetosPrimitivas());
+            cualPrimitiva = &yObjetos[i].primitivas[j];
+            fread(&aux, sizeof(unsigned int), 1, archivo);
+            cualPrimitiva->tipoPrimitiva = (CreadorObjetosTipoPrimitiva) aux;
+            fread(&aux, sizeof(unsigned int), 1, archivo);
+            cualPrimitiva->tipoTransparencia = (CreadorObjetosTipoTransparencia) aux;
+            fread(&cualPrimitiva->desdeCualTexture, sizeof(unsigned int), 1, archivo);
+            fread(&cualPrimitiva->valorEspecial, sizeof(unsigned int), 1, archivo);
+            //Vertices
+            fread(&cantidadVertices, sizeof(unsigned int), 1, archivo);
+            if (cantidadVertices != this->puntosNecesariosPorTipoPrimitiva(cualPrimitiva->tipoPrimitiva))std::cout<<"Error Con lectura";
+            for (unsigned int k = 0; k<cantidadVertices; k++) {
+                cualPrimitiva->vertices.push_back(Cg2ValenciaPunto3D());
+                fread(&cualPrimitiva->vertices[k].coordenadas, sizeof(double), 3, archivo);
+            }
+        }
+        //Texturas
+        fread(&cantidadTexturas, sizeof(unsigned int), 1, archivo);
+        for (unsigned int l = 0; l<cantidadTexturas; l++) {
+            yObjetos[i].texturas.push_back(PrimitivasSelectTexture());
+            cualTexture = &yObjetos[i].texturas[l];
+            fread(cualTexture->posicionInicio, sizeof(double), 2, archivo);
+            fread(auxname, sizeof(char), MAXCHAR, archivo);
+            if(!this->vCargadorImage->echateABuscarTexture(auxname, &cualTexture->cualTextura))std::cout<<"Textura no encontrada "<<auxname<<std::endl;
+        }
+    }
+    fclose(archivo);
+    std::cout<<"Creador Objetos "<<yObjetos.size()<<" Cargadas\n";
+    
+    for (unsigned int m = 0; m<yObjetos.size(); m++) {
+        this->punteroSeleccion = m;
+        for (unsigned int n = 0; n<yObjetos[punteroSeleccion].primitivas.size(); n++) {
+            punteroPrimitiva = n;
+            this->aseguraIntegridadCambio();
+        }
+    }
+    
 }
 long CreadorObjetos::calculaBalancePushPop(CreadorObjetos::CreadorObjetosObjeto *objeto){
     long r = 0;
@@ -645,8 +803,10 @@ bool CreadorObjetos::moviminetoModificarObjeto(unsigned char tecla, CreadorObjet
     int signo = 1;
     int cual = 0;
     int coor = 0;
+    bool despacio = true;
     for (int i =0 ; i<18*2; i++) {
         if (tecla == this->teclasMovimientoModificarObjeto[i]) {
+            if (i/18!=0) despacio = false;
             i = i%18;
             if (i%2) {
                 signo = -1;
@@ -657,11 +817,15 @@ bool CreadorObjetos::moviminetoModificarObjeto(unsigned char tecla, CreadorObjet
             if (cual < primitiva->vertices.size()) {
                 if (cual == 1) {
                     primitiva->vertices[cual].coordenadas[coor] += 22.5*signo;
+//                    if (despacio) primitiva->vertices[cual].coordenadas[coor] += 22.5*signo;
+//                    else primitiva->vertices[cual].coordenadas[coor] += 22.5*signo;
                 }else{
                     if (cual == 2&&coor == 2) {
-                        primitiva->vertices[cual].coordenadas[coor] -= 0.1*signo;
+                        if (despacio) primitiva->vertices[cual].coordenadas[coor] -= 0.1*signo;
+                        else primitiva->vertices[cual].coordenadas[coor] -= 1*signo;
                     }else{
-                        primitiva->vertices[cual].coordenadas[coor] += 0.1*signo;
+                        if (despacio) primitiva->vertices[cual].coordenadas[coor] += 0.1*signo;
+                        else primitiva->vertices[cual].coordenadas[coor] += 1*signo;
                     }
                 }
                 glutPostRedisplay();
@@ -675,4 +839,17 @@ bool CreadorObjetos::moviminetoModificarObjeto(unsigned char tecla, CreadorObjet
     }
     return false;
 }
-
+bool CreadorObjetos::echateABuscar(char *nombre, unsigned int *donde){
+    for (unsigned int i = 0; i<yObjetos.size(); i++) {
+        if (!memcmp(yObjetos[i].id, nombre, sizeof(char)*MAXCHAR)) {
+            *donde = i;
+            return true;
+        }
+    }
+    return false;
+}
+void CreadorObjetos::escribeTiposDeTranspareciasDisponibles(){
+    for (int i =0; i<MAXTIPOTRANSPARENCIA; i++) {
+        std::cout<<i<<".- "<<this->CreadorObjetosTipoTransparenciaToChar[i]<<std::endl;
+    }
+}

@@ -25,6 +25,8 @@ public:
     void dibujaDespues();
     bool menuActivado = false;
 
+    void guardar();
+    
 private:
     enum ConstruccionTipoPared: unsigned int {
         paredNormal=0,paredVentana=1,paredPuerta=2
@@ -184,8 +186,7 @@ private:
     std::vector<unsigned long> ventanasADibujar;
     
     void cargar();
-    void guardar();
-        
+    
     void escribeEnOrdencharArray(char arreglo[][30],unsigned int cuantos);
     
     PrimitivasSelectTexture textureMundo[3] = {PrimitivasSelectTexture(),PrimitivasSelectTexture(),PrimitivasSelectTexture()};

@@ -16,5 +16,6 @@
 #include "Source/Primitivas/Primitivas.hpp"
 #include "Source/Construccion/Construccion.hpp"
 #include "Source/CreadorObjetos/CreadorObjetos.hpp"
+#include "Source/AcomodadorObjetos/AcomodadorObjetos.hpp"
 
 #endif

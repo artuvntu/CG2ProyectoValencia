@@ -31,6 +31,7 @@ Primitivas vPrimitivas;
 KeyFrame vKeyFrame;
 Construccion vConstruccion;
 CreadorObjetos vCreadorObjetos;
+AcomodadorObjetos vAcomodadorObjetos;
 
 int main(int argc,char * argv[]) {
 
@@ -74,12 +75,12 @@ void iniciarOpenGL(void){
     vPrimitivas.inicializar(&vCargadorImage);
     vConstruccion.inicializar(&vPrimitivas, &vCargadorImage, &vKeyFrame);
     vCreadorObjetos.inicializar(&vPrimitivas, &vKeyFrame, &vCargadorImage);
+    vAcomodadorObjetos.inicializar(&vCreadorObjetos);
     vKeyFrame.inicializar(); //Siempre Al ultimo
 //    Pruebas
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 }
-//long i = 0;
 void dibuja(void){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -90,9 +91,9 @@ void dibuja(void){
         vCreadorObjetos.dibuja();
     }else{
         vConstruccion.dibujaAntes();
+        vAcomodadorObjetos.dibuja();
         vConstruccion.dibujaDespues();
     }
-//    i++;
     glutSwapBuffers ( );
 }
 void reajusta(int ancho,int largo){
@@ -133,6 +134,10 @@ void teclado(unsigned char tecla,int x,int y){
         vCreadorObjetos.teclaDeMenu(tecla);
         return;
     }
+    if (vAcomodadorObjetos.menuActivado) {
+        vAcomodadorObjetos.teclaDeMenu(tecla);
+        return;
+    }
     if (tecla == '!') {
         vKeyFrame.teclaActivaMenu();
         return;
@@ -147,12 +152,39 @@ void teclado(unsigned char tecla,int x,int y){
     }
     if(tecla == '$'){
         vCreadorObjetos.teclaActivaMenu();
+        return;
+    }
+    if (tecla == '%') {
+        vAcomodadorObjetos.teclaActivaMenu();
+        return;
     }
     for (int i=0; teclasMovimiento[i] != '\0'; i++) {
         if (teclasMovimiento[i] == tecla) {
             vCamara.keyboardMove(i);
             return;
         }
+    }
+    if (tecla == '+') {
+        std::cout<<"Programa terminado\n";
+        vKeyFrame.guardar();
+        vConstruccion.guardar();
+        vCreadorObjetos.guardar();
+        vAcomodadorObjetos.guardar();
+        exit(0);
+    }
+    if (tecla == ')') {
+        std::cout<<"Programa terminado Sin guardar\n";
+        exit(0);
+    }
+    if (tecla == '-') {
+        std::cout<<"Guardando\n";
+        vKeyFrame.guardar();
+        vConstruccion.guardar();
+        vCreadorObjetos.guardar();
+        vAcomodadorObjetos.guardar();
+    }
+    if (tecla >= '0' && tecla <= '9') {
+        vKeyFrame.reproduceAlgunaAnimacion((unsigned int)tecla-'0');
     }
 }
 void teclasEspecciales(int tecla,int x,int y){

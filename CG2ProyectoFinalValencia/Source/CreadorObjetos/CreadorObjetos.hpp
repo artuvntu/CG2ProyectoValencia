@@ -14,18 +14,26 @@
 
 #define CREADOROBJETOSPATHFILE "CG2ProyectoFinalValencia/Documents/CG2ProyectoFinalValencia.vco"
 
-#define MAXTIPOPRIMITIVA 11
+#define MAXTIPOPRIMITIVA 10
+#define MAXTIPOTRANSPARENCIA 3
 
 class CreadorObjetos{
 public:
     char CreadorObjetosTipoPrimitivaToChar[MAXTIPOPRIMITIVA][30] = {
-        "Nulo","Vertice Angulo","Translate","PopMatrix","Prisma","Esfera","Cilindro","Plano","Otro Objeto","Plano Alpha","Prisma Alpha"
+        "Nulo","Vertice Angulo","Translate","PopMatrix","Prisma","Esfera","Cilindro","Plano","Otro Objeto","Scaled"
     };
     enum CreadorObjetosTipoPrimitiva:unsigned int{
-        nadaPrimiva=0,verticeAngulo=1,translate=2,popm=3,prisma=4,esfera=5,cilindro=6,plano=7,otroObjeto=8,planoTransparente=9,prismaTransparente=10
+        nadaPrimiva=0,verticeAngulo=1,translate=2,popm=3,prisma=4,esfera=5,cilindro=6,plano=7,otroObjeto=8,scaled=9
+    };
+    char CreadorObjetosTipoTransparenciaToChar[MAXTIPOTRANSPARENCIA][30] = {
+        "Desactivado","Blend","Remove Test"
+    };
+    enum CreadorObjetosTipoTransparencia:unsigned int{
+        desactivado=0,blend=1,removeTest=2
     };
     struct _creadorobjetosprimitivas{
         CreadorObjetosTipoPrimitiva tipoPrimitiva = nadaPrimiva;
+        CreadorObjetosTipoTransparencia tipoTransparencia = desactivado;
         std::vector<Cg2ValenciaPunto3D> vertices;
         unsigned int desdeCualTexture = 0;
         unsigned int valorEspecial = 0;
@@ -46,6 +54,9 @@ public:
     void teclaDeMenu(unsigned char tecla);
     void dibuja();
     void dibujaObjeto(unsigned int cual,bool dVertice = false);
+    void guardar();
+    bool echateABuscar(char nombre[MAXCHAR],unsigned int *donde);
+    void escribeObjetosDisponibles();
 
 private:
     char CreadorObjetosAccionesBuscaUIntToChar[3][30] = {"NADA","Asegurar Integridad Objeto","Copiar en Texturas"};
@@ -69,9 +80,9 @@ private:
     
     bool moviminetoModificarObjeto(unsigned char tecla,CreadorObjetosPrimitivas *primitiva);
     
-    void escribeObjetosDisponibles();
     void escribePrimitivasDisponibles(CreadorObjetosObjeto *objeto);
     void escribeTiposDePrimitivasDispnibles();
+    void escribeTiposDeTranspareciasDisponibles();
     
     void describeObjeto(CreadorObjetosObjeto *objeto);
     void describePrimitiva(CreadorObjetosPrimitivas *primitiva);
@@ -87,7 +98,6 @@ private:
     void drawCursor();
     
     void cargar();
-    void guardar();
     
     Primitivas *vPrimitivas;
     KeyFrame *vKeyFrame;
