@@ -47,6 +47,7 @@ void AcomodadorObjetos::dibuja(){
     }
 }
 void AcomodadorObjetos::teclaDeMenu(unsigned char tecla){
+    this->guardar();
     if (tecla == '|') {
         std::cout<<"|\n";
         this->escribeMenu();
@@ -148,8 +149,8 @@ void AcomodadorObjetos::teclaDeMenuInicial(unsigned char tecla){
             yAcomodos[puntero].ubicacion[2].coordenadas[2] = 1;
             if (yAcomodos.size()>=2) {
                 yAcomodos[puntero].ubicacion[0].coordenadas[0] = yAcomodos[yAcomodos.size()-2].ubicacion[0].coordenadas[0];
-                yAcomodos[puntero].ubicacion[0].coordenadas[1] = yAcomodos[yAcomodos.size()-2].ubicacion[0].coordenadas[0];
-                yAcomodos[puntero].ubicacion[0].coordenadas[2] = yAcomodos[yAcomodos.size()-2].ubicacion[0].coordenadas[0];
+                yAcomodos[puntero].ubicacion[0].coordenadas[1] = yAcomodos[yAcomodos.size()-2].ubicacion[0].coordenadas[1];
+                yAcomodos[puntero].ubicacion[0].coordenadas[2] = yAcomodos[yAcomodos.size()-2].ubicacion[0].coordenadas[2];
             }
             this->pintaPunteroSeleccion = true;
             this->drawCursor();

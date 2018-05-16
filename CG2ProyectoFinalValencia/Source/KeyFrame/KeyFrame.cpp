@@ -64,6 +64,7 @@ void KeyFrame::teclaDeMenuInicialReset(){
     this->drawCursor();
 }
 void KeyFrame::teclaDeMenu(unsigned char tecla) {
+    guardar();
     if (tecla == '|'&&this->estado!=buscandoUIntKF) {
         std::cout<<std::endl;
         this->escribeMenu(this->estado);

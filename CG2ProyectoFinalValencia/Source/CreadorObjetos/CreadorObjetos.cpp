@@ -33,6 +33,7 @@ void CreadorObjetos::teclaActivaMenu(){
     this->drawCursor();
 }
 void CreadorObjetos::teclaDeMenu(unsigned char tecla){
+    guardar();
     if (tecla == '|') {
         std::cout<<"Menu actual\n";
         this->esribeMenu();
@@ -397,7 +398,7 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
                 break;
             case 'c':
             case 'C':
-                std::cout<<"Cambio";
+                std::cout<<"Cambio\n";
                 this->escribePrimitivasDisponibles(&yObjetos[punteroSeleccion]);
                 this->empezarABuscarUint(&punteroPrimitiva, (unsigned int)yObjetos[punteroSeleccion].primitivas.size(), modificarObjetoCO);
                 break;
@@ -430,7 +431,7 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
                 this->drawCursor();
                 break;
             case '2':
-                std::cout<<"Cambiando Desde donde Texture";
+                std::cout<<"Cambiando Desde donde Texture\n";
                 this->vPrimitivas->describeSelecTextureVector(&this->yObjetos[punteroSeleccion].texturas);
                 this->empezarABuscarUint(&this->yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].desdeCualTexture,(unsigned int) this->yObjetos[punteroSeleccion].texturas.size(), modificarObjetoCO);
                 break;
@@ -454,6 +455,7 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
                 break;
             case '6':
                 std::cout<<"Set Transparencia";
+                this->escribeTiposDeTranspareciasDisponibles();
                 this->empezarABuscarUint((unsigned int*)&this->yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].tipoTransparencia, MAXTIPOTRANSPARENCIA, modificarObjetoCO);
                 break;
             default:
@@ -665,6 +667,7 @@ void CreadorObjetos::escribePrimitivasDisponibles(CreadorObjetos::CreadorObjetos
     for (unsigned int i = 0;i<objeto->primitivas.size();i++){
         std::cout<<i<<".- ";
         this->describePrimitiva(&objeto->primitivas[i]);
+        std::cout<<std::endl;
     }
 }
 void CreadorObjetos::guardar(){

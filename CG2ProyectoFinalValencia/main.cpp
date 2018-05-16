@@ -186,6 +186,11 @@ void teclado(unsigned char tecla,int x,int y){
     if (tecla >= '0' && tecla <= '9') {
         vKeyFrame.reproduceAlgunaAnimacion((unsigned int)tecla-'0');
     }
+    if (tecla == ';') {
+        for (int i = 0; i<3; i++) {
+            vCamara.XYZ[i] = 1;
+        }
+    }
 }
 void teclasEspecciales(int tecla,int x,int y){
     switch( tecla ) {

@@ -115,7 +115,10 @@ void Construccion::teclaDeMenu(unsigned char tecla){
     }
 }
 void Construccion::dibujaAntes(){
+    glPushMatrix();
+    glScaled(10, 10, 10);
     this->vPrimitivas->mundo(&this->textureMundo[0], &this->textureMundo[2], &this->textureMundo[1]);
+    glPopMatrix();
     for (int i = 0; i<this->yParedes.size(); i++) {
         this->dibujaPared(&(yParedes[i]));
     }
@@ -171,7 +174,7 @@ void Construccion::escribeMenu(){
             std::cout<<"T->Modificar Textura\nC->Copiar\nX->Salir\nV->No. Escalones\n";
             break;
         case modificarTextura:
-            std::cout<<"M->Mostar\nC->Cambio Select Texture\nS->Set To Texture\nT->Terminar\n";
+            std::cout<<"M->Mostar\nC->Cambio Select Texture\nS->Set To Texture\nT->Terminar\nN->Copiar\n";
             break;
         default:
             std::cout<<"Construccion escribe menu estado no encontrado\n";
@@ -762,6 +765,7 @@ void Construccion::teclaDeMenuTextura(unsigned char tecla){
         case 's':
             //Set Texture
             std::cout<<"Set Texture\n";
+            vCargadorImage->escribeTexturasDisponibles();
             this->empezarABuscarUint(&(this->texturaModificable->at(this->punteroModificarTextura).cualTextura),(unsigned int) this->vCargadorImage->texturas.size(), modificarTextura);
             break;
         case 'c':
@@ -769,12 +773,24 @@ void Construccion::teclaDeMenuTextura(unsigned char tecla){
             //Cambio
             std::cout<<"Cambio Texture\n";
             this->empezarABuscarUint(&this->punteroModificarTextura, (unsigned int)this->texturaModificable->size(), modificarTextura);
+            drawCursor();
+            break;
+        case 'n':
+        case 'N':
+            if (punteroModificarTextura < texturaModificable->size() - 1) {
+                std::cout<<"Copiado\n";
+                texturaModificable->at(punteroModificarTextura+1).cualTextura = texturaModificable->at(punteroModificarTextura).cualTextura;
+                punteroModificarTextura++;
+            }else std::cout<<"Ultima\n";
+            drawCursor();
             break;
         case 'T':
         case 't':
             //Terminado
             std::cout<<"Terminado\n";
             this->estado = estadoARegresarTextura;
+            escribeMenu();
+            drawCursor();
             break;
         default:
             break;
@@ -1172,10 +1188,10 @@ void Construccion::asegurarIntegridadParedVentanaNormalCalculos(ConstruccionPare
     }
     pared->vertice[3].coordenadas[1] = pared->vertice[1].coordenadas[1]*0.5;
 
-    pared->vertice[4].coordenadas[1] = pared->vertice[1].coordenadas[1]*0.5;
+    pared->vertice[4].coordenadas[1] = pared->vertice[1].coordenadas[1]*0.5+pared->vertice[0].coordenadas[1];
     pared->vertice[5].coordenadas[1] = pared->vertice[1].coordenadas[1]*0.4;
     
-    pared->vertice[6].coordenadas[1] = pared->vertice[1].coordenadas[1]*0.9;
+    pared->vertice[6].coordenadas[1] = pared->vertice[1].coordenadas[1]*0.9+pared->vertice[0].coordenadas[1];
     pared->vertice[7].coordenadas[1] = pared->vertice[1].coordenadas[1]*0.1;
 
 }
