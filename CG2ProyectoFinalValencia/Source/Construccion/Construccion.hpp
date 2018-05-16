@@ -146,6 +146,8 @@ private:
     void asegurarIntegridadParedCalculos(ConstruccionPared *pared);
     void asegurarIntegridadParedVentanaNormalCalculos(ConstruccionPared *pared);
     void asegurarIntegridadParedPuertaNormalCalculos(ConstruccionPared *pared);
+    void asegurarIntegridadParedPuertaNormalCalculos2(ConstruccionPared *pared);
+    
     
     void aseguraIntegridadSueloTam(ConstruccionSuelo *suelo);
     void aseguraIntegridadSueloCalculos(ConstruccionSuelo *suelo);
@@ -181,6 +183,9 @@ private:
     
     std::vector<PrimitivasSelectTexture> puertaNormalTexturas;
     std::vector<PrimitivasSelectTexture> ventanaNormalTexturas;
+    std::vector<PrimitivasSelectTexture> accesoriaTextura;
+    std::vector<PrimitivasSelectTexture> zaguanTextureD;
+    std::vector<PrimitivasSelectTexture> zaguanTextureI;
     PrimitivasSelectTexture defaultTexture;
     
     std::vector<unsigned long> ventanasADibujar;

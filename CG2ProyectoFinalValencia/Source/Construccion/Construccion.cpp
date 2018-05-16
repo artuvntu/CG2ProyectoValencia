@@ -18,9 +18,13 @@ void Construccion::inicializar(Primitivas *primitivasactual, CargadorImage *carg
     char nombreAuxiliarMaderaBlanca01[MAXCHAR]= "maderaBlanca01";
     char nombreAuxiliarLadrillo01[MAXCHAR] = "ladrillo01";
     char nombreAuxiliarVentana01[MAXCHAR] = "ventana01";
+    char nombres[2][MAXCHAR] = {
+        "accesoria01","zaguan01"
+    };
     PrimitivasSelectTexture texturaAuxMaderaBlanca01 = PrimitivasSelectTexture();
     PrimitivasSelectTexture texturaAuxPuerta01 = PrimitivasSelectTexture();
     PrimitivasSelectTexture texturaAuxVentana01 = PrimitivasSelectTexture();
+    PrimitivasSelectTexture texaux[3] = {PrimitivasSelectTexture(),PrimitivasSelectTexture()};
     if (!this->vCargadorImage->echateABuscarTexture(nombreAuxiliarPuerta01, &texturaAuxPuerta01.cualTextura)) {
         std::cout<< nombreAuxiliarPuerta01 << " No encontre esa textura :(\n";
     }
@@ -33,6 +37,12 @@ void Construccion::inicializar(Primitivas *primitivasactual, CargadorImage *carg
     if (!this->vCargadorImage->echateABuscarTexture(nombreAuxiliarVentana01, &texturaAuxVentana01.cualTextura)) {
         std::cout<< nombreAuxiliarLadrillo01 << " No encontre esa textura :(\n";
     }
+    if (!this->vCargadorImage->echateABuscarTexture(nombres[0], &texaux[0].cualTextura)) {
+        std::cout<< nombres[0] << " No encontre esa textura :(\n";
+    }
+    if (!this->vCargadorImage->echateABuscarTexture(nombres[1], &texaux[1].cualTextura)) {
+        std::cout<< nombres[1] << " No encontre esa textura :(\n";
+    }
     this->puertaNormalTexturas.push_back(texturaAuxPuerta01);
     this->puertaNormalTexturas.push_back(texturaAuxMaderaBlanca01);
     this->puertaNormalTexturas.push_back(texturaAuxPuerta01);
@@ -40,8 +50,13 @@ void Construccion::inicializar(Primitivas *primitivasactual, CargadorImage *carg
     this->puertaNormalTexturas.push_back(texturaAuxMaderaBlanca01);
     this->puertaNormalTexturas.push_back(texturaAuxMaderaBlanca01);
     
+    texaux[2] = texaux[1];
+    texaux[2].posicionInicio[0] = vCargadorImage->texturas[texaux[2].cualTextura].cantidadRep[1]/2.0;
     for (int i = 0; i<6; i++) {
         this->ventanaNormalTexturas.push_back(texturaAuxVentana01);
+        this->accesoriaTextura.push_back(texaux[0]);
+        this->zaguanTextureD.push_back(texaux[1]);
+        this->zaguanTextureI.push_back(texaux[2]);
     }
     this->cargar();
     
@@ -1078,6 +1093,9 @@ void Construccion::aseguraIntegridadParedTam(ConstruccionPared *pared){
         case paredPuerta:
             switch (pared->tipoPuerta) {
                 case puertaNormal:
+                case cortinaAccesoria:
+                case zaguanIzquiedo:
+                case zaguanDerecho:
                     this->aseguraIntegridadParedTamByNumber(pared, 1, 2);
                     pared->cualVarMovimiento = this->vKeyFrame->crearVarMovimiento(pared->id);
                     break;
@@ -1122,6 +1140,11 @@ void Construccion::asegurarIntegridadParedCalculos(ConstruccionPared *pared){
             switch (pared->tipoPuerta) {
                 case puertaNormal:
                     this->asegurarIntegridadParedPuertaNormalCalculos(pared);
+                    break;
+                case cortinaAccesoria:
+                case zaguanIzquiedo:
+                case zaguanDerecho:
+                    this->asegurarIntegridadParedPuertaNormalCalculos2(pared);
                     break;
                 case puertanulo:
                 default:
@@ -1175,6 +1198,32 @@ void Construccion::asegurarIntegridadParedPuertaNormalCalculos(ConstruccionPared
     pared->vertice[5].coordenadas[1] = pared->vertice[1].coordenadas[1]*0.1;
     
 }
+void Construccion::asegurarIntegridadParedPuertaNormalCalculos2(ConstruccionPared *pared){
+    if (pared->texturaMain.size()!=12||pared->vertice.size()!=6) {
+        std::cout<<"Uso incorrecto de funcion asegurarIntegridadParedPuertaNormal\n";
+    }
+    
+    for (int i = 0; i<6; i++) {
+        pared->texturaMain[6+i].posicionInicio[1] = pared->texturaMain[i].posicionInicio[1] + pared->vertice[1].coordenadas[1]*0.9;
+        
+    }
+    for (int i = 0; i<4; i+=2) {
+        pared->vertice[2+i] = pared->vertice[0];
+        pared->vertice[3+i] = pared->vertice[1];
+    }
+    pared->vertice[3].coordenadas[2] = pared->vertice[1].coordenadas[2]*0.6;
+    pared->vertice[3].coordenadas[1] = pared->vertice[1].coordenadas[1]*0.9;
+    
+    pared->vertice[4].coordenadas[1] += pared->vertice[1].coordenadas[1]*0.9;
+    pared->vertice[5].coordenadas[1] = pared->vertice[1].coordenadas[1]*0.1;
+    
+    if (pared->tipoPuerta == zaguanIzquiedo) {
+        pared->vertice[3].coordenadas[0] = -pared->vertice[1].coordenadas[0];
+        pared->vertice[5].coordenadas[0] = -pared->vertice[1].coordenadas[0];
+    }
+    
+}
+
 unsigned long Construccion::cuantosDisponiblesDe(Construccion::ConstruccionTipoConstruccion tipo){
     switch (tipo) {
         case pared:
@@ -1387,6 +1436,24 @@ void Construccion::dibujaPared(ConstruccionPared *pared){
                     vPrimitivas->prismaEstandar(&(pared->texturaMain),6 , pared->vertice[4].coordenadas, pared->vertice[5].coordenadas,pared->angulo);
                     //Puerta
                     vPrimitivas->prismaEstandar(&(this->puertaNormalTexturas),0 , pared->vertice[2].coordenadas, pared->vertice[3].coordenadas,pared->angulo+vKeyFrame->varMovimientos[pared->cualVarMovimiento].value+0.785);
+                    break;
+                case cortinaAccesoria:
+                    vPrimitivas->prismaEstandar(&(pared->texturaMain),6 , pared->vertice[4].coordenadas, pared->vertice[5].coordenadas,pared->angulo);
+                    pared->vertice[2].coordenadas[1] = 1 + vKeyFrame->varMovimientos[pared->cualVarMovimiento].value + pared->vertice[0].coordenadas[1];
+                    pared->vertice[3].coordenadas[1] = pared->vertice[1].coordenadas[1] *0.9 - 1 - vKeyFrame->varMovimientos[pared->cualVarMovimiento].value;
+                    vPrimitivas->prismaEstandar(&(this->accesoriaTextura),0 , pared->vertice[2].coordenadas, pared->vertice[3].coordenadas,pared->angulo);
+                    break;
+                case zaguanIzquiedo:
+                    //Cachito
+                    vPrimitivas->prismaEstandar(&(pared->texturaMain),6 , pared->vertice[4].coordenadas, pared->vertice[5].coordenadas,pared->angulo);
+                    //Puerta
+                    vPrimitivas->prismaEstandar(&(this->zaguanTextureI),0 , pared->vertice[2].coordenadas, pared->vertice[3].coordenadas,pared->angulo+vKeyFrame->varMovimientos[pared->cualVarMovimiento].value);
+                    break;
+                case zaguanDerecho:
+                    //Cachito
+                    vPrimitivas->prismaEstandar(&(pared->texturaMain),6 , pared->vertice[4].coordenadas, pared->vertice[5].coordenadas,pared->angulo);
+                    //Puerta
+                    vPrimitivas->prismaEstandar(&(this->zaguanTextureD),0 , pared->vertice[2].coordenadas, pared->vertice[3].coordenadas,pared->angulo+vKeyFrame->varMovimientos[pared->cualVarMovimiento].value);
                     break;
                 case puertanulo:
                     vPrimitivas->prismaEstandar(&(pared->texturaMain),0 , pared->vertice[0].coordenadas, pared->vertice[1].coordenadas,pared->angulo);
