@@ -32,6 +32,7 @@ KeyFrame vKeyFrame;
 Construccion vConstruccion;
 CreadorObjetos vCreadorObjetos;
 AcomodadorObjetos vAcomodadorObjetos;
+UIClassAux vUIClassAux;
 
 int main(int argc,char * argv[]) {
 
@@ -74,8 +75,8 @@ void iniciarOpenGL(void){
     vCargadorImage.inicializar();
     vPrimitivas.inicializar(&vCargadorImage);
     vConstruccion.inicializar(&vPrimitivas, &vCargadorImage, &vKeyFrame);
-    vCreadorObjetos.inicializar(&vPrimitivas, &vKeyFrame, &vCargadorImage);
-    vAcomodadorObjetos.inicializar(&vCreadorObjetos);
+    vCreadorObjetos.inicializar(&vPrimitivas, &vKeyFrame, &vCargadorImage, &vCamara);
+    vAcomodadorObjetos.inicializar(&vCreadorObjetos,&vUIClassAux,&vCamara);
     vKeyFrame.inicializar(); //Siempre Al ultimo
 //    Pruebas
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -109,7 +110,7 @@ void reajusta(int ancho,int largo){
     ventana[0] = ancho/2;
     ventana[1] = largo/2;
 }
-void teclado(unsigned char tecla,int x,int y){
+void teclado(unsigned char tecla,int x,int y){    
     if (tecla == 27){
         blockCursor = false;
         glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
@@ -186,11 +187,11 @@ void teclado(unsigned char tecla,int x,int y){
     if (tecla >= '0' && tecla <= '9') {
         vKeyFrame.reproduceAlgunaAnimacion((unsigned int)tecla-'0');
     }
-    if (tecla == ';') {
-        for (int i = 0; i<3; i++) {
-            vCamara.XYZ[i] = 1;
-        }
-    }
+//    if (tecla == ';') {
+//        for (int i = 0; i<3; i++) {
+//            vCamara.XYZ[i] = 1;
+//        }
+//    }
 }
 void teclasEspecciales(int tecla,int x,int y){
     switch( tecla ) {

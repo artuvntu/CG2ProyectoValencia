@@ -8,8 +8,10 @@
 
 #include "Camera.hpp"
 
+#define CAMARAVERSIONFILEACTUAL 0x18FF
+
 void Camara::easyPosition(){
-    gluLookAt(this->XYZ[0], this->XYZ[1], this->XYZ[2], this->XYZ[3], this->XYZ[4], this->XYZ[5], this->XYZ[6], this->XYZ[7], this->XYZ[8]);
+    gluLookAt(this->posActual.XYZ[0], this->posActual.XYZ[1], this->posActual.XYZ[2], this->posActual.XYZ[3], this->posActual.XYZ[4], this->posActual.XYZ[5], this->posActual.XYZ[6], this->posActual.XYZ[7], this->posActual.XYZ[8]);
 }
 void Camara::keyboardMove(int type,double intensidad){
     int realType = 0;
@@ -22,62 +24,62 @@ void Camara::keyboardMove(int type,double intensidad){
     m = intensidad * this->multipler[realType+(6*(type/12))];
     switch (realType) {
         case 0:
-//            tm[0] = (cos(this->Angles[1])*sin(Angles[0]));
-//            tm[1] = (sin(this->Angles[1]));
-//            tm[2] = (cos(this->Angles[1])*cos(Angles[0]));
-            tm[0] = (sin(Angles[0]));
+//            tm[0] = (cos(this->posActual.Angles[1])*sin(this->posActual.Angles[0]));
+//            tm[1] = (sin(this->this->posActual.Angles[1]));
+//            tm[2] = (cos(this->this->posActual.Angles[1])*cos(this->posActual.Angles[0]));
+            tm[0] = (sin(this->posActual.Angles[0]));
             tm[1] = (0);
-            tm[2] = (cos(Angles[0]));
+            tm[2] = (cos(this->posActual.Angles[0]));
             for(int i=0;i<3;i++){
-                this->XYZ[i] += m * tm[i];
-                this->XYZ[i+3] += m *tm[i] ;
+                this->posActual.XYZ[i] += m * tm[i];
+                this->posActual.XYZ[i+3] += m *tm[i] ;
             }
             break;
         case 1:
-            tm[0] = (sin(Angles[0]+1.57));
+            tm[0] = (sin(this->posActual.Angles[0]+1.57));
             tm[1] = 0;
-            tm[2] = (cos(Angles[0]+1.57));
+            tm[2] = (cos(this->posActual.Angles[0]+1.57));
             for(int i=0;i<3;i++){
-                this->XYZ[i] += m * tm[i];
-                this->XYZ[i+3] += m *tm[i] ;
+                this->posActual.XYZ[i] += m * tm[i];
+                this->posActual.XYZ[i+3] += m *tm[i] ;
             }
             break;
         case 2:
-//            tm[0] = (cos(this->Angles[1]+1.57)*sin(Angles[0]));
-//            tm[1] = (sin(this->Angles[1]+1.57));
-//            tm[2] = (cos(this->Angles[1]+1.57)*cos(Angles[0]));
+//            tm[0] = (cos(this->this->posActual.Angles[1]+1.57)*sin(this->posActual.Angles[0]));
+//            tm[1] = (sin(this->this->posActual.Angles[1]+1.57));
+//            tm[2] = (cos(this->this->posActual.Angles[1]+1.57)*cos(this->posActual.Angles[0]));
             tm[0] = 0;
             tm[1] = 1;
             tm[2] = 0;
             for(int i=0;i<3;i++){
-                this->XYZ[i] += m * tm[i];
-                this->XYZ[i+3] += m *tm[i] ;
+                this->posActual.XYZ[i] += m * tm[i];
+                this->posActual.XYZ[i+3] += m *tm[i] ;
             }
 
             break;
         case 3:
-            this->Angles[0] += m;
-            tm[0] = (cos(this->Angles[1])*sin(Angles[0]));
-            tm[1] = (sin(this->Angles[1]));
-            tm[2] = (cos(this->Angles[1])*cos(Angles[0]));
-            this->XYZ[3] = this->XYZ[0]+tm[0];
-            this->XYZ[4] = this->XYZ[1]+tm[1];
-            this->XYZ[5] = this->XYZ[2]+tm[2];
+            this->posActual.Angles[0] += m;
+            tm[0] = (cos(this->posActual.Angles[1])*sin(this->posActual.Angles[0]));
+            tm[1] = (sin(this->posActual.Angles[1]));
+            tm[2] = (cos(this->posActual.Angles[1])*cos(this->posActual.Angles[0]));
+            this->posActual.XYZ[3] = this->posActual.XYZ[0]+tm[0];
+            this->posActual.XYZ[4] = this->posActual.XYZ[1]+tm[1];
+            this->posActual.XYZ[5] = this->posActual.XYZ[2]+tm[2];
             
             break;
         case 4:
-            this->Angles[1] += m;
-            tm[0] = (cos(this->Angles[1])*sin(Angles[0]));
-            tm[1] = (sin(this->Angles[1]));
-            tm[2] = (cos(this->Angles[1])*cos(Angles[0]));
-            this->XYZ[3] = this->XYZ[0]+tm[0];
-            this->XYZ[4] = this->XYZ[1]+tm[1];
-            this->XYZ[5] = this->XYZ[2]+tm[2];
+            this->posActual.Angles[1] += m;
+            tm[0] = (cos(this->posActual.Angles[1])*sin(this->posActual.Angles[0]));
+            tm[1] = (sin(this->posActual.Angles[1]));
+            tm[2] = (cos(this->posActual.Angles[1])*cos(this->posActual.Angles[0]));
+            this->posActual.XYZ[3] = this->posActual.XYZ[0]+tm[0];
+            this->posActual.XYZ[4] = this->posActual.XYZ[1]+tm[1];
+            this->posActual.XYZ[5] = this->posActual.XYZ[2]+tm[2];
             break;
         case 5:
-            this->Angles[2] += m;
-            this->XYZ[6] = cos(Angles[2]);
-            this->XYZ[7] = sin(Angles[2]);
+            this->posActual.Angles[2] += m;
+            this->posActual.XYZ[6] = cos(this->posActual.Angles[2]);
+            this->posActual.XYZ[7] = sin(this->posActual.Angles[2]);
             break;
         default:
             std::cout<<"Valor no legible Camara" << std::endl;

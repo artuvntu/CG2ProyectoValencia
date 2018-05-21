@@ -13,6 +13,7 @@
 
 #include "../KeyFrame/KeyFrame.hpp"
 #include "../CargadorImage/CargadorImage.hpp"
+#include "../UIClassAux/UIClassAux.hpp"
 
 #define PRIMITIVARVTPRISMAESTANDAR 6
 #define PRIMITIVARVTSUELOPOLIGONAL 2
@@ -45,11 +46,24 @@ public:
     void sueloPoligonal(std::vector<PrimitivasSelectTexture>*vectorSelecTexture,unsigned int desdeDonde,std::vector<Cg2ValenciaPunto3D>*vectorVertices);
     void cruceta(bool swithColor = false);
     void describePunto(Cg2ValenciaPunto3D punto);
+    
+    void empiezaAModificarTexture(std::vector<PrimitivasSelectTexture> *v,unsigned char finMod, unsigned char *donde);
+    bool teclaDeMenuTextura(unsigned char tecla);
+    
+    void drawCursor();
+    void escribeMenu();
+    
 private:
 
     CargadorImage *vCargadorImage;
     void obtenerPosicionFinalEInicial(double *posicionFinal,double *posicionInicial, PrimitivasSelectTexture * selectTexture,double x,double y);
 
+    UIClassAux vUIClassAux;
+    bool setTexture = false;
+    unsigned char finModificacion;
+    unsigned char *dondeModificar;
+    std::vector<PrimitivasSelectTexture> *vectorPrimitivasST;
+    unsigned int punteroVectorPrimitivas = 0;
 };
 
 #endif

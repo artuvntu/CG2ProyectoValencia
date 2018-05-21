@@ -10,8 +10,10 @@
 
 #define ACOMODAROBJETOVERSIONARCHIVO 0x18FF
 
-void AcomodadorObjetos::inicializar(CreadorObjetos *co){
+void AcomodadorObjetos::inicializar(CreadorObjetos *co, UIClassAux *uic, Camara *cam){
     this->vCreadorObjetos = co;
+    this->vUIClassAux = uic;
+    this->vCamara = cam;
     this->cargar();
 }
 
@@ -58,7 +60,10 @@ void AcomodadorObjetos::teclaDeMenu(unsigned char tecla){
             this->teclaDeMenuInicial(tecla);
             break;
         case BuscaUInt:
-            this->teclaDeMenuBuscaUInt(tecla);
+            if(this->vUIClassAux->teclaDeMenu(tecla)){
+                this->ejecutaAccionDespuesBuscarUInt(accionDespuesBuscarUInt);
+            }
+//            this->teclaDeMenuBuscaUInt(tecla);
             break;
         default:
             break;
@@ -71,6 +76,7 @@ void AcomodadorObjetos::teclaActivaMenu(){
     if (yAcomodos.size()!=0) {
         this->pintaPunteroSeleccion = true;
     }
+    this->vUIClassAux->empezarABuscarMove(&this->yAcomodos[puntero].ubicacion[0].coordenadas[0], &this->yAcomodos[puntero].ubicacion[0].coordenadas[1], &this->yAcomodos[puntero].ubicacion[0].coordenadas[2], &this->yAcomodos[puntero].ubicacion[2].coordenadas[0], &this->yAcomodos[puntero].ubicacion[2].coordenadas[1], &this->yAcomodos[puntero].ubicacion[2].coordenadas[2], &this->yAcomodos[puntero].ubicacion[1].coordenadas[0], &this->yAcomodos[puntero].ubicacion[1].coordenadas[1], &this->yAcomodos[puntero].ubicacion[1].coordenadas[2], 0.1, 1, 11.25, 45);
     this->escribeMenu();
     this->drawCursor();
 }
@@ -81,19 +87,20 @@ void AcomodadorObjetos::escribeMenu(){
                 this->describeAcomodo(&yAcomodos[puntero]);
                 std::cout<<"Actual: "<<puntero<<" Disponibles: "<<yAcomodos.size()<<"\nM->Mostar Disponibles\nC->Cambiar\nX->Delete\n";
             }else std::cout<<"Crea un acomodo\n";
-            std::cout<<"V->Nuevo\nB->Guardar en Archivo\nN->Cargar (Mejor no)\nP->Set tipo\nZ->Salir\n";
+            std::cout<<"N->Nuevo\n1->Guardar en Archivo\n2->Cargar (Mejor no)\nP->Set tipo\nZ->Salir\n";
             break;
         case BuscaUInt:
-            std::cout<<"Accion: \""<<this->AcomodadorObjetosAccionesBuscaUIntToChar[(unsigned char) this->accionDespuesBuscarUInt]<<"\" V Actual: "<<*this->dondeGuardar<<" Max: "<<this->maxDondeGuardar<<" Write: "<<this->temporalIntFromKeyBoard<<" Regresar a "<<this->AcomodadorObjetosEstadosToChar[(unsigned char)this->estadoARegresarBUInt]<<std::endl;
+            this->vUIClassAux->escribeMenu();
             break;
         default:
             break;
     }
 }
 void AcomodadorObjetos::drawCursor(){
-    std::cout<<"CG2ProyectoFinalValenciaC "<< this->AcomodadorObjetosEstadosToChar[(unsigned char) this->estado] << " $ ";
-    if (this->estado == BuscaUInt && this->temporalIntFromKeyBoard != 0) {
-        std::cout<<temporalIntFromKeyBoard;
+    if (this->estado == BuscaUInt) {
+        this->vUIClassAux->drawCursor();
+    }else{
+        std::cout<<"CG2ProyectoFinalValenciaC "<< this->AcomodadorObjetosEstadosToChar[(unsigned char) this->estado] << " $ ";
     }
 }
 void AcomodadorObjetos::teclaDeMenuInicial(unsigned char tecla){
@@ -110,7 +117,8 @@ void AcomodadorObjetos::teclaDeMenuInicial(unsigned char tecla){
             case 'C':
                 std::cout<<"Cambio\n";
                 this->escribeAcomodosDisponibles();
-                empezarABuscarUInt(&puntero, (unsigned int) yAcomodos.size(), inicialAO);
+                this->estado = BuscaUInt;
+                this->vUIClassAux->empezarABuscarUInt(&puntero, (unsigned int)yAcomodos.size(), (unsigned char *)&this->estado, (unsigned char)inicialAO, (unsigned char)inicialAO, (unsigned char) cambioPuntero, (unsigned char) nada,(unsigned char*)&accionDespuesBuscarUInt);
                 break;
             case 'X':
             case 'x':
@@ -120,23 +128,37 @@ void AcomodadorObjetos::teclaDeMenuInicial(unsigned char tecla){
                     if (puntero>=yAcomodos.size()) {
                         puntero = (unsigned int)yAcomodos.size()-1;
                     }
+                    if (yAcomodos.size()!=0) {
+                        this->vUIClassAux->empezarABuscarMove(&this->yAcomodos[puntero].ubicacion[0].coordenadas[0], &this->yAcomodos[puntero].ubicacion[0].coordenadas[1], &this->yAcomodos[puntero].ubicacion[0].coordenadas[2], &this->yAcomodos[puntero].ubicacion[2].coordenadas[0], &this->yAcomodos[puntero].ubicacion[2].coordenadas[1], &this->yAcomodos[puntero].ubicacion[2].coordenadas[2], &this->yAcomodos[puntero].ubicacion[1].coordenadas[0], &this->yAcomodos[puntero].ubicacion[1].coordenadas[1], &this->yAcomodos[puntero].ubicacion[1].coordenadas[2], 0.1, 1, 11.25, 45);
+                    }
                 }else std::cout<<"Error no deberia estar disponible la opcion\n";
                 this->drawCursor();
                 break;
             case 'p':
             case 'P':
                 vCreadorObjetos->escribeObjetosDisponibles();
-                this->empezarABuscarUInt(&yAcomodos[puntero].cual, (unsigned int)vCreadorObjetos->yObjetos.size(), inicialAO);
+                this->estado = BuscaUInt;
+                this->vUIClassAux->empezarABuscarUInt(&yAcomodos[puntero].cual, (unsigned int)vCreadorObjetos->yObjetos.size(),(unsigned char *) &this->estado, (unsigned char)inicialAO, (unsigned char) inicialAO, (unsigned char) nada, (unsigned char) nada, (unsigned char *)&accionDespuesBuscarUInt);
+                break;
+            case '3':
+                std::cout<<"Copiar\n";
+                yAcomodos.push_back(yAcomodos[puntero]);
+                puntero =(unsigned int) yAcomodos.size()-1;
+                yAcomodos[puntero].ubicacion[0].coordenadas[0] = vCamara->posActual.XYZ[3];
+                yAcomodos[puntero].ubicacion[0].coordenadas[1] = vCamara->posActual.XYZ[4];
+                yAcomodos[puntero].ubicacion[0].coordenadas[2] = vCamara->posActual.XYZ[5];
+                this->vUIClassAux->empezarABuscarMove(&this->yAcomodos[puntero].ubicacion[0].coordenadas[0], &this->yAcomodos[puntero].ubicacion[0].coordenadas[1], &this->yAcomodos[puntero].ubicacion[0].coordenadas[2], &this->yAcomodos[puntero].ubicacion[2].coordenadas[0], &this->yAcomodos[puntero].ubicacion[2].coordenadas[1], &this->yAcomodos[puntero].ubicacion[2].coordenadas[2], &this->yAcomodos[puntero].ubicacion[1].coordenadas[0], &this->yAcomodos[puntero].ubicacion[1].coordenadas[1], &this->yAcomodos[puntero].ubicacion[1].coordenadas[2], 0.1, 1, 11.25, 45);
+                this->drawCursor();
                 break;
             default:
-                saltar = this->moviminetoModificarObjeto(tecla, &yAcomodos[puntero]);
+                saltar = this->vUIClassAux->teclaMove(tecla);
                 break;
         }
         if (saltar) return;
     }
     switch (tecla) {
-        case 'v':
-        case 'V':
+        case 'n':
+        case 'N':
             if (vCreadorObjetos->yObjetos.size()==0) {
                 std::cout<<"Crea primero objetos\n";
                 return;
@@ -147,22 +169,19 @@ void AcomodadorObjetos::teclaDeMenuInicial(unsigned char tecla){
             yAcomodos[puntero].ubicacion[2].coordenadas[0] = 1;
             yAcomodos[puntero].ubicacion[2].coordenadas[1] = 1;
             yAcomodos[puntero].ubicacion[2].coordenadas[2] = 1;
-            if (yAcomodos.size()>=2) {
-                yAcomodos[puntero].ubicacion[0].coordenadas[0] = yAcomodos[yAcomodos.size()-2].ubicacion[0].coordenadas[0];
-                yAcomodos[puntero].ubicacion[0].coordenadas[1] = yAcomodos[yAcomodos.size()-2].ubicacion[0].coordenadas[1];
-                yAcomodos[puntero].ubicacion[0].coordenadas[2] = yAcomodos[yAcomodos.size()-2].ubicacion[0].coordenadas[2];
-            }
+            yAcomodos[puntero].ubicacion[0].coordenadas[0] = vCamara->posActual.XYZ[3];
+            yAcomodos[puntero].ubicacion[0].coordenadas[1] = vCamara->posActual.XYZ[4];
+            yAcomodos[puntero].ubicacion[0].coordenadas[2] = vCamara->posActual.XYZ[5];
             this->pintaPunteroSeleccion = true;
+            this->vUIClassAux->empezarABuscarMove(&this->yAcomodos[puntero].ubicacion[0].coordenadas[0], &this->yAcomodos[puntero].ubicacion[0].coordenadas[1], &this->yAcomodos[puntero].ubicacion[0].coordenadas[2], &this->yAcomodos[puntero].ubicacion[2].coordenadas[0], &this->yAcomodos[puntero].ubicacion[2].coordenadas[1], &this->yAcomodos[puntero].ubicacion[2].coordenadas[2], &this->yAcomodos[puntero].ubicacion[1].coordenadas[0], &this->yAcomodos[puntero].ubicacion[1].coordenadas[1], &this->yAcomodos[puntero].ubicacion[1].coordenadas[2], 0.1, 1, 11.25, 45);
             this->drawCursor();
             break;
-        case 'B':
-        case 'b':
+        case '1':
             std::cout<<"Guardar de archivo\n";
             this->guardar();
             this->drawCursor();
             break;
-        case 'n':
-        case 'N':
+        case '2':
             std::cout<<"Cargando archivo\n";
             this->cargar();
             this->drawCursor();
@@ -179,52 +198,19 @@ void AcomodadorObjetos::teclaDeMenuInicial(unsigned char tecla){
     }
 
 }
-void AcomodadorObjetos::teclaDeMenuBuscaUInt(unsigned char tecla){
-    if (tecla >= 48 && tecla <= 57) {
-        std::cout << (tecla -48);
-        this->temporalIntFromKeyBoard= (this->temporalIntFromKeyBoard * 10)+(tecla - 48);
-        if (this->temporalIntFromKeyBoard >= this->maxDondeGuardar){
-            std::cout<<"\nNumero mayor a los disponibles\n";
-            this->estado = this->estadoAnterior;
-            this->estadoAnterior = inicialAO;
-            this->estadoARegresarBUInt = inicialAO;
-            this->drawCursor();
-        }
-    }else if (tecla == 13){
-        std::cout <<std::endl;
-        *this->dondeGuardar = this->temporalIntFromKeyBoard;
-        this->temporalIntFromKeyBoard = 0;
-        this->estado = this->estadoARegresarBUInt;
-        this->estadoARegresarBUInt = inicialAO;
-        this->estadoAnterior = inicialAO;
-        this->ejecutaAccionDespuesBuscarUInt();
-        this->escribeMenu();
-        this->drawCursor();
-    }else{
-        std::cout<<"\nCancelado\n";
-        this->estado = this->estadoAnterior;
-        this->estadoARegresarBUInt = inicialAO;
-        this->estadoAnterior = inicialAO;
-        this->drawCursor();
-    }
-}
-void AcomodadorObjetos::empezarABuscarUInt(unsigned int *dondeGuardad, unsigned int max, AcomodadorObjetos::AcomodadorObjetosEstados estadoRegresar,AcomodadorObjetosAccionesBuscaUInt accion ){
-    this->accionDespuesBuscarUInt = accion;
-    this->estadoAnterior = estado;
-    this->estadoARegresarBUInt = estadoRegresar;
-    this->estado = BuscaUInt;
-    this->maxDondeGuardar = max;
-    this->dondeGuardar = dondeGuardad;
-    this->escribeMenu();
-    this->drawCursor();
-}
-void AcomodadorObjetos::ejecutaAccionDespuesBuscarUInt(){
-    switch (this->accionDespuesBuscarUInt) {
+void AcomodadorObjetos::ejecutaAccionDespuesBuscarUInt(unsigned char accion){
+    AcomodadorObjetosAccionesBuscaUInt a = (AcomodadorObjetosAccionesBuscaUInt) accion;
+    switch (a) {
         case nada:
+            break;
+        case cambioPuntero:
+            this->vUIClassAux->empezarABuscarMove(&this->yAcomodos[puntero].ubicacion[0].coordenadas[0], &this->yAcomodos[puntero].ubicacion[0].coordenadas[1], &this->yAcomodos[puntero].ubicacion[0].coordenadas[2], &this->yAcomodos[puntero].ubicacion[2].coordenadas[0], &this->yAcomodos[puntero].ubicacion[2].coordenadas[1], &this->yAcomodos[puntero].ubicacion[2].coordenadas[2], &this->yAcomodos[puntero].ubicacion[1].coordenadas[0], &this->yAcomodos[puntero].ubicacion[1].coordenadas[1], &this->yAcomodos[puntero].ubicacion[1].coordenadas[2], 0.1, 1, 11.25, 45);
             break;
         default:
             break;
     }
+    this->escribeMenu();
+    this->drawCursor();
 }
 void AcomodadorObjetos::escribeAcomodosDisponibles(){
     for (int i = 0; i<yAcomodos.size(); i++) {

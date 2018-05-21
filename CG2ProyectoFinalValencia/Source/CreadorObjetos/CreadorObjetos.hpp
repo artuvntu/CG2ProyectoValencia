@@ -11,6 +11,8 @@
 
 #include "../../Libraries.hpp"
 #include "../Primitivas/Primitivas.hpp"
+#include "../UIClassAux/UIClassAux.hpp"
+#include "../Camara/Camera.hpp"
 
 #define CREADOROBJETOSPATHFILE "CG2ProyectoFinalValencia/Documents/CG2ProyectoFinalValencia.vco"
 
@@ -49,7 +51,7 @@ public:
     bool menuActivado = false;
     bool bloquearDibujo = false;
     
-    void inicializar(Primitivas *p, KeyFrame *k, CargadorImage *c);
+    void inicializar(Primitivas *p, KeyFrame *k, CargadorImage *c,Camara *cam);
     void teclaActivaMenu();
     void teclaDeMenu(unsigned char tecla);
     void dibuja();
@@ -59,9 +61,9 @@ public:
     void escribeObjetosDisponibles();
 
 private:
-    char CreadorObjetosAccionesBuscaUIntToChar[3][30] = {"NADA","Asegurar Integridad Objeto","Copiar en Texturas"};
+//    char CreadorObjetosAccionesBuscaUIntToChar[3][30] = {"NADA","Asegurar Integridad Objeto","Copiar en Texturas"};
     enum  CreadorObjetosAccionesBuscaUInt:unsigned char{
-        nadaCO=0,modificacionCabio=1,copiTexture=2
+        nadaCO=0,modificacionCabio=1,copiTexture=2,cambioPrimitiva=3,crearObj=4
     };
     
     Cg2ValenciaPunto3D puntoCentro = Cg2ValenciaPunto3D();
@@ -75,10 +77,7 @@ private:
     };
     CreadorObjetosEstados estado = inicialCO;
     
-//    unsigned char teclasMovimientoModificarObjeto[40] = "wsadqeikjluotgfhryWSADQEIKJLUOTGFHRY";
-    unsigned char teclasMovimientoModificarObjeto[40] = "daeqswljoukihfyrgtDAEQSWLJOUKIHFYRGT";
-    
-    bool moviminetoModificarObjeto(unsigned char tecla,CreadorObjetosPrimitivas *primitiva);
+//    bool moviminetoModificarObjeto(unsigned char tecla,CreadorObjetosPrimitivas *primitiva);
     
     void escribePrimitivasDisponibles(CreadorObjetosObjeto *objeto);
     void escribeTiposDePrimitivasDispnibles();
@@ -90,7 +89,6 @@ private:
     long calculaBalancePushPop(CreadorObjetosObjeto *objeto);
     
     void teclaDeMenuInicial(unsigned char tecla);
-    void teclaDeMenuBuscaUInt(unsigned char tecla);
     void teclaDeMenuModificarObjeto(unsigned char tecla);
     void teclaDeMenuModificarTexturas(unsigned char tecla);
     
@@ -102,6 +100,10 @@ private:
     Primitivas *vPrimitivas;
     KeyFrame *vKeyFrame;
     CargadorImage *vCargadorImage;
+    Camara *vCamara;
+    
+    UIClassAux vUIClassAux;
+    
     
     void empezarABuscarUint(unsigned int *a, unsigned int max, CreadorObjetosEstados estadoRegresar, CreadorObjetosAccionesBuscaUInt accion = nadaCO);
     void ejecutaAccionDespuesBuscarUInt();
@@ -116,12 +118,8 @@ private:
     
     bool dibujaObjetoPuntero = false;
     
-    CreadorObjetosEstados estadoARegresarBUInt;
-    CreadorObjetosEstados estadoAnterior;
-    
-    unsigned int *dondeGuardar = NULL;
-    unsigned int maxDondeGuardar = 0;
-    unsigned int temporalIntFromKeyBoard = 0;
+    unsigned char accionTexture = 0;
+    void ejecutarAccionTexture();
     
     unsigned int textureNecesariasPorTipoPrimitiva(CreadorObjetosTipoPrimitiva tipo);
     unsigned int puntosNecesariosPorTipoPrimitiva(CreadorObjetosTipoPrimitiva tipo);
@@ -131,6 +129,14 @@ private:
     
     CreadorObjetosObjeto *objetoDibujando = NULL;
     CreadorObjetosPrimitivas *primitivaDibujando = NULL;
+    
+    Camara::CamaraPos posicionAnterior;
+    Camara::CamaraPos posicionPorDefecto;
+    
+    void empiezaMoveByPrimitiva(std::vector<Cg2ValenciaPunto3D> *cuales);
+    
+    char nombreT[20] = "prueba";
+    
 };
 
 

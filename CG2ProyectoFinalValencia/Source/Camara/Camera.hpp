@@ -15,6 +15,11 @@
 
 class Camara{
 public:
+    struct _camarapos {
+        double XYZ[9] = {0, 15, 0, 0, 15, -1, 0, 1, 0};
+        double Angles[3] = {3.14,0,1.57};
+        char id[MAXCHAR] = "NULO";
+    }typedef CamaraPos;
     enum CamaraEstados{
         inicial,buscandoUInt
     };
@@ -24,16 +29,17 @@ public:
     void inicializar();
     void teclaActivaMenu();
     void teclaDeMenu(unsigned char tecla);
-    double XYZ[9] = {0, 15, 0, 0, 15, -1, 0, 1, 0};
-
+    void guardar();
+    
+    CamaraPos posActual = CamaraPos();
+    
 private:
+
     void teclaDeMenuInicial(unsigned char tecla);
     void teclaDeMenuBuscandoUInt(unsigned char tecla);
     void cargar();
-    void guardar();
 //    w,s,a,d,q,e,h,l,j,k,u,i MINMAY
     double multipler[12] = {1, 1, 1, 0.2, 0.2, 0.2, 3.5, 3.5, 3.5, 0.5, 0.5, 0.5};
-    double Angles[3] = {3.14,0,1.57};
     
     CamaraEstados estado = inicial;
 };

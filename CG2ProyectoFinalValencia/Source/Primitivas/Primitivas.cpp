@@ -530,3 +530,20 @@ void Primitivas::cilindroEstandar(std::vector<PrimitivasSelectTexture> *vector, 
         glEnd();
     }
 }
+void Primitivas::empiezaAModificarTexture(std::vector<PrimitivasSelectTexture> *v, unsigned char finMod, unsigned char *donde){
+    this->vectorPrimitivasST = v;
+    this->finModificacion = finMod;
+    this->dondeModificar = donde;
+    this->setTexture = true;
+    punteroVectorPrimitivas = 0;
+}
+bool Primitivas::teclaDeMenuTextura(unsigned char tecla){
+    return false;
+}
+void Primitivas::escribeMenu(){
+    if (this->vectorPrimitivasST->size()==0) std::cout<<"Error Textura vacia :/\n";
+    else{
+        this->vCargadorImage->describeTextura(&this->vCargadorImage->texturas[vectorPrimitivasST->at(punteroVectorPrimitivas).cualTextura]);
+        std::cout<<"Actual: "<<this->punteroVectorPrimitivas<<" Disponibles: "<< this->vectorPrimitivasST->size()<<"\nM->Mostrar Disponibles\nC->Cambiar\nV->Set Value\nX->Salir\nG->Copiar hasta\n";
+    }
+}

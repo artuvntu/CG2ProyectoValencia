@@ -11,6 +11,8 @@
 
 #include "../../Libraries.hpp"
 #include "../CreadorObjetos/CreadorObjetos.hpp"
+#include "../UIClassAux/UIClassAux.hpp"
+#include "../Camara/Camera.hpp"
 
 #define ACOMODADOROBJETOSPATHFILE "CG2ProyectoFinalValencia/Documents/CG2ProyectoFinalValencia.vao"
 
@@ -18,7 +20,7 @@
 
 class AcomodadorObjetos{
 public:
-    void inicializar(CreadorObjetos *co);
+    void inicializar(CreadorObjetos *co,UIClassAux *uic,Camara *cam);
     void dibuja();
     void teclaActivaMenu();
     void teclaDeMenu(unsigned char tecla);
@@ -31,15 +33,16 @@ private:
         Cg2ValenciaPunto3D ubicacion[3];
         unsigned int cual;
     }typedef AcomodadorObjetosAcomodo;
-    char AcomodadorObjetosAccionesBuscaUIntToChar[1][30] = {"Nada"};
     enum AcomodadorObjetosAccionesBuscaUInt:unsigned char {
-        nada=0
+        nada=0, cambioPuntero=1
     };
     char AcomodadorObjetosEstadosToChar[2][30] = {"Inicial","BuscaUInt"};
     enum AcomodadorObjetosEstados:unsigned char{
         inicialAO=0,BuscaUInt=1
     };
     
+    void ejecutaAccionDespuesBuscarUInt(unsigned char accion);
+
     unsigned char teclasMovimientoModificarObjeto[40] = "daeqswljoukihfyrgtDAEQSWLJOUKIHFYRGT";
     bool moviminetoModificarObjeto(unsigned char tecla,AcomodadorObjetosAcomodo *acomodo);
     
@@ -47,23 +50,15 @@ private:
     AcomodadorObjetosEstados estado = inicialAO;
     
     void teclaDeMenuInicial(unsigned char tecla);
-    void teclaDeMenuBuscaUInt(unsigned char tecla);
     
     void escribeMenu();
     void drawCursor();
     
-    
-    void empezarABuscarUInt(unsigned int *dondeGuardad,unsigned int max,AcomodadorObjetosEstados estadoRegresar,AcomodadorObjetosAccionesBuscaUInt accion = nada);
-    void ejecutaAccionDespuesBuscarUInt();
-    
-    unsigned int *dondeGuardar;
-    unsigned int temporalIntFromKeyBoard = 0;
-    unsigned int maxDondeGuardar = 0;
-    AcomodadorObjetosEstados estadoARegresarBUInt = inicialAO;
-    AcomodadorObjetosEstados estadoAnterior = inicialAO;
-    AcomodadorObjetosAccionesBuscaUInt accionDespuesBuscarUInt = nada;
+    unsigned char accionDespuesBuscarUInt = nada;
     
     CreadorObjetos *vCreadorObjetos;
+    UIClassAux *vUIClassAux;
+    Camara *vCamara;
     
     unsigned int puntero = 0;
     

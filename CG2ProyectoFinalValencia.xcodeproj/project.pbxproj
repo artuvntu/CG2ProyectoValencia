@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BB182DD720AF6D2000B60C94 /* UIClassAux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB182DD520AF6D2000B60C94 /* UIClassAux.cpp */; };
 		BB22A4242084F45E0039685A /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB22A4222084F45E0039685A /* Camera.cpp */; };
 		BB5854952092B99000F4F6E3 /* Primitivas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB5854932092B99000F4F6E3 /* Primitivas.cpp */; };
 		BBCF58B520AB5208004D9DB7 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBF23DB9207FD7720089515D /* OpenGL.framework */; };
@@ -35,6 +36,8 @@
 		BB0F17B4208E88BF006EF747 /* pasto01.tga */ = {isa = PBXFileReference; lastKnownFileType = file; path = pasto01.tga; sourceTree = "<group>"; };
 		BB0F17B5208EC8B2006EF747 /* casa01.tga */ = {isa = PBXFileReference; lastKnownFileType = file; path = casa01.tga; sourceTree = "<group>"; };
 		BB0F17B6208ECA25006EF747 /* cielo01.tga */ = {isa = PBXFileReference; lastKnownFileType = file; path = cielo01.tga; sourceTree = "<group>"; };
+		BB182DD520AF6D2000B60C94 /* UIClassAux.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = UIClassAux.cpp; sourceTree = "<group>"; };
+		BB182DD620AF6D2000B60C94 /* UIClassAux.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = UIClassAux.hpp; sourceTree = "<group>"; };
 		BB22A4222084F45E0039685A /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		BB22A4232084F45E0039685A /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
 		BB5854932092B99000F4F6E3 /* Primitivas.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Primitivas.cpp; sourceTree = "<group>"; };
@@ -78,6 +81,15 @@
 				BB0F17B5208EC8B2006EF747 /* casa01.tga */,
 			);
 			path = Textureimg;
+			sourceTree = "<group>";
+		};
+		BB182DD420AF6CED00B60C94 /* UIClassAux */ = {
+			isa = PBXGroup;
+			children = (
+				BB182DD520AF6D2000B60C94 /* UIClassAux.cpp */,
+				BB182DD620AF6D2000B60C94 /* UIClassAux.hpp */,
+			);
+			path = UIClassAux;
 			sourceTree = "<group>";
 		};
 		BB3E7B6D20AAA28F00532B6E /* Documents */ = {
@@ -126,6 +138,7 @@
 		BBE79430208A79BA00A1CE54 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				BB182DD420AF6CED00B60C94 /* UIClassAux */,
 				BBCF58B720ABB27B004D9DB7 /* AcomodadorObjetos */,
 				BBFE635E20A28B14009EC27B /* CreadorObjetos */,
 				BBFE635A20A28AA4009EC27B /* Construccion */,
@@ -261,6 +274,7 @@
 			files = (
 				BB22A4242084F45E0039685A /* Camera.cpp in Sources */,
 				BBFE635D20A28B09009EC27B /* Construccion.cpp in Sources */,
+				BB182DD720AF6D2000B60C94 /* UIClassAux.cpp in Sources */,
 				BBF23DB0207FD75E0089515D /* main.cpp in Sources */,
 				BBF72029209B6C020084703A /* KeyFrame.cpp in Sources */,
 				BBFE636120A28B2F009EC27B /* CreadorObjetos.cpp in Sources */,

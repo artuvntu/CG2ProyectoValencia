@@ -11,10 +11,11 @@
 #define CREADOROBJETOSVERSIONARCHIVOS 0x18FF
 //Directiva Vertice orden {Posicion Angulo Tamaño}
 
-void CreadorObjetos::inicializar(Primitivas *p, KeyFrame *k, CargadorImage *c){
+void CreadorObjetos::inicializar(Primitivas *p, KeyFrame *k, CargadorImage *c,Camara *cam){
     this->vPrimitivas = p;
     this->vKeyFrame = k;
     this->vCargadorImage = c;
+    this->vCamara = cam;
     this->cargar();
     
 }
@@ -29,6 +30,8 @@ void CreadorObjetos::teclaActivaMenu(){
     if (this->yObjetos.size()!=0) {
         this->dibujaObjetoPuntero = true;
     }
+    this->posicionAnterior = vCamara->posActual;
+    this->vCamara->posActual = this->posicionPorDefecto;
     this->esribeMenu();
     this->drawCursor();
 }
@@ -44,13 +47,18 @@ void CreadorObjetos::teclaDeMenu(unsigned char tecla){
             this->teclaDeMenuInicial(tecla);
             break;
         case buscaUintCO:
-            this->teclaDeMenuBuscaUInt(tecla);
+            if(this->vUIClassAux.teclaDeMenu(tecla)){
+                ejecutaAccionDespuesBuscarUInt();
+            }
             break;
         case modificarObjetoCO:
             this->teclaDeMenuModificarObjeto(tecla);
             break;
         case modificaTexturasCO:
-            this->teclaDeMenuModificarTexturas(tecla);
+//            this->teclaDeMenuModificarTexturas(tecla);
+            if(this->vPrimitivas->teclaDeMenuTextura(tecla)){
+                
+            }
             break;
         default:
             break;
@@ -61,17 +69,16 @@ void CreadorObjetos::esribeMenu(){
         case inicialCO:
             if (cuantosDisponibles()!=0) {
                 this->describeObjeto(&this->yObjetos[this->punteroSeleccion]);
-                std::cout<<"Actual: "<<this->punteroSeleccion<<" Disponibles: "<<this->cuantosDisponibles()<<"\nM->Mostrar Disponibles\nC->Cambiar\nE->Editar\nD->Delete\n";
+                std::cout<<"Actual: "<<this->punteroSeleccion<<" Disponibles: "<<this->cuantosDisponibles()<<"\nM->Mostrar Disponibles\nC->Cambiar\nP->Editar\nX->Delete\n";
             }else{
                 std::cout<<"Crea uno\n";
             }
-            std::cout<<"A->Crear Objetos\nL->Cargar De Archivo(Mejor no)\nG->Guardar En Archivo\nS->Salir\nB->Bloquear Dibujo\n";
+            std::cout<<"N->Crear Objetos\n2->Cargar De Archivo(Mejor no)\n1->Guardar En Archivo\nz->Salir\nZ->Bloquear Dibujo\n";
             break;
         case buscaUintCO:
-            std::cout<<"Accion: \""<<this->CreadorObjetosAccionesBuscaUIntToChar[(unsigned char)this->accionDespuesBuscarUInt]<<"\" V Actual: "<<*this->dondeGuardar<<" Max: "<<this->maxDondeGuardar<<" Write: "<<this->temporalIntFromKeyBoard<<" Regresar a "<<this->CreadorObjetosEstadosToChar[(unsigned char)this->estadoARegresarBUInt]<<std::endl;
+            this->vUIClassAux.escribeMenu();
             break;
         case modificarObjetoCO:
-//            std::cout<<"wsadqeikjluotgfhry\n";
             if (yObjetos[punteroSeleccion].primitivas.size()!=0) {
                 this->describePrimitiva(&this->yObjetos[this->punteroSeleccion].primitivas[this->punteroPrimitiva]);
                 std::cout<<" Actual: "<<this->punteroPrimitiva<<" Disponibles: "<<this->yObjetos[punteroSeleccion].primitivas.size()<<"\nM->Mostrar Disponibles\n3->Duplicar\n2->Set Cual Textura\n4->Create Texture for Actual\nC->Cambiar Primitiva\nB->Borrar\nV->Cambio Tipo\n5->Set Special value\n6->Set Transparencia\n";
@@ -81,12 +88,7 @@ void CreadorObjetos::esribeMenu(){
             std::cout<<"1->Crea Primitiva\nZ->Set Textures\nX->Salir\n";
             break;
         case modificaTexturasCO:
-//            wsda
-            if (yObjetos[punteroSeleccion].texturas.size()==0) std::cout<<"Error Textura vacia :/\n";
-            else{
-                this->vCargadorImage->describeTextura(&this->vCargadorImage->texturas[this->yObjetos[punteroSeleccion].texturas[punteroTextura].cualTextura]);
-                std::cout<<"Actual: "<<this->punteroTextura<<" Disponibles: "<< this->yObjetos[punteroSeleccion].texturas.size()<<"\nM->Mostrar Disponibles\nC->Cambiar\nV->Set Value\nX->Salir\nG->Copiar hasta\n";
-            }
+            this->vPrimitivas->escribeMenu();
             break;
         default:
             break;
@@ -122,7 +124,6 @@ void CreadorObjetos::dibujaObjeto(unsigned int cual,bool dVertice){
         }
         switch (primitivaDibujando->tipoPrimitiva) {
             case cilindro:
-                //Cilindro;
                 glPushMatrix();
                 glTranslated(primitivaDibujando->vertices[0].coordenadas[0], primitivaDibujando->vertices[0].coordenadas[1], primitivaDibujando->vertices[0].coordenadas[2]);
                 glRotated(primitivaDibujando->vertices[1].coordenadas[0], 1, 0, 0);
@@ -137,7 +138,6 @@ void CreadorObjetos::dibujaObjeto(unsigned int cual,bool dVertice){
                 glRotated(primitivaDibujando->vertices[1].coordenadas[0], 1, 0, 0);
                 glRotated(primitivaDibujando->vertices[1].coordenadas[1], 0, 1, 0);
                 glRotated(primitivaDibujando->vertices[1].coordenadas[2], 0, 0, 1);
-//                glScaled(primitivaDibujando->vertices[2].coordenadas[0], primitivaDibujando->vertices[2].coordenadas[1], primitivaDibujando->vertices[2].coordenadas[2]);
                 vPrimitivas->esferaEstandar(&objetoDibujando->texturas, primitivaDibujando->desdeCualTexture, primitivaDibujando->vertices[2].coordenadas[0], primitivaDibujando->valorEspecial);
                 glPopMatrix();
                 break;
@@ -226,9 +226,10 @@ void CreadorObjetos::dibujaObjeto(unsigned int cual,bool dVertice){
     glPopMatrix();
 }
 void CreadorObjetos::drawCursor(){
+    if (estado == buscaUintCO) {
+        this->vUIClassAux.drawCursor();
+    }else{
     std::cout<<"CG2ProyectoFinalValenciaC "<< this->CreadorObjetosEstadosToChar[(unsigned char)this->estado] << " $ ";
-    if (this->estado == buscaUintCO && this->temporalIntFromKeyBoard != 0) {
-        std::cout<<temporalIntFromKeyBoard;
     }
 }
 void CreadorObjetos::describeObjeto(CreadorObjetos::CreadorObjetosObjeto *objeto){
@@ -242,8 +243,6 @@ unsigned int CreadorObjetos::cuantosDisponibles(){
 }
 void CreadorObjetos::teclaDeMenuInicial(unsigned char tecla){
     bool saltar = true;
-    bool auxiliarBoleana = true;
-    char nombre[100] = "prueba";
     if (cuantosDisponibles()!=0) {
         switch (tecla) {
             case 'm':
@@ -258,16 +257,19 @@ void CreadorObjetos::teclaDeMenuInicial(unsigned char tecla){
                 this->escribeObjetosDisponibles();
                 this->empezarABuscarUint(&this->punteroSeleccion, this->cuantosDisponibles(), inicialCO);
                 break;
-            case 'e':
-            case 'E':
+            case 'p':
+            case 'P':
                 std::cout<<"Editando\n";
                 this->estado = modificarObjetoCO;
                 this->punteroPrimitiva = 0;
+                if (yObjetos[punteroSeleccion].primitivas.size()!=0) {
+                    this->empiezaMoveByPrimitiva(&yObjetos[punteroSeleccion].primitivas[0].vertices);
+                }
                 this->esribeMenu();
                 this->drawCursor();
                 break;
-            case 'd':
-            case 'D':
+            case 'x':
+            case 'X':
                 if (punteroSeleccion < yObjetos.size()) {
                     std::cout<<"Borrado\n";
                     this->yObjetos.erase(yObjetos.begin()+punteroSeleccion);
@@ -291,49 +293,31 @@ void CreadorObjetos::teclaDeMenuInicial(unsigned char tecla){
         if (saltar) return;
     }
     switch (tecla) {
-        case 'A':
-        case 'a':
+        case 'n':
+        case 'N':
             std::cout<<"Agregar Name: ";
-            std::cin>>nombre;
-            this->yObjetos.push_back(CreadorObjetosObjeto());
-            this->punteroSeleccion = (unsigned int)yObjetos.size() - 1;
-            this->punteroPrimitiva = 0;
-            this->estado = modificarObjetoCO;
-            for (int i = 0; auxiliarBoleana; i++) {
-                sprintf(yObjetos[punteroSeleccion].id, "%s+%04d",nombre, i);
-                auxiliarBoleana = false;
-                for (int i = 0; i<yObjetos.size()-1; i++) {
-                    if(!memcmp(yObjetos[i].id, yObjetos[punteroSeleccion].id, sizeof(char)*50)){
-                        auxiliarBoleana = true;
-                    }
-                }
-            }
-            this->dibujaObjetoPuntero = true;
-            this->esribeMenu();
-            this->drawCursor();
+            this->estado = buscaUintCO;
+            this->vUIClassAux.empezarABuscarString(nombreT, 10, (unsigned char *)&this->estado, (unsigned char)inicialCO, (unsigned char)inicialCO, (unsigned char) crearObj, (unsigned char) nadaCO, (unsigned char *)&this->accionDespuesBuscarUInt);
             break;
-        case 'L':
-        case 'l':
+        case '2':
             std::cout<<"Cargando Archivo\n";
             this->cargar();
             this->drawCursor();
             break;
-        case 'G':
-        case 'g':
+        case '1':
             std::cout<<"guardando Archivo\n";
             this->guardar();
             this->drawCursor();
             break;
-        case 's':
-        case 'S':
+        case 'z':
             std::cout<<"Fuera de menu Creador Objeto\n";
             this->estado = inicialCO;
             this->dibujaObjetoPuntero = false;
             this->bloquearDibujo = false;
             this->menuActivado = false;
+            this->vCamara->posActual = posicionAnterior;
             break;
-        case 'b':
-        case 'B':
+        case 'Z':
             std::cout<<"Fuera menu Blqueado\n";
             this->menuActivado = false;
             this->estado = inicialCO;
@@ -342,49 +326,10 @@ void CreadorObjetos::teclaDeMenuInicial(unsigned char tecla){
             break;
     }
 }
-void CreadorObjetos::teclaDeMenuBuscaUInt(unsigned char tecla){
-    if (tecla >= 48 && tecla <= 57) {
-        std::cout << (tecla -48);
-        this->temporalIntFromKeyBoard= (this->temporalIntFromKeyBoard * 10)+(tecla - 48);
-        if (this->temporalIntFromKeyBoard >= this->maxDondeGuardar){
-            std::cout<<"\nNumero mayor a los disponibles\n";
-            this->estado = this->estadoAnterior;
-            this->estadoAnterior = inicialCO;
-            this->estadoARegresarBUInt = inicialCO;
-            this->drawCursor();
-        }
-    }else if (tecla == 13){
-        std::cout <<std::endl;
-        *this->dondeGuardar = this->temporalIntFromKeyBoard;
-        this->temporalIntFromKeyBoard = 0;
-        this->estado = this->estadoARegresarBUInt;
-        this->estadoARegresarBUInt = inicialCO;
-        this->estadoAnterior = inicialCO;
-        this->ejecutaAccionDespuesBuscarUInt();
-        this->esribeMenu();
-        this->drawCursor();
-    }else{
-        std::cout<<"\nCancelado\n";
-        this->estado = this->estadoAnterior;
-        this->estadoARegresarBUInt = inicialCO;
-        this->estadoAnterior = inicialCO;
-        this->drawCursor();
-    }
-}
 void CreadorObjetos::empezarABuscarUint(unsigned int *a, unsigned int max, CreadorObjetos::CreadorObjetosEstados estadoRegresar,CreadorObjetosAccionesBuscaUInt acc){
-    if (max == 0) {
-        std::cout<<"No hay donde elegir "<<this->CreadorObjetosEstadosToChar[(unsigned char)estadoRegresar]<<std::endl;
-        return;
-    }
-    this->estadoAnterior = this->estado;
+    CreadorObjetosEstados est = estado;
     this->estado = buscaUintCO;
-    this->dondeGuardar = a;
-    this->maxDondeGuardar = max;
-    this->accionDespuesBuscarUInt = acc;
-    this->estadoARegresarBUInt = estadoRegresar;
-    this->temporalIntFromKeyBoard = 0;
-    this->esribeMenu();
-    this->drawCursor();
+    this->vUIClassAux.empezarABuscarUInt(a, max,(unsigned char *) &estado,(unsigned char) estadoRegresar,(unsigned char) est, (unsigned char)acc, (unsigned char)nadaCO, (unsigned char*)&accionDespuesBuscarUInt);
 }
 void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
     bool saltar = true;
@@ -400,7 +345,7 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
             case 'C':
                 std::cout<<"Cambio\n";
                 this->escribePrimitivasDisponibles(&yObjetos[punteroSeleccion]);
-                this->empezarABuscarUint(&punteroPrimitiva, (unsigned int)yObjetos[punteroSeleccion].primitivas.size(), modificarObjetoCO);
+                this->empezarABuscarUint(&punteroPrimitiva, (unsigned int)yObjetos[punteroSeleccion].primitivas.size(), modificarObjetoCO,cambioPrimitiva);
                 break;
             case 'B':
             case 'b':
@@ -410,7 +355,9 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
                     if (punteroPrimitiva>=this->yObjetos[punteroSeleccion].primitivas.size()){
                         punteroPrimitiva = (unsigned int) this->yObjetos[punteroSeleccion].primitivas.size() - 1;
                     }
-                    
+                    if (this->yObjetos[punteroSeleccion].primitivas.size()!=0) {
+                        this->empiezaMoveByPrimitiva(&yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].vertices);
+                    }
                 }else{
                     std::cout<<"Error fuera de rango modificar Objeto crecion de objetos\n";
                 }
@@ -459,7 +406,8 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
                 this->empezarABuscarUint((unsigned int*)&this->yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].tipoTransparencia, MAXTIPOTRANSPARENCIA, modificarObjetoCO);
                 break;
             default:
-                saltar = this->moviminetoModificarObjeto(tecla, &yObjetos[punteroSeleccion].primitivas[punteroPrimitiva]);
+                
+                saltar = this->vUIClassAux.teclaMove(tecla);
                 break;
         }
         if (saltar) return;
@@ -472,6 +420,7 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
             if (punteroPrimitiva == 0) {
                 this->esribeMenu();
             }
+            this->empiezaMoveByPrimitiva(&yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].vertices);
             drawCursor();
             
             break;
@@ -501,6 +450,7 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
     }
 }
 void CreadorObjetos::ejecutaAccionDespuesBuscarUInt(){
+    bool auxiliarBoleana = true;
     switch (accionDespuesBuscarUInt) {
         case copiTexture:
             for (int i = 1; i<=auxiliarCopiarTexture; i++) {
@@ -517,10 +467,33 @@ void CreadorObjetos::ejecutaAccionDespuesBuscarUInt(){
             break;
         case modificacionCabio:
             aseguraIntegridadCambio();
+            this->empiezaMoveByPrimitiva(&yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].vertices);
             break;
+        case cambioPrimitiva:
+            this->empiezaMoveByPrimitiva(&yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].vertices);
+            break;
+        case crearObj:
+            this->yObjetos.push_back(CreadorObjetosObjeto());
+            this->punteroSeleccion = (unsigned int)yObjetos.size() - 1;
+            this->punteroPrimitiva = 0;
+            this->estado = modificarObjetoCO;
+            for (int i = 0; auxiliarBoleana; i++) {
+                sprintf(yObjetos[punteroSeleccion].id, "%s+%04d",nombreT, i);
+                auxiliarBoleana = false;
+                for (int i = 0; i<yObjetos.size()-1; i++) {
+                    if(!memcmp(yObjetos[i].id, yObjetos[punteroSeleccion].id, sizeof(char)*50)){
+                        auxiliarBoleana = true;
+                    }
+                }
+            }
+            this->dibujaObjetoPuntero = true;
+            break;
+        case nadaCO:
         default:
             break;
     }
+    this->esribeMenu();
+    this->drawCursor();
 }
 void CreadorObjetos::teclaDeMenuModificarTexturas(unsigned char tecla){
     if (yObjetos[punteroSeleccion].texturas.size()==0) std::cout<<"Error Textura vacia : ";
@@ -802,46 +775,6 @@ long CreadorObjetos::calculaBalancePushPop(CreadorObjetos::CreadorObjetosObjeto 
     }
     return r;
 }
-bool CreadorObjetos::moviminetoModificarObjeto(unsigned char tecla, CreadorObjetos::CreadorObjetosPrimitivas *primitiva){
-    int signo = 1;
-    int cual = 0;
-    int coor = 0;
-    bool despacio = true;
-    for (int i =0 ; i<18*2; i++) {
-        if (tecla == this->teclasMovimientoModificarObjeto[i]) {
-            if (i/18!=0) despacio = false;
-            i = i%18;
-            if (i%2) {
-                signo = -1;
-            }
-            i = i/2;
-            cual = i/3;
-            coor = i%3;
-            if (cual < primitiva->vertices.size()) {
-                if (cual == 1) {
-                    primitiva->vertices[cual].coordenadas[coor] += 22.5*signo;
-//                    if (despacio) primitiva->vertices[cual].coordenadas[coor] += 22.5*signo;
-//                    else primitiva->vertices[cual].coordenadas[coor] += 22.5*signo;
-                }else{
-                    if (cual == 2&&coor == 2) {
-                        if (despacio) primitiva->vertices[cual].coordenadas[coor] -= 0.1*signo;
-                        else primitiva->vertices[cual].coordenadas[coor] -= 1*signo;
-                    }else{
-                        if (despacio) primitiva->vertices[cual].coordenadas[coor] += 0.1*signo;
-                        else primitiva->vertices[cual].coordenadas[coor] += 1*signo;
-                    }
-                }
-                glutPostRedisplay();
-                return true;
-            }else{
-                std::cout<<"Movimiento Fuera de vertices\n";
-                drawCursor();
-                return false;
-            }
-        }
-    }
-    return false;
-}
 bool CreadorObjetos::echateABuscar(char *nombre, unsigned int *donde){
     for (unsigned int i = 0; i<yObjetos.size(); i++) {
         if (!memcmp(yObjetos[i].id, nombre, sizeof(char)*MAXCHAR)) {
@@ -855,4 +788,33 @@ void CreadorObjetos::escribeTiposDeTranspareciasDisponibles(){
     for (int i =0; i<MAXTIPOTRANSPARENCIA; i++) {
         std::cout<<i<<".- "<<this->CreadorObjetosTipoTransparenciaToChar[i]<<std::endl;
     }
+}
+void CreadorObjetos::empiezaMoveByPrimitiva(std::vector<Cg2ValenciaPunto3D> *cuales){
+    switch (cuales->size()) {
+        case 0:
+            vUIClassAux.empezarABuscarMove(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0);
+            break;
+        case 1:
+            vUIClassAux.empezarABuscarMove(&cuales->at(0).coordenadas[0], &cuales->at(0).coordenadas[1], &cuales->at(0).coordenadas[2], NULL, NULL, NULL, NULL, NULL, NULL, 0.1, 1, 0, 0);
+            break;
+        case 2:
+            vUIClassAux.empezarABuscarMove(&cuales->at(0).coordenadas[0], &cuales->at(0).coordenadas[1], &cuales->at(0).coordenadas[2], NULL, NULL, NULL, &cuales->at(1).coordenadas[0], &cuales->at(1).coordenadas[1], &cuales->at(1).coordenadas[2], 0.1, 1, 11.25, 45);
+            break;
+        case 3:
+        default:
+            vUIClassAux.empezarABuscarMove(&cuales->at(0).coordenadas[0], &cuales->at(0).coordenadas[1], &cuales->at(0).coordenadas[2], &cuales->at(2).coordenadas[0], &cuales->at(2).coordenadas[1], &cuales->at(2).coordenadas[2], &cuales->at(1).coordenadas[0], &cuales->at(1).coordenadas[1], &cuales->at(1).coordenadas[2], 0.1, 1, 11.25, 45);
+            break;
+    }
+}
+void CreadorObjetos::ejecutarAccionTexture(){
+    switch (this->accionTexture) {
+        case 0:
+            
+            break;
+            
+        default:
+            break;
+    }
+    this->esribeMenu();
+    this->drawCursor();
 }
