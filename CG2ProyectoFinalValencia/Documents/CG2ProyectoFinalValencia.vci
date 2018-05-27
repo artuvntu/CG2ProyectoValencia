@@ -11,6 +11,7 @@ colcha01 30 30
 paredvino01 30 30
 television01 -1 -1
 ladrillo01 30 30
+paredBeige02 10 10
 pasto01 10 10
 ventana01 -1 -1
 maderaBlanca01 30 30
@@ -27,3 +28,11 @@ sueloPiedra01 5 5
 sueloAtras01 30 30
 paredPiedra01 10 10
 paredRoja01 10 10
+paredMetalBlanco01 30 30
+paredBeige02 30 30
+paredCuarto01 30 -1
+sueloBano01 10 10
+paredAmarilla01 30 30
+paredCocina01 5 5
+sueloArriba01 3 3
+sueloCocina01 3 3 

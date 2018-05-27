@@ -11,6 +11,7 @@
 
 
 void Primitivas::prismaEstandar(std::vector<PrimitivasSelectTexture>*vectorSelecTexture,unsigned int desdeDonde,double posicion[3],double tam[3],double angulo){
+    
     if (vectorSelecTexture->size()-desdeDonde< PRIMITIVARVTPRISMAESTANDAR){
         std::cout<<"Prisma estandar Error tam vectorSelec\n";
         return;
@@ -131,6 +132,10 @@ void Primitivas::obtenerPosicionFinalEInicial(double *posicionFinal, double *pos
     }
 }
 void Primitivas::escaleras(std::vector<PrimitivasSelectTexture> *vectorSelectTexture, unsigned int desdeDonde, double *posicion, double *tam,unsigned int canEscalones, double angulo){
+    if (vectorSelectTexture==NULL) {
+        std::cout<<"Escaleras problema primitiva\n";
+        return;
+    }
     double tamEscalones[2] = {tam[0]/canEscalones,tam[1]/canEscalones};
     double ayudaCrearPrismasTam [3] = {tamEscalones[0], tamEscalones[1], tam[2]};
     double ayudaCrearPrismaPosicion[3] = {0, 0, 0};
@@ -170,6 +175,10 @@ void Primitivas::escaleras(std::vector<PrimitivasSelectTexture> *vectorSelectTex
     
 }
 void Primitivas::sueloPoligonal(std::vector<PrimitivasSelectTexture> *vectorSelecTexture,unsigned int desdeDonde, std::vector<Cg2ValenciaPunto3D> *vectorVertices){
+    if (vectorSelecTexture==NULL||vectorVertices==NULL){
+        std::cout<<"Suelo polligunal recibi null\n";
+        return;
+    }
     if (vectorSelecTexture->size()-desdeDonde<2) {
         std::cout<<"Suelo incompleto\n";
         return;

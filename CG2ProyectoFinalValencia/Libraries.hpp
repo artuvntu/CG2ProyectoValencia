@@ -32,6 +32,7 @@
 
 struct _cg2valencia3d {
     double coordenadas[3] = {0, 0, 0};
+//    std::vector<double> coordenadas = {0,0,0};
 }typedef Cg2ValenciaPunto3D;
 
 

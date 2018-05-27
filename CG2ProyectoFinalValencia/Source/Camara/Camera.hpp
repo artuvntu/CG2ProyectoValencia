@@ -12,7 +12,7 @@
 #include "../../Libraries.hpp"
 #include "../UIClassAux/UIClassAux.hpp"
 
-#define CAMARAPATHFILE "CG2ProyectoFinalValencia/Documents/lliiooCG2ProyectoFinalValencia.vcam" //vCamara
+#define CAMARAPATHFILE "CG2ProyectoFinalValencia/Documents/CG2ProyectoFinalValencia.vcam" //vCamara
 
 class Camara{
 public:

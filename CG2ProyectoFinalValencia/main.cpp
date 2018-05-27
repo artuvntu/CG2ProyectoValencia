@@ -83,9 +83,8 @@ void iniciarOpenGL(void){
 void dibuja(void){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    
+
     vCamara.easyPosition();
-    
     if (vCreadorObjetos.bloquearDibujo) {
         vCreadorObjetos.dibuja();
     }else{
@@ -217,7 +216,7 @@ void teclasEspecciales(int tecla,int x,int y){
         default:
             break;
     }
-    glutPostRedisplay();
+//    glutPostRedisplay();
 }
 void raton(int x,int y){
 	if (blockCursor) {

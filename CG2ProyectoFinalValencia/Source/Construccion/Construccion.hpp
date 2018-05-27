@@ -167,10 +167,10 @@ private:
     void guardarModificacionTemporal();
     void cancelarModificacionTemporal();
     
-    void dibujaPared(ConstruccionPared *pared);
-    void dibujaEscaleras(ConstruccionEscaleras *escalera);
-    void dibujaSuelo(ConstruccionSuelo *suelo);
-    void dibujaParedVentanaNormal(ConstruccionPared *pared);
+    void dibujaPared(ConstruccionPared pared);
+    void dibujaEscaleras(ConstruccionEscaleras escalera);
+    void dibujaSuelo(ConstruccionSuelo suelo);
+    void dibujaParedVentanaNormal(ConstruccionPared pared);
     
     void borrarObjeto(unsigned long cual,ConstruccionTipoConstruccion tipo);
     
@@ -215,6 +215,7 @@ private:
     
     unsigned char accionTextura;
     void ejecutarAccionDespuesTexture();
+    
     
 };
 

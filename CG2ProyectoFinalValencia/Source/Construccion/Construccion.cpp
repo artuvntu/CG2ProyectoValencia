@@ -1,4 +1,4 @@
-//
+ //
 //  Construccion.cpp
 //  CG2ProyectoFinalValencia
 //
@@ -11,6 +11,11 @@
 #define CONSTRUCCIONVERSIONARCHIVOS 0x20FF
 
 void Construccion::inicializar(Primitivas *primitivasactual, CargadorImage *cargadorImageactual, KeyFrame *keyFrameactual){
+    
+//    ySuelos.assign(100, ConstruccionSuelo());
+//    yParedes.assign(100, ConstruccionPared());
+//    yEscaleras.assign(5, ConstruccionEscaleras());
+    
     this->vPrimitivas = primitivasactual;
     this->vCargadorImage = cargadorImageactual;
     this->vKeyFrame = keyFrameactual;
@@ -64,7 +69,6 @@ void Construccion::inicializar(Primitivas *primitivasactual, CargadorImage *carg
         this->zaguanTextureI.push_back(texaux[2]);
         this->puertaVerdeTexture.push_back(texturaAuxPuertaVerde01);
     }
-    this->cargar();
     this->textureMundo.push_back(PrimitivasSelectTexture());
     this->textureMundo.push_back(PrimitivasSelectTexture());
     char nombreTexturaCielo[MAXCHAR] = "cielo01";
@@ -73,7 +77,7 @@ void Construccion::inicializar(Primitivas *primitivasactual, CargadorImage *carg
     if(!this->vCargadorImage->echateABuscarTexture(nombreTexturaSuelo, &this->textureMundo[1].cualTextura))std::cout<<nombreTexturaSuelo<<" no encontrada";
 //    this->textureMundo[2].cualTextura = this->textureMundo[2].cualTextura;
 //    this->textureMundo[0].posicionInicio[1] = 200;
-    
+    this->cargar();
 }
 void Construccion::teclaActivaMenu(){
     std::cout<<"Menu Construccion\n";
@@ -135,13 +139,13 @@ void Construccion::dibujaAntes(){
     this->vPrimitivas->mundo(&this->textureMundo);
     glPopMatrix();
     for (int i = 0; i<this->yParedes.size(); i++) {
-        this->dibujaPared(&(yParedes[i]));
+        this->dibujaPared((yParedes[i]));
     }
     for (int i = 0; i<this->ySuelos.size(); i++) {
-        this->dibujaSuelo(&(ySuelos[i]));
+        this->dibujaSuelo((ySuelos[i]));
     }
     for (int i = 0; i<this->yEscaleras.size(); i++) {
-        this->dibujaEscaleras(&(yEscaleras[i]));
+        this->dibujaEscaleras((yEscaleras[i]));
     }
 //    if (dibujaParedT) {
 //        this->dibujaPared(&this->paredTemporal);
@@ -560,6 +564,8 @@ void Construccion::teclaDeMenuModificarPared(unsigned char tecla){
             t.tipoPared = yParedes[punteroParedModificable].tipoPared;
             t.tipoVentana = yParedes[punteroParedModificable].tipoVentana;
             t.tipoPuerta = yParedes[punteroParedModificable].tipoPuerta;
+            aseguraIntegridadParedTam(&t);
+            asegurarIntegridadParedCalculos(&t);
             yParedes.push_back(t);
             this->empezarAModificarPared((unsigned int)yParedes.size()-1);
             this->drawCursor();
@@ -712,7 +718,9 @@ void Construccion::teclaDeMenuModificarSuelo(unsigned char tecla){
             for (unsigned int a = 0; a<ySuelos[punteroSueloModificable].texturaMain.size(); a++) {
                 t.texturaMain.push_back(ySuelos[punteroSueloModificable].texturaMain[a]);
             }
+            this->aseguraIntegridadSueloTam(&t);
             ySuelos.push_back(t);
+            
             empezarAModificarSuelo((unsigned int)ySuelos.size()-1);
             drawCursor();
             break;
@@ -1360,7 +1368,10 @@ void Construccion::asegurarIntegridadParedVentanaNormalCalculos(ConstruccionPare
     pared->vertice[3].coordenadas[1] = pared->vertice[1].coordenadas[1]*0.5;
 
     pared->vertice[4].coordenadas[1] = pared->vertice[1].coordenadas[1]*0.5+pared->vertice[0].coordenadas[1];
+    
+//    pared->vertice[5].coordenadas[0] = pared->vertice[1].coordenadas[0]*0.9;
     pared->vertice[5].coordenadas[1] = pared->vertice[1].coordenadas[1]*0.4;
+    pared->vertice[5].coordenadas[2] = pared->vertice[1].coordenadas[2]*0.9;
     
     pared->vertice[6].coordenadas[1] = pared->vertice[1].coordenadas[1]*0.9+pared->vertice[0].coordenadas[1];
     pared->vertice[7].coordenadas[1] = pared->vertice[1].coordenadas[1]*0.1;
@@ -1462,12 +1473,12 @@ void Construccion::empezarADibujarTemporal(){
 void Construccion::cargar(){
     FILE * archivo = fopen(CONSTRUCCIONPATHFILE, "r");
     unsigned int cabecera = 0;
-    unsigned int cantidades = (unsigned int)this->yParedes.size();
+    unsigned int cantidades = 0;//(unsigned int)this->yParedes.size();
     unsigned int aux = 0;
     
-    ConstruccionPared tPared = ConstruccionPared();
-    ConstruccionEscaleras tEscalera = ConstruccionEscaleras();
-    PrimitivasSelectTexture tSelectTexture = PrimitivasSelectTexture();
+//    ConstruccionPared tPared = ConstruccionPared();
+//    ConstruccionEscaleras tEscalera = ConstruccionEscaleras();
+//    PrimitivasSelectTexture tSelectTexture = PrimitivasSelectTexture();
     
     char nombreAux[MAXCHAR] = "";
     
@@ -1485,54 +1496,58 @@ void Construccion::cargar(){
     //Paredes
     fread(&cantidades, sizeof(unsigned int), 1, archivo);
     for (unsigned int i=0; i<cantidades; i++) {
+        yParedes.push_back(ConstruccionPared());
         fread(&aux, sizeof(unsigned int), 1, archivo);
-        tPared.tipoPared = (ConstruccionTipoPared) aux;
+        yParedes[i].tipoPared = (ConstruccionTipoPared) aux;
         fread(&aux, sizeof(unsigned int), 1, archivo);
-        tPared.tipoVentana = (ConstruccionTipoVentana) aux;
+        yParedes[i].tipoVentana = (ConstruccionTipoVentana) aux;
         fread(&aux, sizeof(unsigned int), 1, archivo);
-        tPared.tipoPuerta = (ConstruccionTipoPuerta) aux;
-        fread(tPared.id, sizeof(char), MAXCHAR, archivo);
-        fread(&tPared.angulo, sizeof(double), 1, archivo);
+        yParedes[i].tipoPuerta = (ConstruccionTipoPuerta) aux;
+        fread(yParedes[i].id, sizeof(char), MAXCHAR, archivo);
+        fread(&yParedes[i].angulo, sizeof(double), 1, archivo);
         for (unsigned int j = 0; j<2; j++) {
-            fread(tPared.vertice[j].coordenadas, sizeof(double), 3, archivo);
+            fread(yParedes[i].vertice[j].coordenadas, sizeof(double), 3, archivo);
         }
         for (unsigned int j = 0; j<6; j++) {
-            fread(tSelectTexture.posicionInicio, sizeof(double), 2, archivo);
+            yParedes[i].texturaMain.push_back(PrimitivasSelectTexture());
+            fread(yParedes[i].texturaMain[j].posicionInicio, sizeof(double), 2, archivo);
             fread(nombreAux, sizeof(char), MAXCHAR, archivo);
-            if(!this->vCargadorImage->echateABuscarTexture(nombreAux, &tSelectTexture.cualTextura)) std::cout<<nombreAux<<" No encontrado \n";
-            tPared.texturaMain.push_back(tSelectTexture);
-            tSelectTexture = PrimitivasSelectTexture();
+            if(!this->vCargadorImage->echateABuscarTexture(nombreAux, &yParedes[i].texturaMain[j].cualTextura)) std::cout<<nombreAux<<" No encontrado \n";
+//            tPared.texturaMain.push_back(tSelectTexture);
+//            tSelectTexture = PrimitivasSelectTexture();
         }
-        this->aseguraIntegridadParedTam(&tPared);
-        this->asegurarIntegridadParedCalculos(&tPared);
-        if (tPared.tipoPared == paredVentana) {
-            this->ventanasADibujar.push_back(this->yParedes.size());
+        this->aseguraIntegridadParedTam(&yParedes[i]);
+        this->asegurarIntegridadParedCalculos(&yParedes[i]);
+        if (yParedes[i].tipoPared == paredVentana) {
+            this->ventanasADibujar.push_back(this->yParedes.size()-1);
         }
-        this->yParedes.push_back(tPared);
-        tPared = ConstruccionPared();
+//        this->yParedes.push_back(tPared);
+//        tPared = ConstruccionPared();
     }
     
     //Escaleras
     fread(&cantidades, sizeof(unsigned int), 1, archivo);
     for (unsigned int i=0; i<cantidades; i++) {
-        fread(tEscalera.id, sizeof(char), MAXCHAR, archivo);
-        fread(&tEscalera.angulo, sizeof(double), 1, archivo);
-        fread(&tEscalera.cantidadEscalones, sizeof(unsigned int), 1, archivo);
+        yEscaleras.push_back(ConstruccionEscaleras());
+        fread(yEscaleras[i].id, sizeof(char), MAXCHAR, archivo);
+        fread(&yEscaleras[i].angulo, sizeof(double), 1, archivo);
+        fread(&yEscaleras[i].cantidadEscalones, sizeof(unsigned int), 1, archivo);
         fread(&aux, sizeof(unsigned int), 1, archivo);
         for (unsigned int j = 0; j<aux; j++) {
-            tEscalera.vertice.push_back(Cg2ValenciaPunto3D());
-            fread(tEscalera.vertice[j].coordenadas, sizeof(double), 3, archivo);
+            yEscaleras[i].vertice.push_back(Cg2ValenciaPunto3D());
+            fread(yEscaleras[i].vertice[j].coordenadas, sizeof(double), 3, archivo);
         }
         for (unsigned int j = 0; j<6; j++) {
-            tEscalera.texturaMain.push_back(PrimitivasSelectTexture());
-            fread(tEscalera.texturaMain[j].posicionInicio, sizeof(double), 2, archivo);
+            yEscaleras[i].texturaMain.push_back(PrimitivasSelectTexture());
+            fread(yEscaleras[0].texturaMain[j].posicionInicio, sizeof(double), 2, archivo);
             fread(nombreAux, sizeof(char), MAXCHAR, archivo);
-            if(!this->vCargadorImage->echateABuscarTexture(nombreAux, &tEscalera.texturaMain[j].cualTextura)) std::cout<<nombreAux<<" No encontrado \n";
+            if(!this->vCargadorImage->echateABuscarTexture(nombreAux, &yEscaleras[i].texturaMain[j].cualTextura)) std::cout<<nombreAux<<" No encontrado \n";
         }
-        this->yEscaleras.push_back(tEscalera);
-        tEscalera = ConstruccionEscaleras();
+//        this->yEscaleras.push_back(tEscalera);
+//        tEscalera = ConstruccionEscaleras();
     }
     //Suelos
+    double arrayT [3] = {0,0,0};
     cantidades = (unsigned int) this->ySuelos.size();
     fread(&cantidades, sizeof(unsigned int), 1, archivo);
     for (unsigned int i=0; i<cantidades; i++) {
@@ -1541,7 +1556,10 @@ void Construccion::cargar(){
         fread(&aux, sizeof(unsigned int), 1, archivo);
         for (unsigned int j = 0; j<aux; j++) {
             ySuelos[i].vertices.push_back(Cg2ValenciaPunto3D());
-            fread(ySuelos[i].vertices[j].coordenadas, sizeof(double), 3, archivo);
+            fread(arrayT, sizeof(double), 3, archivo);
+            ySuelos[i].vertices[j].coordenadas[0] = arrayT[0];
+            ySuelos[i].vertices[j].coordenadas[1] = arrayT[1];
+            ySuelos[i].vertices[j].coordenadas[2] = arrayT[2];
         }
         for (unsigned int j = 0; j<2; j++) {
             ySuelos[i].texturaMain.push_back(PrimitivasSelectTexture());
@@ -1550,6 +1568,7 @@ void Construccion::cargar(){
             if(!this->vCargadorImage->echateABuscarTexture(nombreAux, &ySuelos[i].texturaMain[j].cualTextura)) std::cout<<nombreAux<<" No encontrado \n";
         }
         this->aseguraIntegridadSueloTam(&this->ySuelos[i]);
+        this->aseguraIntegridadSueloCalculos(&this->ySuelos[i]);
     }
     fclose(archivo);
     std::cout<<"Construccion: "<<this->yParedes.size()<<" "<<this->ySuelos.size()<<" "<<this->yEscaleras.size()<<" Cargadas\n";
@@ -1590,7 +1609,7 @@ void Construccion::guardar(){
         fwrite(yEscaleras[i].id, sizeof(char), MAXCHAR, archivo);
         fwrite(&yEscaleras[i].angulo, sizeof(double), 1, archivo);
         fwrite(&yEscaleras[i].cantidadEscalones, sizeof(unsigned int), 1, archivo);
-        aux = (unsigned int) yEscaleras[i].vertice.size();
+        aux = 2;//(unsigned int) yEscaleras[i].vertice.size();
         fwrite(&aux, sizeof(unsigned int), 1, archivo);
         for (unsigned int j = 0; j<aux; j++) {
             fwrite(yEscaleras[i].vertice[j].coordenadas, sizeof(double), 3, archivo);
@@ -1618,62 +1637,62 @@ void Construccion::guardar(){
     }
     fclose(archivo);
 }
-void Construccion::dibujaPared(ConstruccionPared *pared){
-    switch (pared->tipoPared) {
+void Construccion::dibujaPared(ConstruccionPared pared){
+    switch (pared.tipoPared) {
         case paredNormal:
-            vPrimitivas->prismaEstandar(&(pared->texturaMain),0 , pared->vertice[0].coordenadas, pared->vertice[1].coordenadas,pared->angulo);
+            vPrimitivas->prismaEstandar(&(pared.texturaMain),0 , pared.vertice[0].coordenadas, pared.vertice[1].coordenadas,pared.angulo);
             break;
         case paredVentana:
-            switch (pared->tipoVentana) {
+            switch (pared.tipoVentana) {
                 case ventanaNormal:
                 case ventanaEspacio:
-                    vPrimitivas->prismaEstandar(&(pared->texturaMain),0 , pared->vertice[2].coordenadas, pared->vertice[3].coordenadas,pared->angulo);
-                    vPrimitivas->prismaEstandar(&(pared->texturaMain),6 , pared->vertice[6].coordenadas, pared->vertice[7].coordenadas,pared->angulo);
+                    vPrimitivas->prismaEstandar(&(pared.texturaMain),0 , pared.vertice[2].coordenadas, pared.vertice[3].coordenadas,pared.angulo);
+                    vPrimitivas->prismaEstandar(&(pared.texturaMain),6 , pared.vertice[6].coordenadas, pared.vertice[7].coordenadas,pared.angulo);
                     break;
                 case ventananulo:
-                    vPrimitivas->prismaEstandar(&(pared->texturaMain),0 , pared->vertice[0].coordenadas, pared->vertice[1].coordenadas,pared->angulo);
+                    vPrimitivas->prismaEstandar(&(pared.texturaMain),0 , pared.vertice[0].coordenadas, pared.vertice[1].coordenadas,pared.angulo);
                     break;
                 default:
                     break;
             }
             break;
         case paredPuerta:
-            switch (pared->tipoPuerta) {
+            switch (pared.tipoPuerta) {
                 case puertaNormal:
                     //Cachito
-                    vPrimitivas->prismaEstandar(&(pared->texturaMain),6 , pared->vertice[4].coordenadas, pared->vertice[5].coordenadas,pared->angulo);
+                    vPrimitivas->prismaEstandar(&(pared.texturaMain),6 , pared.vertice[4].coordenadas, pared.vertice[5].coordenadas,pared.angulo);
                     //Puerta
-                    vPrimitivas->prismaEstandar(&(this->puertaNormalTexturas),0 , pared->vertice[2].coordenadas, pared->vertice[3].coordenadas,pared->angulo+vKeyFrame->varMovimientos[pared->cualVarMovimiento].value+0.785);
+                    vPrimitivas->prismaEstandar(&(this->puertaNormalTexturas),0 , pared.vertice[2].coordenadas, pared.vertice[3].coordenadas,pared.angulo+vKeyFrame->varMovimientos[pared.cualVarMovimiento].value+0.785);
                     break;
                 case cortinaAccesoria:
-                    vPrimitivas->prismaEstandar(&(pared->texturaMain),6 , pared->vertice[4].coordenadas, pared->vertice[5].coordenadas,pared->angulo);
-                    pared->vertice[2].coordenadas[1] = 1 + vKeyFrame->varMovimientos[pared->cualVarMovimiento].value + pared->vertice[0].coordenadas[1];
-                    pared->vertice[3].coordenadas[1] = pared->vertice[1].coordenadas[1] *0.9 - 1 - vKeyFrame->varMovimientos[pared->cualVarMovimiento].value;
-                    vPrimitivas->prismaEstandar(&(this->accesoriaTextura),0 , pared->vertice[2].coordenadas, pared->vertice[3].coordenadas,pared->angulo);
+                    vPrimitivas->prismaEstandar(&(pared.texturaMain),6 , pared.vertice[4].coordenadas, pared.vertice[5].coordenadas,pared.angulo);
+                    pared.vertice[2].coordenadas[1] = 1 + vKeyFrame->varMovimientos[pared.cualVarMovimiento].value + pared.vertice[0].coordenadas[1];
+                    pared.vertice[3].coordenadas[1] = pared.vertice[1].coordenadas[1] *0.9 - 1 - vKeyFrame->varMovimientos[pared.cualVarMovimiento].value;
+                    vPrimitivas->prismaEstandar(&(this->accesoriaTextura),0 , pared.vertice[2].coordenadas, pared.vertice[3].coordenadas,pared.angulo);
                     break;
                 case zaguanIzquiedo:
                     //Cachito
-                    vPrimitivas->prismaEstandar(&(pared->texturaMain),6 , pared->vertice[4].coordenadas, pared->vertice[5].coordenadas,pared->angulo);
+                    vPrimitivas->prismaEstandar(&(pared.texturaMain),6 , pared.vertice[4].coordenadas, pared.vertice[5].coordenadas,pared.angulo);
                     //Puerta
-                    vPrimitivas->prismaEstandar(&(this->zaguanTextureI),0 , pared->vertice[2].coordenadas, pared->vertice[3].coordenadas,pared->angulo+vKeyFrame->varMovimientos[pared->cualVarMovimiento].value);
+                    vPrimitivas->prismaEstandar(&(this->zaguanTextureI),0 , pared.vertice[2].coordenadas, pared.vertice[3].coordenadas,pared.angulo+vKeyFrame->varMovimientos[pared.cualVarMovimiento].value);
                     break;
                 case zaguanDerecho:
                     //Cachito
-                    vPrimitivas->prismaEstandar(&(pared->texturaMain),6 , pared->vertice[4].coordenadas, pared->vertice[5].coordenadas,pared->angulo);
+                    vPrimitivas->prismaEstandar(&(pared.texturaMain),6 , pared.vertice[4].coordenadas, pared.vertice[5].coordenadas,pared.angulo);
                     //Puerta
-                    vPrimitivas->prismaEstandar(&(this->zaguanTextureD),0 , pared->vertice[2].coordenadas, pared->vertice[3].coordenadas,pared->angulo+vKeyFrame->varMovimientos[pared->cualVarMovimiento].value);
+                    vPrimitivas->prismaEstandar(&(this->zaguanTextureD),0 , pared.vertice[2].coordenadas, pared.vertice[3].coordenadas,pared.angulo+vKeyFrame->varMovimientos[pared.cualVarMovimiento].value);
                     break;
                 case puertaEspacio:
-                    vPrimitivas->prismaEstandar(&(pared->texturaMain),6 , pared->vertice[2].coordenadas, pared->vertice[3].coordenadas,pared->angulo);
+                    vPrimitivas->prismaEstandar(&(pared.texturaMain),6 , pared.vertice[2].coordenadas, pared.vertice[3].coordenadas,pared.angulo);
                     break;
                 case puertaVerde:
                     //Cachito
-                    vPrimitivas->prismaEstandar(&(pared->texturaMain),6 , pared->vertice[4].coordenadas, pared->vertice[5].coordenadas,pared->angulo);
+                    vPrimitivas->prismaEstandar(&(pared.texturaMain),6 , pared.vertice[4].coordenadas, pared.vertice[5].coordenadas,pared.angulo);
                     //Puerta
-                    vPrimitivas->prismaEstandar(&(this->puertaVerdeTexture),0 , pared->vertice[2].coordenadas, pared->vertice[3].coordenadas,pared->angulo+vKeyFrame->varMovimientos[pared->cualVarMovimiento].value);
+                    vPrimitivas->prismaEstandar(&(this->puertaVerdeTexture),0 , pared.vertice[2].coordenadas, pared.vertice[3].coordenadas,pared.angulo+vKeyFrame->varMovimientos[pared.cualVarMovimiento].value);
                     break;
                 case puertanulo:
-                    vPrimitivas->prismaEstandar(&(pared->texturaMain),0 , pared->vertice[0].coordenadas, pared->vertice[1].coordenadas,pared->angulo);
+                    vPrimitivas->prismaEstandar(&(pared.texturaMain),0 , pared.vertice[0].coordenadas, pared.vertice[1].coordenadas,pared.angulo);
                     break;
                 default:
                     break;
@@ -1691,17 +1710,25 @@ void Construccion::escribeEnOrdencharArray(char (*arreglo)[30], unsigned int cua
         std::cout<<i<<"-. "<<arreglo[i]<<std::endl;
     }
 }
-void Construccion::dibujaEscaleras(ConstruccionEscaleras *escalera){
-    this->vPrimitivas->escaleras(&escalera->texturaMain, 0, escalera->vertice[0].coordenadas, escalera->vertice[1].coordenadas, escalera->cantidadEscalones, escalera->angulo);
+void Construccion::dibujaEscaleras(ConstruccionEscaleras escalera){
+    this->vPrimitivas->escaleras(&escalera.texturaMain, 0, escalera.vertice[0].coordenadas, escalera.vertice[1].coordenadas, escalera.cantidadEscalones, escalera.angulo);
 }
-void Construccion::dibujaSuelo(ConstruccionSuelo *suelo){
-    suelo->texturaMain[2].posicionInicio[0] = this->vKeyFrame->varMovimientos[suelo->cualVarMovimiento[0]].value;
-    suelo->texturaMain[3].posicionInicio[0] = this->vKeyFrame->varMovimientos[suelo->cualVarMovimiento[0]].value;
+void Construccion::dibujaSuelo(ConstruccionSuelo suelo){
+    suelo.texturaMain[2].posicionInicio[0] = this->vKeyFrame->varMovimientos[suelo.cualVarMovimiento[0]].value;
+    suelo.texturaMain[3].posicionInicio[0] = this->vKeyFrame->varMovimientos[suelo.cualVarMovimiento[0]].value;
+
+    suelo.texturaMain[2].posicionInicio[1] = this->vKeyFrame->varMovimientos[suelo.cualVarMovimiento[1]].value;
+    suelo.texturaMain[3].posicionInicio[1] = this->vKeyFrame->varMovimientos[suelo.cualVarMovimiento[1]].value;
     
-    suelo->texturaMain[2].posicionInicio[1] = this->vKeyFrame->varMovimientos[suelo->cualVarMovimiento[1]].value;
-    suelo->texturaMain[3].posicionInicio[1] = this->vKeyFrame->varMovimientos[suelo->cualVarMovimiento[1]].value;
     
-    this->vPrimitivas->sueloPoligonal(&suelo->texturaMain, 0, &suelo->vertices);
+    this->vPrimitivas->sueloPoligonal(&suelo.texturaMain, 0, &suelo.vertices);
+//      texturaMain[2].posicionInicio[0] = this->vKeyFrame->varMovimientos[suelo->cualVarMovimiento[0]].value;
+//    suelo->texturaMain[3].posicionInicio[0] = this->vKeyFrame->varMovimientos[suelo->cualVarMovimiento[0]].value;
+//
+//    suelo->texturaMain[2].posicionInicio[1] = this->vKeyFrame->varMovimientos[suelo->cualVarMovimiento[1]].value;
+//    suelo->texturaMain[3].posicionInicio[1] = this->vKeyFrame->varMovimientos[suelo->cualVarMovimiento[1]].value;
+//
+//    this->vPrimitivas->sueloPoligonal(&suelo->texturaMain, 0, &suelo->vertices);
 }
 void Construccion::describePuntos(std::vector<Cg2ValenciaPunto3D> puntos){
     for (int i = 0; i<puntos.size(); i++) {
@@ -1716,10 +1743,10 @@ void Construccion::aseguraIntegridadSueloTam(ConstruccionSuelo *suelo){
         std::cout<<"Error no deberia estar revisar urgente\n";
         suelo->texturaMain.push_back(this->defaultTexture);
     }
-//    while (suelo->texturaMain.size()<4){
-//        suelo->texturaMain.push_back(suelo->texturaMain[0]);
-//        suelo->texturaMain.push_back(suelo->texturaMain[1]);
-//    }
+    while (suelo->texturaMain.size()<4){
+        suelo->texturaMain.push_back(suelo->texturaMain[0]);
+        suelo->texturaMain.push_back(suelo->texturaMain[1]);
+    }
     memcpy(nombreAux, suelo->id, sizeof(char)*MAXCHAR);
     nombreAux[10] = 'K';
     nombreAux[11] = '0';
@@ -1748,7 +1775,7 @@ void Construccion::dibujaDespues(){
             case ventananulo:
                 break;
             case ventanaNormal:
-                this->dibujaParedVentanaNormal(&yParedes[this->ventanasADibujar[i]]);
+                this->dibujaParedVentanaNormal(yParedes[this->ventanasADibujar[i]]);
                 break;
             default:
                 break;
@@ -1759,15 +1786,18 @@ void Construccion::dibujaDespues(){
 //    }
     glDisable(GL_BLEND);
 }
-void Construccion::dibujaParedVentanaNormal(ConstruccionPared *pared){
-    pared->vertice[4].coordenadas[0] = pared->vertice[0].coordenadas[0] + vKeyFrame->varMovimientos[pared->cualVarMovimiento].value;
-    vPrimitivas->prismaEstandar(&this->ventanaNormalTexturas, 0, pared->vertice[4].coordenadas, pared->vertice[5].coordenadas, pared->angulo);
+void Construccion::dibujaParedVentanaNormal(ConstruccionPared pared){
+    pared.vertice[4].coordenadas[0] = pared.vertice[0].coordenadas[0] + vKeyFrame->varMovimientos[pared.cualVarMovimiento].value;
+    vPrimitivas->prismaEstandar(&this->ventanaNormalTexturas, 0, pared.vertice[4].coordenadas, pared.vertice[5].coordenadas, pared.angulo);
 }
 void Construccion::ejecutarAccionDespuesTexture(){
     switch (accionTextura) {
         case 0:
             if (this->objetoActual == pared) {
                 this->asegurarIntegridadParedCalculos(&yParedes[punteroParedModificable]);
+            }
+            if (this->objetoActual == suelo) {
+                this->aseguraIntegridadSueloCalculos(&ySuelos[punteroSueloModificable]);
             }
             break;
         case 1:
