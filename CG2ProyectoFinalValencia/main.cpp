@@ -21,7 +21,6 @@ void clickRaton(int boton, int estado, int x, int y);
 void funcionAnimacion(void);
 //    w,s,a,d,q,e,h,l,j,k,u,i MINMAY
 //char teclasMovimiento[25] = "wsadqehlkjuiWSADQEHLKJUI";
-  char teclasMovimiento[25] = "wsadqejlikuoWSADQEJLIKUO";
 bool blockCursor = false;
 int ventana [2];
 
@@ -32,7 +31,6 @@ KeyFrame vKeyFrame;
 Construccion vConstruccion;
 CreadorObjetos vCreadorObjetos;
 AcomodadorObjetos vAcomodadorObjetos;
-UIClassAux vUIClassAux;
 
 int main(int argc,char * argv[]) {
 
@@ -71,12 +69,12 @@ void iniciarOpenGL(void){
     glEnable(GL_AUTO_NORMAL);
     glEnable(GL_NORMALIZE);
     
-    
+    vCamara.inicializar();
     vCargadorImage.inicializar();
     vPrimitivas.inicializar(&vCargadorImage);
     vConstruccion.inicializar(&vPrimitivas, &vCargadorImage, &vKeyFrame);
     vCreadorObjetos.inicializar(&vPrimitivas, &vKeyFrame, &vCargadorImage, &vCamara);
-    vAcomodadorObjetos.inicializar(&vCreadorObjetos,&vUIClassAux,&vCamara);
+    vAcomodadorObjetos.inicializar(&vCreadorObjetos,&vCamara);
     vKeyFrame.inicializar(); //Siempre Al ultimo
 //    Pruebas
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -105,7 +103,7 @@ void reajusta(int ancho,int largo){
     glLoadIdentity();
 //    glOrtho(-5,5,-5,5,0.2,20);
 //    glFrustum(-0.1, 0.1, -0.1, 0.1, 0.1, 250.0);
-    glFrustum(-0.1*aspecto, 0.1*aspecto, -0.1*aspecto, 0.1*aspecto, 0.1, 250.0);
+    glFrustum(-0.1*aspecto, 0.1*aspecto, -0.1*aspecto, 0.1*aspecto, 0.1, 2500.0);
     glMatrixMode(GL_MODELVIEW);
     ventana[0] = ancho/2;
     ventana[1] = largo/2;
@@ -117,11 +115,16 @@ void teclado(unsigned char tecla,int x,int y){
         return;
     }
     if (tecla == ' ') {
-        vCamara.keyboardMove(4);
+        vCamara.keyboardMove(4+12);
         return;
     }
     if (tecla == '\t') {
-        vCamara.keyboardMove(5);
+        vCamara.keyboardMove(5+12);
+        return;
+    }
+    if (tecla == '@') {
+        vCargadorImage.reCargarArchivo();
+        return;
     }
     if (vKeyFrame.menuActivado) {
         vKeyFrame.teclaDeMenu(tecla);
@@ -139,12 +142,12 @@ void teclado(unsigned char tecla,int x,int y){
         vAcomodadorObjetos.teclaDeMenu(tecla);
         return;
     }
-    if (tecla == '!') {
-        vKeyFrame.teclaActivaMenu();
+    if(vCamara.menuActivado){
+        vCamara.teclaDeMenu(tecla);
         return;
     }
-    if (tecla == '@') {
-        vCargadorImage.reCargarArchivo();
+    if (tecla == '!') {
+        vKeyFrame.teclaActivaMenu();
         return;
     }
     if (tecla == '#') {
@@ -159,11 +162,12 @@ void teclado(unsigned char tecla,int x,int y){
         vAcomodadorObjetos.teclaActivaMenu();
         return;
     }
-    for (int i=0; teclasMovimiento[i] != '\0'; i++) {
-        if (teclasMovimiento[i] == tecla) {
-            vCamara.keyboardMove(i);
-            return;
-        }
+    if (tecla == '^') {
+        vCamara.teclaActivaMenu();
+        return;
+    }
+    if (vCamara.teclaMove(tecla)) {
+        return;
     }
     if (tecla == '+') {
         std::cout<<"Programa terminado\n";
@@ -171,10 +175,6 @@ void teclado(unsigned char tecla,int x,int y){
         vConstruccion.guardar();
         vCreadorObjetos.guardar();
         vAcomodadorObjetos.guardar();
-        exit(0);
-    }
-    if (tecla == ')') {
-        std::cout<<"Programa terminado Sin guardar\n";
         exit(0);
     }
     if (tecla == '-') {
@@ -185,39 +185,34 @@ void teclado(unsigned char tecla,int x,int y){
         vAcomodadorObjetos.guardar();
     }
     if (tecla >= '0' && tecla <= '9') {
-        vKeyFrame.reproduceAlgunaAnimacion((unsigned int)tecla-'0');
+        vKeyFrame.reproduceAlgunaAnimacion((unsigned int) tecla - '0');
     }
-//    if (tecla == ';') {
-//        for (int i = 0; i<3; i++) {
-//            vCamara.XYZ[i] = 1;
-//        }
-//    }
 }
 void teclasEspecciales(int tecla,int x,int y){
     switch( tecla ) {
         case GLUT_KEY_PAGE_UP:
-            vCamara.keyboardMove(0);
+            vCamara.keyboardMove(0+12);
             break;
         case GLUT_KEY_PAGE_DOWN:
-            vCamara.keyboardMove(1);
+            vCamara.keyboardMove(1+12);
             break;
         case GLUT_KEY_HOME:
-            vCamara.keyboardMove(2);
+            vCamara.keyboardMove(2+12);
             break;
         case GLUT_KEY_END:
-            vCamara.keyboardMove(3);
+            vCamara.keyboardMove(3+12);
             break;
         case GLUT_KEY_UP:
-            vCamara.keyboardMove(8);
+            vCamara.keyboardMove(8+12);
             break;
         case GLUT_KEY_DOWN:
-            vCamara.keyboardMove(9);
+            vCamara.keyboardMove(9+12);
             break;
         case GLUT_KEY_LEFT:
-            vCamara.keyboardMove(6);
+            vCamara.keyboardMove(6+12);
             break;
         case GLUT_KEY_RIGHT:
-            vCamara.keyboardMove(7);
+            vCamara.keyboardMove(7+12);
             break;
         default:
             break;
@@ -234,13 +229,13 @@ void raton(int x,int y){
 	}
 }
 void clickRaton(int boton, int estado, int x, int y){
-    if (boton == GLUT_LEFT_BUTTON && estado == GLUT_DOWN){
-        if (blockCursor == false){
-			glutWarpPointer(ventana[0], ventana[1]);
-			glutSetCursor(GLUT_CURSOR_NONE);
-			blockCursor = true;
-        }
-    }
+//    if (boton == GLUT_LEFT_BUTTON && estado == GLUT_DOWN){
+//        if (blockCursor == false){
+//            glutWarpPointer(ventana[0], ventana[1]);
+//            glutSetCursor(GLUT_CURSOR_NONE);
+//            blockCursor = true;
+//        }
+//    }
 }
 
 void funcionAnimacion(void){

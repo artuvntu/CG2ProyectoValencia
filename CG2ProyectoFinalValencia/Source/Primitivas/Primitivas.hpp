@@ -36,7 +36,7 @@ public:
     
     void inicializar(CargadorImage * cargadorImagenes);
     void describeSelecTextureVector(std::vector<PrimitivasSelectTexture> *vector);
-    void mundo(PrimitivasSelectTexture *cielo,PrimitivasSelectTexture *boveda,PrimitivasSelectTexture *suelo);
+    void mundo(std::vector<PrimitivasSelectTexture> *texturas);
     
     void cilindroEstandar(std::vector<PrimitivasSelectTexture>*vector,unsigned int desdeDonde,double diametro,double altura,unsigned int porcion);
     void esferaEstandar(std::vector<PrimitivasSelectTexture>*vector,unsigned int desdeDonde,double diametro,unsigned int porcion);
@@ -47,7 +47,7 @@ public:
     void cruceta(bool swithColor = false);
     void describePunto(Cg2ValenciaPunto3D punto);
     
-    void empiezaAModificarTexture(std::vector<PrimitivasSelectTexture> *v,unsigned char finMod, unsigned char *donde);
+    void empiezaAModificarTexture(std::vector<PrimitivasSelectTexture> *v,unsigned char *estado,unsigned char estadoSiguiente,unsigned char finMod, unsigned char *donde,unsigned int p = 0);
     bool teclaDeMenuTextura(unsigned char tecla);
     
     void drawCursor();
@@ -55,15 +55,26 @@ public:
     
 private:
 
+    enum estadoSelecTextura: unsigned char {
+        inicial=0 ,buscandoUInt=1
+    };
+    estadoSelecTextura estado = inicial;
     CargadorImage *vCargadorImage;
     void obtenerPosicionFinalEInicial(double *posicionFinal,double *posicionInicial, PrimitivasSelectTexture * selectTexture,double x,double y);
 
     UIClassAux vUIClassAux;
     bool setTexture = false;
-    unsigned char finModificacion;
-    unsigned char *dondeModificar;
+    unsigned char finModificacion = 0;
+    unsigned char *dondeModificar = NULL;
     std::vector<PrimitivasSelectTexture> *vectorPrimitivasST;
     unsigned int punteroVectorPrimitivas = 0;
+    unsigned char *estadoGuardar = NULL;
+    unsigned char estadoSiguiente = 0;
+    unsigned char accionDespuesBUI = 0;
+    void ejecutarAccionBuscarUInt();
+    
+    unsigned int hastaDonde = 0;
+    
 };
 
 #endif

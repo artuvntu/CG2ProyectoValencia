@@ -63,7 +63,7 @@ public:
 private:
 //    char CreadorObjetosAccionesBuscaUIntToChar[3][30] = {"NADA","Asegurar Integridad Objeto","Copiar en Texturas"};
     enum  CreadorObjetosAccionesBuscaUInt:unsigned char{
-        nadaCO=0,modificacionCabio=1,copiTexture=2,cambioPrimitiva=3,crearObj=4
+        nadaCO=0,modificacionCabio=1,copiTexture=2,cambioPrimitiva=3,crearObj=4,interCambiarPosPrimitiva=5
     };
     
     Cg2ValenciaPunto3D puntoCentro = Cg2ValenciaPunto3D();
@@ -136,6 +136,8 @@ private:
     void empiezaMoveByPrimitiva(std::vector<Cg2ValenciaPunto3D> *cuales);
     
     char nombreT[20] = "prueba";
+    
+    unsigned int cambioLugarPrimitiva = 0;
     
 };
 

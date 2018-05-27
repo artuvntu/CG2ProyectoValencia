@@ -20,7 +20,7 @@
 
 class AcomodadorObjetos{
 public:
-    void inicializar(CreadorObjetos *co,UIClassAux *uic,Camara *cam);
+    void inicializar(CreadorObjetos *co,Camara *cam);
     void dibuja();
     void teclaActivaMenu();
     void teclaDeMenu(unsigned char tecla);
@@ -57,7 +57,7 @@ private:
     unsigned char accionDespuesBuscarUInt = nada;
     
     CreadorObjetos *vCreadorObjetos;
-    UIClassAux *vUIClassAux;
+    UIClassAux vUIClassAux;
     Camara *vCamara;
     
     unsigned int puntero = 0;

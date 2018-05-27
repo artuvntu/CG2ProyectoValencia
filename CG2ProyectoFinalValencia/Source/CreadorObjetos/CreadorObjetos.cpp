@@ -17,6 +17,17 @@ void CreadorObjetos::inicializar(Primitivas *p, KeyFrame *k, CargadorImage *c,Ca
     this->vCargadorImage = c;
     this->vCamara = cam;
     this->cargar();
+//CamaraPos: P:{6.75014, 6, 7.08554, 6.09043, 5.61058, 6.44278, 0, 1, 0, } A:{3.94, -0.4, 1.57, }
+    this->posicionPorDefecto.XYZ[0] = 6.75014;
+    this->posicionPorDefecto.XYZ[1] = 6;
+    this->posicionPorDefecto.XYZ[2] = 7.08554;
+    this->posicionPorDefecto.XYZ[3] = 6.09043;
+    this->posicionPorDefecto.XYZ[4] = 5.61058;
+    this->posicionPorDefecto.XYZ[5] = 6.44278;
+    
+    this->posicionPorDefecto.Angles[0] = 3.94;
+    this->posicionPorDefecto.Angles[1] = -0.4;
+    this->posicionPorDefecto.Angles[2] = 1.57;
     
 }
 void CreadorObjetos::teclaActivaMenu(){
@@ -26,12 +37,14 @@ void CreadorObjetos::teclaActivaMenu(){
     this->punteroSeleccion = 0;
     this->punteroPrimitiva = 0;
     this->punteroTextura = 0;
-    this->bloquearDibujo = true;
+    if (!bloquearDibujo) {
+        this->posicionAnterior = vCamara->posActual;
+        this->vCamara->posActual = this->posicionPorDefecto;
+        this->bloquearDibujo = true;
+    }
     if (this->yObjetos.size()!=0) {
         this->dibujaObjetoPuntero = true;
     }
-    this->posicionAnterior = vCamara->posActual;
-    this->vCamara->posActual = this->posicionPorDefecto;
     this->esribeMenu();
     this->drawCursor();
 }
@@ -57,7 +70,7 @@ void CreadorObjetos::teclaDeMenu(unsigned char tecla){
         case modificaTexturasCO:
 //            this->teclaDeMenuModificarTexturas(tecla);
             if(this->vPrimitivas->teclaDeMenuTextura(tecla)){
-                
+                this->ejecutarAccionTexture();
             }
             break;
         default:
@@ -81,11 +94,11 @@ void CreadorObjetos::esribeMenu(){
         case modificarObjetoCO:
             if (yObjetos[punteroSeleccion].primitivas.size()!=0) {
                 this->describePrimitiva(&this->yObjetos[this->punteroSeleccion].primitivas[this->punteroPrimitiva]);
-                std::cout<<" Actual: "<<this->punteroPrimitiva<<" Disponibles: "<<this->yObjetos[punteroSeleccion].primitivas.size()<<"\nM->Mostrar Disponibles\n3->Duplicar\n2->Set Cual Textura\n4->Create Texture for Actual\nC->Cambiar Primitiva\nB->Borrar\nV->Cambio Tipo\n5->Set Special value\n6->Set Transparencia\n";
+                std::cout<<" Actual: "<<this->punteroPrimitiva<<" Disponibles: "<<this->yObjetos[punteroSeleccion].primitivas.size()<<"\nm->Mostrar Primitivas Disponibles\nM->Mostrar Texturas Disponibles\n3->Duplicar\n5->Set Cual Textura\n4->Create Texture for Actual\nC->Cambiar Primitiva\nX->Borrar\nP->Cambio Tipo\n6->Set Special value\n7->Set Transparencia\n8->Cambiar Posicion\n";
             }else{
                 std::cout<<"Crea una primitiva\n";
             }
-            std::cout<<"1->Crea Primitiva\nZ->Set Textures\nX->Salir\n";
+            std::cout<<"N->Crea Primitiva\nB->Set Textures\nZ->Salir\n";
             break;
         case modificaTexturasCO:
             this->vPrimitivas->escribeMenu();
@@ -142,12 +155,12 @@ void CreadorObjetos::dibujaObjeto(unsigned int cual,bool dVertice){
                 glPopMatrix();
                 break;
             case plano:
-                glPushMatrix();
-                glTranslated(primitivaDibujando->vertices[0].coordenadas[0], primitivaDibujando->vertices[0].coordenadas[1], primitivaDibujando->vertices[0].coordenadas[2]);
-                glRotated(primitivaDibujando->vertices[1].coordenadas[0], 1, 0, 0);
-                glRotated(primitivaDibujando->vertices[1].coordenadas[1], 0, 1, 0);
-                glRotated(primitivaDibujando->vertices[1].coordenadas[2], 0, 0, 1);
-                vPrimitivas->planoEstandar(&objetoDibujando->texturas, primitivaDibujando->desdeCualTexture, puntoCentro.coordenadas, primitivaDibujando->vertices[2].coordenadas);
+//                glPushMatrix();
+//                glTranslated(primitivaDibujando->vertices[0].coordenadas[0], primitivaDibujando->vertices[0].coordenadas[1], primitivaDibujando->vertices[0].coordenadas[2]);
+//                glRotated(primitivaDibujando->vertices[1].coordenadas[0], 1, 0, 0);
+//                glRotated(primitivaDibujando->vertices[1].coordenadas[1], 0, 1, 0);
+//                glRotated(primitivaDibujando->vertices[1].coordenadas[2], 0, 0, 1);
+//                vPrimitivas->planoEstandar(&objetoDibujando->texturas, primitivaDibujando->desdeCualTexture, puntoCentro.coordenadas, primitivaDibujando->vertices[2].coordenadas);
                 glPopMatrix();
                 break;
             case popm:
@@ -255,7 +268,7 @@ void CreadorObjetos::teclaDeMenuInicial(unsigned char tecla){
             case 'C':
                 std::cout<<"Cambio\n";
                 this->escribeObjetosDisponibles();
-                this->empezarABuscarUint(&this->punteroSeleccion, this->cuantosDisponibles(), inicialCO);
+                this->empezarABuscarUint(&this->punteroSeleccion, this->cuantosDisponibles(), inicialCO,cambioPrimitiva);
                 break;
             case 'p':
             case 'P':
@@ -336,9 +349,12 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
     if (yObjetos[punteroSeleccion].primitivas.size()!=0) {
         switch (tecla) {
             case 'm':
-            case 'M':
                 std::cout<<"Mostrar\n";
                 this->escribePrimitivasDisponibles(&yObjetos[punteroSeleccion]);
+                this->drawCursor();
+                break;
+            case 'M':
+                this->vPrimitivas->describeSelecTextureVector(&yObjetos[punteroSeleccion].texturas);
                 this->drawCursor();
                 break;
             case 'c':
@@ -347,8 +363,8 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
                 this->escribePrimitivasDisponibles(&yObjetos[punteroSeleccion]);
                 this->empezarABuscarUint(&punteroPrimitiva, (unsigned int)yObjetos[punteroSeleccion].primitivas.size(), modificarObjetoCO,cambioPrimitiva);
                 break;
-            case 'B':
-            case 'b':
+            case 'x':
+            case 'X':
                 if (punteroPrimitiva<this->yObjetos[punteroSeleccion].primitivas.size()) {
                     std::cout<<"Borrado\n";
                     this->yObjetos[punteroSeleccion].primitivas.erase(this->yObjetos[punteroSeleccion].primitivas.begin()+punteroSeleccion);
@@ -364,8 +380,8 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
                 this->esribeMenu();
                 this->drawCursor();
                 break;
-            case 'v':
-            case 'V':
+            case 'p':
+            case 'P':
                 std::cout<<"Cambiar tipo\n";
                 this->escribeTiposDePrimitivasDispnibles();
                 this->empezarABuscarUint((unsigned int *)&this->yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].tipoPrimitiva,MAXTIPOPRIMITIVA, modificarObjetoCO,modificacionCabio);
@@ -377,7 +393,7 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
                 this->esribeMenu();
                 this->drawCursor();
                 break;
-            case '2':
+            case '5':
                 std::cout<<"Cambiando Desde donde Texture\n";
                 this->vPrimitivas->describeSelecTextureVector(&this->yObjetos[punteroSeleccion].texturas);
                 this->empezarABuscarUint(&this->yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].desdeCualTexture,(unsigned int) this->yObjetos[punteroSeleccion].texturas.size(), modificarObjetoCO);
@@ -390,7 +406,7 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
                 }
                 
                 break;
-            case '5':
+            case '6':
                 std::cout<<"Cambiar valor especial\n";
                 if (this->yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].tipoPrimitiva == otroObjeto) {
                     this->escribeObjetosDisponibles();
@@ -400,20 +416,24 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
 
                 }
                 break;
-            case '6':
+            case '7':
                 std::cout<<"Set Transparencia";
                 this->escribeTiposDeTranspareciasDisponibles();
                 this->empezarABuscarUint((unsigned int*)&this->yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].tipoTransparencia, MAXTIPOTRANSPARENCIA, modificarObjetoCO);
                 break;
+            case '8':
+                std::cout<<"Intercambiar\n";
+                this->empezarABuscarUint(&this->cambioLugarPrimitiva, (unsigned int)this->yObjetos[punteroSeleccion].primitivas.size(), modificarObjetoCO,interCambiarPosPrimitiva);
+                break;
             default:
-                
                 saltar = this->vUIClassAux.teclaMove(tecla);
                 break;
         }
         if (saltar) return;
     }
     switch (tecla) {
-        case '1':
+        case 'n':
+        case 'N':
             std::cout<<"Creando nueva Primitiva\n";
             this->yObjetos[punteroSeleccion].primitivas.push_back(CreadorObjetosPrimitivas());
             this->punteroPrimitiva = (unsigned int) this->yObjetos[punteroSeleccion].primitivas.size() - 1;
@@ -424,20 +444,21 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
             drawCursor();
             
             break;
-        case 'z':
-        case 'Z':
+        case 'b':
+        case 'B':
             if (yObjetos[punteroSeleccion].texturas.size()== 0) {
                 std::cout<<"No hay texturas que editar\n";
             }else{
                 std::cout<<"Editando Textura\n";
                 this->estado = modificaTexturasCO;
-                this->punteroPrimitiva = 0;
-                this->esribeMenu();
-                this->drawCursor();
+//                this->punteroPrimitiva = 0;
+//                this->esribeMenu();
+//                this->drawCursor();
+                this->vPrimitivas->empiezaAModificarTexture(&this->yObjetos[punteroSeleccion].texturas, (unsigned char*)&estado, (unsigned char) modificarObjetoCO, 0, &this->accionTexture,yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].desdeCualTexture);
             }
             break;
-        case 'x':
-        case 'X':
+        case 'z':
+        case 'Z':
             std::cout<<"Salir de Modificar Objeto\n";
             this->punteroTextura = 0;
             this->punteroPrimitiva = 0;
@@ -451,6 +472,7 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
 }
 void CreadorObjetos::ejecutaAccionDespuesBuscarUInt(){
     bool auxiliarBoleana = true;
+    CreadorObjetosPrimitivas tprimitiva;
     switch (accionDespuesBuscarUInt) {
         case copiTexture:
             for (int i = 1; i<=auxiliarCopiarTexture; i++) {
@@ -470,7 +492,9 @@ void CreadorObjetos::ejecutaAccionDespuesBuscarUInt(){
             this->empiezaMoveByPrimitiva(&yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].vertices);
             break;
         case cambioPrimitiva:
-            this->empiezaMoveByPrimitiva(&yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].vertices);
+            if (punteroPrimitiva<yObjetos[punteroSeleccion].primitivas.size()) {
+                this->empiezaMoveByPrimitiva(&yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].vertices);
+            }
             break;
         case crearObj:
             this->yObjetos.push_back(CreadorObjetosObjeto());
@@ -487,6 +511,11 @@ void CreadorObjetos::ejecutaAccionDespuesBuscarUInt(){
                 }
             }
             this->dibujaObjetoPuntero = true;
+            break;
+        case interCambiarPosPrimitiva:
+            tprimitiva = yObjetos[punteroSeleccion].primitivas[cambioLugarPrimitiva];
+            yObjetos[punteroSeleccion].primitivas[punteroPrimitiva] = yObjetos[punteroSeleccion].primitivas[cambioLugarPrimitiva];
+            yObjetos[punteroSeleccion].primitivas[punteroPrimitiva] = tprimitiva;
             break;
         case nadaCO:
         default:

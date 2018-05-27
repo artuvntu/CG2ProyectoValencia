@@ -107,9 +107,11 @@ bool UIClassAux::teclaDeMenuBuscandoUInt(unsigned char tecla){
 }
 void UIClassAux::escribeMenu(){
     switch (this->estadoActual) {
-        case buscandoString:
         case buscandoUInt:
-            std::cout<<"SUPR->Cancelar\tENTER->Guardar\tBCAKDELETE->Retroceder\n";
+            std::cout<<"Actua-> "<<*this->dondeGuardarUInt<<" MAX-> "<<this->maximo;
+            //Correcto
+        case buscandoString:
+            std::cout<<"\nSUPR->Cancelar\tENTER->Guardar\tBCAKDELETE->Retroceder\n";
             break;
         case sinBusqueda:
         default:

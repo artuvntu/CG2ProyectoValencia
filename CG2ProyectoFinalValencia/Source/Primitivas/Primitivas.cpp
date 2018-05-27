@@ -9,76 +9,7 @@
 #include "Primitivas.hpp"
 
 
-void Primitivas::mundo(PrimitivasSelectTexture *cielo,PrimitivasSelectTexture *boveda,PrimitivasSelectTexture *suelo){
-    double posicionFinal[2] = {0, 0};
-    double posicionInicio[2] = {0,0};
-    this->obtenerPosicionFinalEInicial(posicionFinal,posicionInicio, cielo, 200, 200);
-    glBindTexture(GL_TEXTURE_2D, this->vCargadorImage->texturas[cielo->cualTextura].glIndex);
-    glPushMatrix();
-    for (int i = 0; i<4; i++) {
-        glRotated(90, 0, 1, 0);
-        glNormal3d(0, 0, -1);
-        glBegin(GL_POLYGON);
-        glTexCoord2d(cielo->posicionInicio[0], posicionInicio[1]);
-        glVertex3f(-100, 0, -100);
-        glTexCoord2d(posicionFinal[0], posicionInicio[1]);
-        glVertex3f(100, 0, -100);
-        glTexCoord2d(posicionFinal[0], posicionFinal[1]);
-        glVertex3f(100, 200, -100);
-        glTexCoord2d(posicionInicio[0], posicionFinal[1]);
-        glVertex3f(-100, 200, -100);
-        glEnd();
-    }
-    glPopMatrix();
-    this->obtenerPosicionFinalEInicial(posicionFinal, posicionInicio, suelo, 200, 200);
-    glBindTexture(GL_TEXTURE_2D, this->vCargadorImage->texturas[suelo->cualTextura].glIndex);
-    glNormal3d(0, -1, 0);
-    glBegin(GL_POLYGON);
-    glTexCoord2d(suelo->posicionInicio[0], posicionInicio[1]);
-    glVertex3f(-100, 0, 100);
-    glTexCoord2d(posicionFinal[0], posicionInicio[1]);
-    glVertex3f(100, 0, 100);
-    glTexCoord2d(posicionFinal[0], posicionFinal[1]);
-    glVertex3f(100, 0, -100);
-    glTexCoord2d(posicionInicio[0], posicionFinal[1]);
-    glVertex3f(-100, 0, -100);
-    glEnd();
-    this->obtenerPosicionFinalEInicial(posicionFinal, posicionInicio, boveda, 200, 200);
-    glBindTexture(GL_TEXTURE_2D, this->vCargadorImage->texturas[boveda->cualTextura].glIndex);
-    glNormal3d(0, 1, 0);
-    glBegin(GL_POLYGON);
-    glTexCoord2d(boveda->posicionInicio[0], posicionInicio[1]);
-    glVertex3f(-100, 200, 100);
-    glTexCoord2d(posicionFinal[0], posicionInicio[1]);
-    glVertex3f(100, 200, 100);
-    glTexCoord2d(posicionFinal[0], posicionFinal[1]);
-    glVertex3f(100, 200, -100);
-    glTexCoord2d(posicionInicio[0], posicionFinal[1]);
-    glVertex3f(-100, 200, -100);
-    glEnd();
-}
-void Primitivas::planoEstandar(std::vector<PrimitivasSelectTexture> *vector, unsigned int desdeDonde, double *posicion, double *tam){
-    if (vector->size()-desdeDonde<PRIMITIVAVRTPLANO) {
-        std::cout<<"Plano estandar error tam vector\n";
-    }
-    double posicionFinal[2] = {0,0};
-    double posicionInicial[2] = {0,0};
-    double lugarTerminal[2] = {posicion[0]+tam[0],posicion[1]+tam[1]};
-    PrimitivasSelectTexture *tActual = &vector->at(desdeDonde);
-    this->obtenerPosicionFinalEInicial(posicionFinal, posicionInicial, tActual, tam[0], tam[1]);
-    glBindTexture(GL_TEXTURE_2D, this->vCargadorImage->texturas[tActual->cualTextura].glIndex);
-    glNormal3d(0, 0, -1);
-    glBegin(GL_POLYGON);
-    glTexCoord2d(posicionInicial[0], posicionInicial[1]);
-    glVertex3d(posicion[0], posicion[1], posicion[2]);
-    glTexCoord2d(posicionFinal[0], posicionInicial[1]);
-    glVertex3d(lugarTerminal[0], posicion[1], posicion[2]);
-    glTexCoord2d(posicionFinal[0], posicionFinal[1]);
-    glVertex3d(lugarTerminal[0], lugarTerminal[1], posicion[2]);
-    glTexCoord2d(posicionInicial[0], posicionFinal[1]);
-    glVertex3d(posicion[0], lugarTerminal[1], posicion[2]);
-    glEnd();
-}
+
 void Primitivas::prismaEstandar(std::vector<PrimitivasSelectTexture>*vectorSelecTexture,unsigned int desdeDonde,double posicion[3],double tam[3],double angulo){
     if (vectorSelecTexture->size()-desdeDonde< PRIMITIVARVTPRISMAESTANDAR){
         std::cout<<"Prisma estandar Error tam vectorSelec\n";
@@ -530,20 +461,199 @@ void Primitivas::cilindroEstandar(std::vector<PrimitivasSelectTexture> *vector, 
         glEnd();
     }
 }
-void Primitivas::empiezaAModificarTexture(std::vector<PrimitivasSelectTexture> *v, unsigned char finMod, unsigned char *donde){
+void Primitivas::empiezaAModificarTexture(std::vector<PrimitivasSelectTexture> *v,unsigned char *estado, unsigned char estadoSig, unsigned char finMod, unsigned char *donde,unsigned int p){
+    if (v->size() == 0) {
+        std::cout<<"Error vector texturas vacio\n";
+        *estado = estadoSig;
+    }
     this->vectorPrimitivasST = v;
     this->finModificacion = finMod;
     this->dondeModificar = donde;
+    this->estadoGuardar = estado;
+    this->estadoSiguiente = estadoSig;
     this->setTexture = true;
-    punteroVectorPrimitivas = 0;
+    if (p<v->size()) {
+        punteroVectorPrimitivas = p;
+    }else{
+        punteroVectorPrimitivas = 0;
+    }
+    this->vUIClassAux.empezarABuscarMove(&v->at(punteroVectorPrimitivas).posicionInicio[0], NULL, &v->at(punteroVectorPrimitivas).posicionInicio[1], NULL, NULL, NULL, NULL, NULL, NULL, 0.1, 1.0, 0, 0);
+    this->escribeMenu();
+    this->drawCursor();
 }
 bool Primitivas::teclaDeMenuTextura(unsigned char tecla){
+    if(tecla == '|'){
+        this->escribeMenu();
+        this->drawCursor();
+    }
+    switch (estado) {
+        case inicial:
+            switch (tecla) {
+                case 'c':
+                case 'C':
+                    std::cout<<"Cambio\n";
+                    estado = buscandoUInt;
+                    this->describeSelecTextureVector(this->vectorPrimitivasST);
+                    this->vUIClassAux.empezarABuscarUInt(&this->punteroVectorPrimitivas, (unsigned int) this->vectorPrimitivasST->size(), (unsigned char*)&estado, (unsigned char) inicial, (unsigned char) inicial, 1, 0, &accionDespuesBUI);
+                    break;
+                case 'm':
+                    std::cout<<"Mostrando\n";
+                    this->describeSelecTextureVector(this->vectorPrimitivasST);
+                    this->drawCursor();
+                    break;
+                case 'M':
+                    std::cout<<"Mostrando\n";
+                    this->vCargadorImage->escribeTexturasDisponibles();
+                    this->drawCursor();
+                    break;
+                case 'P':
+                case 'p':
+                    std::cout<<"Set value\n";
+                    estado = buscandoUInt;
+                    this->vCargadorImage->escribeTexturasDisponibles();
+                    this->vUIClassAux.empezarABuscarUInt(&this->vectorPrimitivasST->at(punteroVectorPrimitivas).cualTextura, (unsigned int) this->vCargadorImage->texturas.size(), (unsigned char*)&estado, (unsigned char) inicial, (unsigned char) inicial, 0, 0, &accionDespuesBUI);
+                    break;
+                case 'z':
+                case 'Z':
+                    std::cout<<"Terminado\n";
+                    *this->estadoGuardar = this->estadoSiguiente;
+                    *this->dondeModificar = this->finModificacion;
+                    return true;
+                    break;
+                case '3':
+//                case 'V':
+                    std::cout<<"Hasta donde\n";
+                    estado = buscandoUInt;
+                    this->vUIClassAux.empezarABuscarUInt(&this->hastaDonde, (unsigned int) this->vectorPrimitivasST->size() - punteroVectorPrimitivas, (unsigned char *)&estado, (unsigned char)inicial, (unsigned char)inicial, 2, 0, &this->accionDespuesBUI);
+                    break;
+                default:
+                    this->vUIClassAux.teclaMove(tecla);
+                    break;
+            }
+            break;
+        case buscandoUInt:
+            if(this->vUIClassAux.teclaDeMenu(tecla)){
+                this->ejecutarAccionBuscarUInt();
+            }
+            break;
+        default:
+            break;
+    }
     return false;
 }
+
+void Primitivas::ejecutarAccionBuscarUInt(){
+    switch (this->accionDespuesBUI) {
+        case 0:
+            
+            break;
+        case 1:
+            this->vUIClassAux.empezarABuscarMove(&vectorPrimitivasST->at(punteroVectorPrimitivas).posicionInicio[0], NULL, &vectorPrimitivasST->at(punteroVectorPrimitivas).posicionInicio[1],NULL , NULL, NULL, NULL, NULL, NULL, 0.1, 1.0, 0, 0);
+            break;
+        case 2:
+            for (unsigned int i = punteroVectorPrimitivas+1; i<=punteroVectorPrimitivas+hastaDonde; i++) {
+                this->vectorPrimitivasST->at(i).cualTextura = this->vectorPrimitivasST->at(punteroVectorPrimitivas).cualTextura;
+            }
+            break;
+        default:
+            break;
+    }
+    this->escribeMenu();
+    this->drawCursor();
+}
+
 void Primitivas::escribeMenu(){
+    if (estado == buscandoUInt) {
+        this->vUIClassAux.escribeMenu();
+        return;
+    }
     if (this->vectorPrimitivasST->size()==0) std::cout<<"Error Textura vacia :/\n";
     else{
         this->vCargadorImage->describeTextura(&this->vCargadorImage->texturas[vectorPrimitivasST->at(punteroVectorPrimitivas).cualTextura]);
-        std::cout<<"Actual: "<<this->punteroVectorPrimitivas<<" Disponibles: "<< this->vectorPrimitivasST->size()<<"\nM->Mostrar Disponibles\nC->Cambiar\nV->Set Value\nX->Salir\nG->Copiar hasta\n";
+        std::cout<<"Actual: "<<this->punteroVectorPrimitivas<<" Disponibles: "<< this->vectorPrimitivasST->size()<<"\nm->Mostrar Disponibles\nM->Texturas Disponibles\nC->Cambiar\nP->Set Value\nZ->Salir\n3->Copiar hasta\n";
     }
+}
+void Primitivas::drawCursor(){
+    if(estado == buscandoUInt){
+        this->vUIClassAux.drawCursor();
+        return;
+    }
+    std::cout<<"CG2ProyectoFinalValenciaC Texturas $ ";
+
+}
+void Primitivas::mundo(std::vector<PrimitivasSelectTexture> *texturas){
+    double posicionFinal[2] = {0, 0};
+    double posicionInicio[2] = {0,0};
+    if (texturas->size()<2) {
+        std::cout<<"Mundo mal creado\n";
+        return;
+    }
+    //    this->obtenerPosicionFinalEInicial(posicionFinal,posicionInicio, cielo, 200, 200);
+    //    glBindTexture(GL_TEXTURE_2D, this->vCargadorImage->texturas[cielo->cualTextura].glIndex);
+    glPushMatrix();
+    //    for (int i = 0; i<4; i++) {
+    //        glRotated(90, 0, 1, 0);
+    //        glNormal3d(0, 0, -1);
+    //        glBegin(GL_POLYGON);
+    //        glTexCoord2d(cielo->posicionInicio[0], posicionInicio[1]);
+    //        glVertex3f(-100, 0, -100);
+    //        glTexCoord2d(posicionFinal[0], posicionInicio[1]);
+    //        glVertex3f(100, 0, -100);
+    //        glTexCoord2d(posicionFinal[0], posicionFinal[1]);
+    //        glVertex3f(100, 200, -100);
+    //        glTexCoord2d(posicionInicio[0], posicionFinal[1]);
+    //        glVertex3f(-100, 200, -100);
+    //        glEnd();
+    //    }
+    //    std::vector<PrimitivasSelectTexture> t {*cielo};
+    this->esferaEstandar(texturas, 0, 250, 0);
+    glPopMatrix();
+    this->obtenerPosicionFinalEInicial(posicionFinal, posicionInicio, &texturas->at(1), 200, 200);
+    glBindTexture(GL_TEXTURE_2D, this->vCargadorImage->texturas[texturas->at(1).cualTextura].glIndex);
+    glNormal3d(0, -1, 0);
+    glBegin(GL_POLYGON);
+    glTexCoord2d(texturas->at(1).posicionInicio[0], posicionInicio[1]);
+    glVertex3f(-100, 0, 100);
+    glTexCoord2d(posicionFinal[0], posicionInicio[1]);
+    glVertex3f(100, 0, 100);
+    glTexCoord2d(posicionFinal[0], posicionFinal[1]);
+    glVertex3f(100, 0, -100);
+    glTexCoord2d(posicionInicio[0], posicionFinal[1]);
+    glVertex3f(-100, 0, -100);
+    glEnd();
+    //    this->obtenerPosicionFinalEInicial(posicionFinal, posicionInicio, boveda, 200, 200);
+    //    glBindTexture(GL_TEXTURE_2D, this->vCargadorImage->texturas[boveda->cualTextura].glIndex);
+    //    glNormal3d(0, 1, 0);
+    //    glBegin(GL_POLYGON);
+    //    glTexCoord2d(boveda->posicionInicio[0], posicionInicio[1]);
+    //    glVertex3f(-100, 200, 100);
+    //    glTexCoord2d(posicionFinal[0], posicionInicio[1]);
+    //    glVertex3f(100, 200, 100);
+    //    glTexCoord2d(posicionFinal[0], posicionFinal[1]);
+    //    glVertex3f(100, 200, -100);
+    //    glTexCoord2d(posicionInicio[0], posicionFinal[1]);
+    //    glVertex3f(-100, 200, -100);
+    //    glEnd();
+}
+void Primitivas::planoEstandar(std::vector<PrimitivasSelectTexture> *vector, unsigned int desdeDonde, double *posicion, double *tam){
+    if (vector->size()-desdeDonde<PRIMITIVAVRTPLANO) {
+        std::cout<<"Plano estandar error tam vector\n";
+    }
+    double posicionFinal[2] = {0,0};
+    double posicionInicial[2] = {0,0};
+    double lugarTerminal[2] = {posicion[0]+tam[0],posicion[1]+tam[1]};
+    PrimitivasSelectTexture *tActual = &vector->at(desdeDonde);
+    this->obtenerPosicionFinalEInicial(posicionFinal, posicionInicial, tActual, tam[0], tam[1]);
+    glBindTexture(GL_TEXTURE_2D, this->vCargadorImage->texturas[tActual->cualTextura].glIndex);
+    glNormal3d(0, 0, -1);
+    glBegin(GL_POLYGON);
+    glTexCoord2d(posicionInicial[0], posicionInicial[1]);
+    glVertex3d(posicion[0], posicion[1], posicion[2]);
+    glTexCoord2d(posicionFinal[0], posicionInicial[1]);
+    glVertex3d(lugarTerminal[0], posicion[1], posicion[2]);
+    glTexCoord2d(posicionFinal[0], posicionFinal[1]);
+    glVertex3d(lugarTerminal[0], lugarTerminal[1], posicion[2]);
+    glTexCoord2d(posicionInicial[0], posicionFinal[1]);
+    glVertex3d(posicion[0], lugarTerminal[1], posicion[2]);
+    glEnd();
 }
