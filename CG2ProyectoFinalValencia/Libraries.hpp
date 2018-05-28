@@ -23,6 +23,8 @@
 #include <OpenGL/OpenGL.h>
 #elif _WIN32
 #include "LibW\glut.h"
+#define _CRT_SECURE_NO_WARNINGS
+# pragma comment( lib, "legacy_stdio_definitions.lib")
 #elif __linux__
 #include <GL/gl.h>
 #include <GL/glut.h>

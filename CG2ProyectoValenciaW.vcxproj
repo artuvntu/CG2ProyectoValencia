@@ -70,7 +70,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CTR_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -87,7 +87,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CTR_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -105,19 +105,27 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cg2proyectofinalvalencia\main.cpp" />
+    <ClCompile Include="CG2ProyectoFinalValencia\Source\AcomodadorObjetos\AcomodadorObjetos.cpp" />
     <ClCompile Include="cg2proyectofinalvalencia\source\camara\Camera.cpp" />
     <ClCompile Include="cg2proyectofinalvalencia\source\cargadorimage\CargadorImage.cpp" />
+    <ClCompile Include="CG2ProyectoFinalValencia\Source\Construccion\Construccion.cpp" />
+    <ClCompile Include="CG2ProyectoFinalValencia\Source\CreadorObjetos\CreadorObjetos.cpp" />
     <ClCompile Include="CG2ProyectoFinalValencia\Source\KeyFrame\KeyFrame.cpp" />
     <ClCompile Include="CG2ProyectoFinalValencia\Source\Primitivas\Primitivas.cpp" />
+    <ClCompile Include="CG2ProyectoFinalValencia\Source\UIClassAux\UIClassAux.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cg2proyectofinalvalencia\glut.h" />
     <ClInclude Include="cg2proyectofinalvalencia\Libraries.hpp" />
     <ClInclude Include="cg2proyectofinalvalencia\main.hpp" />
+    <ClInclude Include="CG2ProyectoFinalValencia\Source\AcomodadorObjetos\AcomodadorObjetos.hpp" />
     <ClInclude Include="cg2proyectofinalvalencia\source\camara\Camera.hpp" />
     <ClInclude Include="cg2proyectofinalvalencia\source\cargadorimage\CargadorImage.hpp" />
+    <ClInclude Include="CG2ProyectoFinalValencia\Source\Construccion\Construccion.hpp" />
+    <ClInclude Include="CG2ProyectoFinalValencia\Source\CreadorObjetos\CreadorObjetos.hpp" />
     <ClInclude Include="CG2ProyectoFinalValencia\Source\KeyFrame\KeyFrame.hpp" />
     <ClInclude Include="CG2ProyectoFinalValencia\Source\Primitivas\Primitivas.hpp" />
+    <ClInclude Include="CG2ProyectoFinalValencia\Source\UIClassAux\UIClassAux.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

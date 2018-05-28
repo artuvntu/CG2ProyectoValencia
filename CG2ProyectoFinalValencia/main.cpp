@@ -161,7 +161,7 @@ void teclado(unsigned char tecla,int x,int y){
         vAcomodadorObjetos.teclaActivaMenu();
         return;
     }
-    if (tecla == '^') {
+    if (tecla == '&') {
         vCamara.teclaActivaMenu();
         return;
     }
@@ -182,10 +182,16 @@ void teclado(unsigned char tecla,int x,int y){
         vConstruccion.guardar();
         vCreadorObjetos.guardar();
         vAcomodadorObjetos.guardar();
+		return;
     }
     if (tecla >= '0' && tecla <= '9') {
         vKeyFrame.reproduceAlgunaAnimacion((unsigned int) tecla - '0');
+		return;
     }
+	if (tecla == '|') {
+		std::cout << "!->KeyFrame\n@->Reload Image\n#->Construccion\n$->Creador Objetos\n%->Acomodador Objetos\n&->Camara\n+->Guardar salir\n-->Guardar\n";
+	}
+
 }
 void teclasEspecciales(int tecla,int x,int y){
     switch( tecla ) {
@@ -228,13 +234,13 @@ void raton(int x,int y){
 	}
 }
 void clickRaton(int boton, int estado, int x, int y){
-//    if (boton == GLUT_LEFT_BUTTON && estado == GLUT_DOWN){
-//        if (blockCursor == false){
-//            glutWarpPointer(ventana[0], ventana[1]);
-//            glutSetCursor(GLUT_CURSOR_NONE);
-//            blockCursor = true;
-//        }
-//    }
+    if (boton == GLUT_LEFT_BUTTON && estado == GLUT_DOWN){
+        if (blockCursor == false){
+            glutWarpPointer(ventana[0], ventana[1]);
+            glutSetCursor(GLUT_CURSOR_NONE);
+            blockCursor = true;
+        }
+    }
 }
 
 void funcionAnimacion(void){

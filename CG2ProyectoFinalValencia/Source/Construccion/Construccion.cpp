@@ -1262,7 +1262,7 @@ void Construccion::aseguraIntegridadParedTam(ConstruccionPared *pared){
             switch (pared->tipoVentana) {
                 case ventanaNormal:
                     this->aseguraIntegridadParedTamByNumber(pared,1 , 3);
-                    memcpy(&auxnom[1], pared->id, sizeof(char)*MAXCHAR);
+                    memcpy(&auxnom[1], pared->id, sizeof(char)*MAXCHAR - 1);
                     auxnom[0] = 'v';
                     pared->cualVarMovimiento = this->vKeyFrame->crearVarMovimiento(auxnom);
                     break;
@@ -1471,7 +1471,7 @@ void Construccion::empezarADibujarTemporal(){
 //    }
 }
 void Construccion::cargar(){
-    FILE * archivo = fopen(CONSTRUCCIONPATHFILE, "r");
+	FILE * archivo= fopen(CONSTRUCCIONPATHFILE, "rb");
     unsigned int cabecera = 0;
     unsigned int cantidades = 0;//(unsigned int)this->yParedes.size();
     unsigned int aux = 0;
@@ -1574,7 +1574,7 @@ void Construccion::cargar(){
     std::cout<<"Construccion: "<<this->yParedes.size()<<" "<<this->ySuelos.size()<<" "<<this->yEscaleras.size()<<" Cargadas\n";
 }
 void Construccion::guardar(){
-    FILE * archivo = fopen(CONSTRUCCIONPATHFILE, "w");
+    FILE * archivo = fopen(CONSTRUCCIONPATHFILE, "wb");
     unsigned int cabecera = CONSTRUCCIONVERSIONARCHIVOS;
     unsigned int cantidades = (unsigned int)this->yParedes.size();
     unsigned int aux = 0;
@@ -1586,6 +1586,7 @@ void Construccion::guardar(){
     //Paredes
     fwrite(&cantidades, sizeof(unsigned int), 1, archivo);
     for (unsigned int i=0; i<cantidades; i++) {
+		if (feof(archivo)) std::cout << "Fin archivo\n";
         aux = (unsigned int) yParedes[i].tipoPared;
         fwrite(&aux, sizeof(unsigned int), 1, archivo);
         aux = (unsigned int) yParedes[i].tipoVentana;

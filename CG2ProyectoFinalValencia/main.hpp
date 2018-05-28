@@ -19,4 +19,6 @@
 #include "Source/AcomodadorObjetos/AcomodadorObjetos.hpp"
 #include "Source/UIClassAux/UIClassAux.hpp"
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #endif

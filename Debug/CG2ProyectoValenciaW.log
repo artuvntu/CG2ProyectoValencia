@@ -1,6 +1,2 @@
-﻿  KeyFrame.cpp
-c:\users\arturoventura\source\repos\cg2proyectovalencia\cg2proyectofinalvalencia\source\keyframe\keyframe.cpp(24): warning C4065: la instrucción switch contiene etiquetas 'default' pero no etiquetas 'case'
-  Primitivas.cpp
-  main.cpp
-  Generando código...
+﻿  main.cpp
   CG2ProyectoValenciaW.vcxproj -> C:\Users\arturoventura\source\repos\CG2ProyectoValencia\Debug\CG2ProyectoValenciaW.exe

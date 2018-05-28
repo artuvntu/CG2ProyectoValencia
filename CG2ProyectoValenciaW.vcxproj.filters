@@ -30,6 +30,18 @@
     <ClCompile Include="CG2ProyectoFinalValencia\Source\KeyFrame\KeyFrame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CG2ProyectoFinalValencia\Source\UIClassAux\UIClassAux.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CG2ProyectoFinalValencia\Source\Construccion\Construccion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CG2ProyectoFinalValencia\Source\CreadorObjetos\CreadorObjetos.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CG2ProyectoFinalValencia\Source\AcomodadorObjetos\AcomodadorObjetos.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cg2proyectofinalvalencia\glut.h">
@@ -51,6 +63,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CG2ProyectoFinalValencia\Source\KeyFrame\KeyFrame.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2ProyectoFinalValencia\Source\UIClassAux\UIClassAux.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2ProyectoFinalValencia\Source\Construccion\Construccion.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2ProyectoFinalValencia\Source\CreadorObjetos\CreadorObjetos.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CG2ProyectoFinalValencia\Source\AcomodadorObjetos\AcomodadorObjetos.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
