@@ -302,7 +302,7 @@ bool Camara::teclaMove(unsigned char tecla){
 }
 void Camara::cambiaPosCual(unsigned int c){
     if (c<yCamaras.size()) this->copiaSoloNumeros(&posActual, &yCamaras[c]);
-    else std::cout<<"No exite Camara\n";
+    else std::cout<<"No existe Camara\n";
 }
 void Camara::copiaSoloNumeros(Camara::CamaraPos *destino, Camara::CamaraPos *fuente){
     for (int i =0; i<9; i++) {
