@@ -59,6 +59,7 @@ void KeyFrame::drawCursor(){
     std::cout<<"CG2ProyectoFinalValenciaKF " << this->KeyFrameEstadosToChar[(unsigned char)estado] << " $ ";
 }
 void KeyFrame::teclaActivaMenu() {
+    vAnimacionesForever.clear();
     if (this->varMovimientos.size()==0) {
         std::cout<<"Crea objetos con Move Movimiento\n";
         return;
@@ -247,6 +248,7 @@ void KeyFrame::teclaDeMenuInicial(unsigned char tecla){
             menuActivado = false;
             estado = inicialKF;
             std::cout<<"Fuera menu KeyFrame\n";
+            recargarAnimacionesForever();
             break;
         default:
             break;
@@ -438,6 +440,7 @@ void KeyFrame::cargar(){
 }
 void KeyFrame::inicializar(){
     this->cargar();
+    recargarAnimacionesForever();
 }
 void KeyFrame::escribeMovimientosDisponibles(){
     std::cout<< "Posibles movimientos\n";
@@ -674,12 +677,12 @@ void KeyFrame::asegurarIntegridadAnimacion(KeyFrame::keyFrameAnimacion *animacio
     }
     for (unsigned int b = 0; b<vAnimaciones.size(); b++) {
         if (animacion!=&vAnimaciones[b]) {
-            for (long c = vAnimaciones[b].cuadrosClaves.size(); c>=0; c--) {
+            for (long c = vAnimaciones[b].cuadrosClaves.size()-1; c>=0; c--) {
                 for (unsigned int e = 0; e<vAnimaciones[b].cuadrosClaves[c].movimientos.size(); e++) {
                     temMovimiento[vAnimaciones[b].cuadrosClaves[c].movimientos[e].cual].value = vAnimaciones[b].cuadrosClaves[c].movimientos[e].posicionInicial;
                 }
             }
-        }//else std::cout<<"Encontrado en "<<b<<"\n";
+        }else std::cout<<"Encontrado en "<<b<<"\n";
     }
     for (unsigned int i = 0; i<animacion->cuadrosClaves.size(); i++) {
         if (animacion->cuadrosClaves[i].duracion==0) {

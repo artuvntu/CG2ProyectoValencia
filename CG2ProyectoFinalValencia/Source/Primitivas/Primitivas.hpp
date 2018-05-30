@@ -20,7 +20,7 @@
 #define PRIMITIVARVTCILINDRO 3
 #define PRIMITIVAVRTESFERA 1
 #define PRIMITIVAVRTPLANO 1
-
+#define PRIMITIVAVRTAGUA 1
 //#define GROSORPARED 1
 //#define ALTOPARED 25
 //#define PRIMITIVASTEXTPARED 0
@@ -45,7 +45,9 @@ public:
     void escaleras(std::vector<PrimitivasSelectTexture>*vectorSelectTexture,unsigned int desdeDonde,double posicion[3],double tam[3],unsigned int canEscalones,double angulo);
     void sueloPoligonal(std::vector<PrimitivasSelectTexture>*vectorSelecTexture,unsigned int desdeDonde,std::vector<Cg2ValenciaPunto3D>*vectorVertices);
     void cruceta(bool swithColor = false);
+    void agua(std::vector<PrimitivasSelectTexture>*vector,unsigned int desdeDonde,double posicion[3],double tam[3],double onduleo,double desplazamiento,unsigned int olas);
     void describePunto(Cg2ValenciaPunto3D punto);
+
     
     void empiezaAModificarTexture(std::vector<PrimitivasSelectTexture> *v,unsigned char *estado,unsigned char estadoSiguiente,unsigned char finMod, unsigned char *donde,unsigned int p = 0);
     bool teclaDeMenuTextura(unsigned char tecla);

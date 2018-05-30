@@ -666,3 +666,45 @@ void Primitivas::planoEstandar(std::vector<PrimitivasSelectTexture> *vector, uns
     glVertex3d(posicion[0], lugarTerminal[1], posicion[2]);
     glEnd();
 }
+void Primitivas::agua(std::vector<PrimitivasSelectTexture> *vector, unsigned int desdeDonde, double *posicion, double *tam, double onduleo, double desplazamiento,unsigned int olas){
+    if (vector->size()-desdeDonde<PRIMITIVAVRTAGUA) {
+        std::cout<<"Plano estandar error tam vector\n";
+    }
+    if (olas == 0) {
+        olas = 1;
+    }
+    double deltas[4] = {tam[0]/(double)olas,tam[1]/(double)olas};
+    deltas[2] = deltas[0]/2;
+    deltas[3] = deltas[1]/2;
+    double multiplicador = 1;
+    double posicionA[2] = {posicion[0],posicion[1]};
+    PrimitivasSelectTexture *tActual = &vector->at(desdeDonde);
+    glBindTexture(GL_TEXTURE_2D, this->vCargadorImage->texturas.at(tActual->cualTextura).glIndex);
+    double posicionInicialText[2] = {tActual->posicionInicio[0],tActual->posicionInicio[1]};
+    for (int a = 0; a<olas; a++) {
+        posicionA[0] = posicion[0]+deltas[0]*a;
+        posicionInicialText[0] = tActual->posicionInicio[0] +deltas[0]*a+desplazamiento;
+        for (int r = 0; r<olas; r++) {
+            posicionA[1] = posicion[1]+deltas[1]*r;
+            posicionInicialText[1] = tActual->posicionInicio[1] +deltas[1]*r;
+            if ((r%2)&&!(a%2)) {
+                multiplicador = -1;
+            }else multiplicador = 1;
+            glBegin(GL_POLYGON);
+            glTexCoord2d(posicionInicialText[0]+deltas[2], posicionInicialText[1]+deltas[3]);
+            glVertex3d(posicionA[0]+deltas[2], onduleo*multiplicador,posicionA[1]+deltas[3]);
+            glTexCoord2d(posicionInicialText[0], posicionInicialText[1]);
+            glVertex3d(posicionA[0], 0, posicionA[1]);
+            glTexCoord2d(posicionInicialText[0]+deltas[0], posicionInicialText[1]);
+            glVertex3d(posicionA[0]+deltas[0], 0, posicionA[1]);
+            glTexCoord2d(posicionInicialText[0]+deltas[0], posicionInicialText[1]+deltas[1]);
+            glVertex3d(posicionA[0]+deltas[0], 0, posicionA[1]+deltas[1]);
+            glTexCoord2d(posicionInicialText[0], posicionInicialText[1]+deltas[1]);
+            glVertex3d(posicionA[0], 0, posicionA[1]+deltas[1]);
+            glTexCoord2d(posicionInicialText[0], posicionInicialText[1]);
+            glVertex3d(posicionA[0], 0, posicionA[1]);
+            glEnd();
+        }
+    }
+
+}

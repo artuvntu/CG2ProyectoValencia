@@ -49,8 +49,8 @@ void CreadorObjetos::teclaActivaMenu(){
     this->drawCursor();
 }
 void CreadorObjetos::teclaDeMenu(unsigned char tecla){
-    guardar();
     if (tecla == '|') {
+        guardar();
         std::cout<<"Menu actual\n";
         this->esribeMenu();
         this->drawCursor();
@@ -118,11 +118,11 @@ void CreadorObjetos::dibujaObjeto(unsigned int cual,bool dVertice){
         std::cout<<"Error al dibujar objeto fuera de rango";
         return;
     }
-    this->contadorPushPop = 0;
-    objetoDibujando = &yObjetos[cual];
+    long contadorPushPop = 0;
+    CreadorObjetosObjeto *objetoDibujando = &yObjetos[cual];
     glPushMatrix();
     for (int dop = 0; dop<objetoDibujando->primitivas.size(); dop++) {
-        primitivaDibujando = &objetoDibujando->primitivas[dop];
+        CreadorObjetosPrimitivas * primitivaDibujando = &objetoDibujando->primitivas[dop];
         switch (primitivaDibujando->tipoTransparencia) {
             case desactivado:
                 break;
@@ -155,12 +155,21 @@ void CreadorObjetos::dibujaObjeto(unsigned int cual,bool dVertice){
                 glPopMatrix();
                 break;
             case plano:
-//                glPushMatrix();
-//                glTranslated(primitivaDibujando->vertices[0].coordenadas[0], primitivaDibujando->vertices[0].coordenadas[1], primitivaDibujando->vertices[0].coordenadas[2]);
-//                glRotated(primitivaDibujando->vertices[1].coordenadas[0], 1, 0, 0);
-//                glRotated(primitivaDibujando->vertices[1].coordenadas[1], 0, 1, 0);
-//                glRotated(primitivaDibujando->vertices[1].coordenadas[2], 0, 0, 1);
-//                vPrimitivas->planoEstandar(&objetoDibujando->texturas, primitivaDibujando->desdeCualTexture, puntoCentro.coordenadas, primitivaDibujando->vertices[2].coordenadas);
+                glPushMatrix();
+                glTranslated(primitivaDibujando->vertices[0].coordenadas[0], primitivaDibujando->vertices[0].coordenadas[1], primitivaDibujando->vertices[0].coordenadas[2]);
+                glRotated(primitivaDibujando->vertices[1].coordenadas[0], 1, 0, 0);
+                glRotated(primitivaDibujando->vertices[1].coordenadas[1], 0, 1, 0);
+                glRotated(primitivaDibujando->vertices[1].coordenadas[2], 0, 0, 1);
+                vPrimitivas->planoEstandar(&objetoDibujando->texturas, primitivaDibujando->desdeCualTexture, puntoCentro.coordenadas, primitivaDibujando->vertices[2].coordenadas);
+                glPopMatrix();
+                break;
+            case agua:
+                glPushMatrix();
+                glTranslated(primitivaDibujando->vertices[0].coordenadas[0], primitivaDibujando->vertices[0].coordenadas[1], primitivaDibujando->vertices[0].coordenadas[2]);
+                glRotated(primitivaDibujando->vertices[1].coordenadas[0], 1, 0, 0);
+                glRotated(primitivaDibujando->vertices[1].coordenadas[1], 0, 1, 0);
+                glRotated(primitivaDibujando->vertices[1].coordenadas[2], 0, 0, 1);
+                vPrimitivas->agua(&objetoDibujando->texturas, primitivaDibujando->desdeCualTexture, puntoCentro.coordenadas, primitivaDibujando->vertices[2].coordenadas, primitivaDibujando->vertices[2].coordenadas[2]+ this->vKeyFrame->varMovimientos[primitivaDibujando->cualkey[0]].value, this->vKeyFrame->varMovimientos[primitivaDibujando->cualkey[1]].value, primitivaDibujando->valorEspecial);
                 glPopMatrix();
                 break;
             case popm:
@@ -206,16 +215,16 @@ void CreadorObjetos::dibujaObjeto(unsigned int cual,bool dVertice){
                 contadorPushPop++;
                 break;
             case otroObjeto:
-                if (cual != this->primitivaDibujando->valorEspecial) {
+                if (cual != primitivaDibujando->valorEspecial) {
                     glPushMatrix();
                     glTranslated(primitivaDibujando->vertices[0].coordenadas[0], primitivaDibujando->vertices[0].coordenadas[1], primitivaDibujando->vertices[0].coordenadas[2]);
                     glRotated(primitivaDibujando->vertices[1].coordenadas[0], 1, 0, 0);
                     glRotated(primitivaDibujando->vertices[1].coordenadas[1], 0, 1, 0);
                     glRotated(primitivaDibujando->vertices[1].coordenadas[2], 0, 0, 1);
                     glScaled(primitivaDibujando->vertices[2].coordenadas[0], primitivaDibujando->vertices[2].coordenadas[1], primitivaDibujando->vertices[2].coordenadas[2]);
-                    this->dibujaObjeto(this->primitivaDibujando->valorEspecial);
+                    this->dibujaObjeto(primitivaDibujando->valorEspecial);
                     glPopMatrix();
-                }else std::cout<<"Error Recursividad de Objetos";
+                }else ;//std::cout<<"Error Recursividad de Objetos";
                 break;
             default:
                 break;
@@ -367,7 +376,7 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
             case 'X':
                 if (punteroPrimitiva<this->yObjetos[punteroSeleccion].primitivas.size()) {
                     std::cout<<"Borrado\n";
-                    this->yObjetos[punteroSeleccion].primitivas.erase(this->yObjetos[punteroSeleccion].primitivas.begin()+punteroSeleccion);
+                    this->yObjetos[punteroSeleccion].primitivas.erase(this->yObjetos[punteroSeleccion].primitivas.begin()+punteroPrimitiva);
                     if (punteroPrimitiva>=this->yObjetos[punteroSeleccion].primitivas.size()){
                         punteroPrimitiva = (unsigned int) this->yObjetos[punteroSeleccion].primitivas.size() - 1;
                     }
@@ -390,6 +399,7 @@ void CreadorObjetos::teclaDeMenuModificarObjeto(unsigned char tecla){
                 std::cout<<"Duplicando "<<this->punteroPrimitiva;
                 this->yObjetos[punteroSeleccion].primitivas.push_back(this->yObjetos[punteroSeleccion].primitivas[punteroPrimitiva]);
                 this->punteroPrimitiva = (unsigned int) this->yObjetos[punteroSeleccion].primitivas.size() -1;
+                this->empiezaMoveByPrimitiva(&yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].vertices);
                 this->esribeMenu();
                 this->drawCursor();
                 break;
@@ -514,7 +524,7 @@ void CreadorObjetos::ejecutaAccionDespuesBuscarUInt(){
             break;
         case interCambiarPosPrimitiva:
             tprimitiva = yObjetos[punteroSeleccion].primitivas[cambioLugarPrimitiva];
-            yObjetos[punteroSeleccion].primitivas[punteroPrimitiva] = yObjetos[punteroSeleccion].primitivas[cambioLugarPrimitiva];
+            yObjetos[punteroSeleccion].primitivas[cambioLugarPrimitiva] = yObjetos[punteroSeleccion].primitivas[punteroPrimitiva];
             yObjetos[punteroSeleccion].primitivas[punteroPrimitiva] = tprimitiva;
             break;
         case nadaCO:
@@ -589,7 +599,7 @@ void CreadorObjetos::aseguraIntegridadCambio(){
     for (unsigned int i =(unsigned int) yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].vertices.size(); i < cantidadPuntos; i++) {
         yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].vertices.push_back(Cg2ValenciaPunto3D());
     }
-    if (yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].tipoPrimitiva == verticeAngulo || yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].tipoPrimitiva == translate||yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].tipoPrimitiva == scaled) {
+    if (yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].tipoPrimitiva == verticeAngulo || yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].tipoPrimitiva == translate||yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].tipoPrimitiva == scaled||yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].tipoPrimitiva == agua) {
         sprintf(nomT,"%s@%04d0",yObjetos[punteroSeleccion].id,punteroPrimitiva);
         yObjetos[punteroSeleccion].primitivas[punteroPrimitiva].cualkey[0] = this->vKeyFrame->crearVarMovimiento(nomT);
         sprintf(nomT,"%s@%04d1",yObjetos[punteroSeleccion].id,punteroPrimitiva);
@@ -614,6 +624,7 @@ unsigned int CreadorObjetos::puntosNecesariosPorTipoPrimitiva(CreadorObjetos::Cr
         case nadaPrimiva:
             return 0;
         case plano:
+        case agua:
             return 3;
         case popm:
             return 0;
@@ -641,6 +652,7 @@ unsigned int CreadorObjetos::textureNecesariasPorTipoPrimitiva(CreadorObjetos::C
         case nadaPrimiva:
             return 0;
         case plano:
+        case agua:
             return PRIMITIVAVRTPLANO;
         case popm:
             return 0;

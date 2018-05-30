@@ -16,16 +16,16 @@
 
 #define CREADOROBJETOSPATHFILE "CG2ProyectoFinalValencia/Documents/CG2ProyectoFinalValencia.vco"
 
-#define MAXTIPOPRIMITIVA 10
+#define MAXTIPOPRIMITIVA 11
 #define MAXTIPOTRANSPARENCIA 3
 
 class CreadorObjetos{
 public:
     char CreadorObjetosTipoPrimitivaToChar[MAXTIPOPRIMITIVA][30] = {
-        "Nulo","Vertice Angulo","Translate","PopMatrix","Prisma","Esfera","Cilindro","Plano","Otro Objeto","Scaled"
+        "Nulo","Vertice Angulo","Translate","PopMatrix","Prisma","Esfera","Cilindro","Plano","Otro Objeto","Scaled","Agua"
     };
     enum CreadorObjetosTipoPrimitiva:unsigned int{
-        nadaPrimiva=0,verticeAngulo=1,translate=2,popm=3,prisma=4,esfera=5,cilindro=6,plano=7,otroObjeto=8,scaled=9
+        nadaPrimiva=0,verticeAngulo=1,translate=2,popm=3,prisma=4,esfera=5,cilindro=6,plano=7,otroObjeto=8,scaled=9,agua=10
     };
     char CreadorObjetosTipoTransparenciaToChar[MAXTIPOTRANSPARENCIA][30] = {
         "Desactivado","Blend","Remove Test"
@@ -125,10 +125,10 @@ private:
     unsigned int puntosNecesariosPorTipoPrimitiva(CreadorObjetosTipoPrimitiva tipo);
     
     void aseguraIntegridadCambio();
-    long contadorPushPop = 0;
+//    long contadorPushPop = 0;
     
-    CreadorObjetosObjeto *objetoDibujando = NULL;
-    CreadorObjetosPrimitivas *primitivaDibujando = NULL;
+//    CreadorObjetosObjeto *objetoDibujando = NULL;
+//    CreadorObjetosPrimitivas *primitivaDibujando = NULL;
     
     Camara::CamaraPos posicionAnterior;
     Camara::CamaraPos posicionPorDefecto;

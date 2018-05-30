@@ -31,7 +31,9 @@ KeyFrame vKeyFrame;
 Construccion vConstruccion;
 CreadorObjetos vCreadorObjetos;
 AcomodadorObjetos vAcomodadorObjetos;
-
+#define TAMTECLASCAMARA 6
+char teclasCamara[7] = "rtyfgh";
+char teclasCamaraM[7] = "RTYFGH";
 int main(int argc,char * argv[]) {
 
     glutInit(&argc, argv);
@@ -187,6 +189,12 @@ void teclado(unsigned char tecla,int x,int y){
     if (tecla >= '0' && tecla <= '9') {
         vKeyFrame.reproduceAlgunaAnimacion((unsigned int) tecla - '0');
 		return;
+    }
+    for (int e = 0; e<TAMTECLASCAMARA; e++) {
+        if (teclasCamara[e]==tecla||teclasCamaraM[e]==tecla) {
+            vCamara.cambiaPosCual(e);
+            return;
+        }
     }
 	if (tecla == '|') {
 		std::cout << "!->KeyFrame\n@->Reload Image\n#->Construccion\n$->Creador Objetos\n%->Acomodador Objetos\n&->Camara\n+->Guardar salir\n-->Guardar\n";

@@ -135,6 +135,7 @@ void AcomodadorObjetos::teclaDeMenuInicial(unsigned char tecla){
                 break;
             case 'p':
             case 'P':
+                std::cout<<"Cambio tipo\n";
                 vCreadorObjetos->escribeObjetosDisponibles();
                 this->estado = BuscaUInt;
                 this->vUIClassAux.empezarABuscarUInt(&yAcomodos[puntero].cual, (unsigned int)vCreadorObjetos->yObjetos.size(),(unsigned char *) &this->estado, (unsigned char)inicialAO, (unsigned char) inicialAO, (unsigned char) nada, (unsigned char) nada, (unsigned char *)&accionDespuesBuscarUInt);
@@ -143,9 +144,9 @@ void AcomodadorObjetos::teclaDeMenuInicial(unsigned char tecla){
                 std::cout<<"Copiar\n";
                 yAcomodos.push_back(yAcomodos[puntero]);
                 puntero =(unsigned int) yAcomodos.size()-1;
-                yAcomodos[puntero].ubicacion[0].coordenadas[0] = vCamara->posActual.XYZ[3];
-                yAcomodos[puntero].ubicacion[0].coordenadas[1] = vCamara->posActual.XYZ[4];
-                yAcomodos[puntero].ubicacion[0].coordenadas[2] = vCamara->posActual.XYZ[5];
+//                yAcomodos[puntero].ubicacion[0].coordenadas[0] = vCamara->posActual.XYZ[3];
+//                yAcomodos[puntero].ubicacion[0].coordenadas[1] = vCamara->posActual.XYZ[4];
+//                yAcomodos[puntero].ubicacion[0].coordenadas[2] = vCamara->posActual.XYZ[5];
                 this->vUIClassAux.empezarABuscarMove(&this->yAcomodos[puntero].ubicacion[0].coordenadas[0], &this->yAcomodos[puntero].ubicacion[0].coordenadas[1], &this->yAcomodos[puntero].ubicacion[0].coordenadas[2], &this->yAcomodos[puntero].ubicacion[2].coordenadas[0], &this->yAcomodos[puntero].ubicacion[2].coordenadas[1], &this->yAcomodos[puntero].ubicacion[2].coordenadas[2], &this->yAcomodos[puntero].ubicacion[1].coordenadas[0], &this->yAcomodos[puntero].ubicacion[1].coordenadas[1], &this->yAcomodos[puntero].ubicacion[1].coordenadas[2], 0.1, 1, 11.25, 45);
                 this->drawCursor();
                 break;
